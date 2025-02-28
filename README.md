@@ -10,7 +10,7 @@ direct sampling of light wave in air
 
 ## Key Publications
 - [Direct sampling of a light wave in air](https://doi.org/10.1364/OPTICA.5.000402)
-- [An environment for solving schrödinger-like problems](www.google.de)
+- [An environment for solving schrödinger-like problems](https://gitlab.physik.uni-muenchen.de/AG-Scrinzi/tRecX)
 
 ## Max Planck Institute of Quantum Optics (MPQ)
 For more information about the institute, please visit the official website:
