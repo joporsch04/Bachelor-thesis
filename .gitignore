@@ -1,14 +1,6 @@
-# Ignore all LaTeX auxiliary files
+# Ignore all LaTeX output files
 *.aux
 *.log
-*.out
-*.toc
-*.bbl
-*.blg
 *.fdb_latexmk
 *.fls
 *.synctex.gz
-*.nav
-*.snm
-*.pdf~
-*.dvi
