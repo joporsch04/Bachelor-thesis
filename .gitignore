@@ -1,19 +1,14 @@
-# Ignore all LaTeX auxiliary files
-*.aux
-*.log
-*.out
-*.toc
-*.bbl
-*.blg
-*.fdb_latexmk
-*.fls
-*.synctex.gz
-*.nav
-*.snm
-*.pdf~
-*.dvi
-
-# Allow LaTeX source and PDF output files
-!*.tex
-!*.cls
-!*.pdf
+# # Ignore all LaTeX auxiliary files
+# *.aux
+# *.log
+# *.out
+# *.toc
+# *.bbl
+# *.blg
+# *.fdb_latexmk
+# *.fls
+# *.synctex.gz
+# *.nav
+# *.snm
+# *.pdf~
+# *.dvi
