@@ -1,5 +1,8 @@
 # Bachelor Thesis
 
+## Author
+Johannes Porsch (Jo.Porsch@campus.lmu.de, joporsch04@gmail.com)
+
 ## Abstract
 direct sampling of light wave in air -> TIPTOE
 
