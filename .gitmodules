@@ -1,6 +1,3 @@
-[submodule "tRecX"]
-	path = tRecX
-	url = https://gitlab.physik.uni-muenchen.de/AG-Scrinzi/tRecX
 [submodule "tiptoe"]
 	path = tiptoe
 	url = https://github.com/joporsch04/TIPTOE-Hydrogen
