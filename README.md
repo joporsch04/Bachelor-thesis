@@ -18,10 +18,3 @@ docker run -it trecx
 ## Max Planck Institute of Quantum Optics (MPQ)
 For more information about the institute, please visit the official website:
 [MPQ Homepage](https://www.mpq.mpg.de)
-
-## License
-This repository is open for academic and research purposes. 
-
-
-
-
