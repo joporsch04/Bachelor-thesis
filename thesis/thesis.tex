@@ -19,93 +19,87 @@
 \usepackage{float}
 \usepackage{braket}
 
-
-
-
-
-\newcommand{\A}{\mathbf{A}}
-\newcommand{\B}{\mathfrak{B}}
-\newcommand{\ball}{B}
-\newcommand{\C}{\mathbb{C}}
-\newcommand{\cl}{\mathrm{cl}}
-\newcommand{\const}{\mathrm{const}\ }
-\newcommand{\D}{\mathcal{D}}
-\newcommand{\dd}{\, \mathrm{d}}
-\newcommand{\eps}{\varepsilon}
-\renewcommand{\epsilon}{\varepsilon}
-\newcommand{\e}{\mathrm{e}}
-\newcommand{\ii}{\mathrm{i}}
-\newcommand{\id}{\mathbb{I}}
-\newcommand{\I}{\mathbb{I}}
-\newcommand{\Lc}{\mathcal{L}}
-\newcommand{\F}{\mathcal{F}}
-\newcommand{\loc}{{\rm loc}}
-\newcommand{\mg}{\mathrm{mag}}
-\newcommand{\N}{\mathbb{N}}
-\newcommand{\norm}[2][]{{\left\|#2\right\|}} \newcommand{\ope}{\mathrm{op}}
-\renewcommand{\phi}{\varphi}
-\newcommand{\R}{\mathbb{R}}
-\newcommand{\Rp}{\text{Re\,}}
-\newcommand{\sclp}[2][]{{\left\langle#2\right\rangle} _{#1}}
-\newcommand{\Sph}{\mathbb{S}}
-\newcommand{\T}{\mathbb{T}}
-\newcommand{\w}{\mathrm{weak}}
-\newcommand{\Z}{\mathbb{Z}}
-\newcommand{\Hs}{\mathcal{H}}
-\newcommand{\Hh}{\mathbb{H}}
-\newcommand{\Gs}{\mathcal{G}}
-\newcommand{\Fs}{\mathcal{F}}
-\newcommand{\Ks}{\mathcal{K}}
-\newcommand{\Ac}{\mathscr{A}}
-\newcommand{\Bc}{\mathscr{B}}
-\newcommand{\Fc}{\mathscr{F}}
-\newcommand{\lap}{\frac{\mathrm{d}^2}{\mathrm{d}x^2}}
-\renewcommand{\epsilon}{\varepsilon}
-
-\DeclareMathOperator{\codim}{codim}
-\DeclareMathOperator{\dist}{dist}
-\DeclareMathOperator{\Div}{div}
-\DeclareMathOperator{\dom}{dom}
-\DeclareMathOperator{\im}{Im}
-\DeclareMathOperator{\ran}{ran}
-\DeclareMathOperator{\re}{Re}
-\DeclareMathOperator{\spec}{spec}
-\DeclareMathOperator{\supp}{supp}
-\DeclareMathOperator{\sgn}{sgn}
-\DeclareMathOperator{\Tr}{Tr}
-\DeclareMathOperator{\tr}{Tr}
-%%magnetic/antisymmetric laplacian
-\newcommand{\abs}[2][]{{\left\vert#2\right\vert}} 
-\DeclareMathOperator{\nablaAB}{\nabla_{{\bf A}}}
-\DeclareMathOperator{\DeltaAB}{\Delta_{{\bf A}}}
-\DeclareMathOperator{\nablaAnti}{\nabla_{{\bf as}}}
-\DeclareMathOperator{\DeltaAnti}{\Delta_{{\bf as}}}
-\DeclareMathOperator{\BSop}{\mathcal{B}}
-\DeclareMathOperator{\BSopAB}{\mathcal{B}_{{\bf A}}}
-\DeclareMathOperator{\BSopAnti}{\mathcal{B}_{{\bf as}}}
-
-
-
-
-
-
+\input{commands.tex}
 
 
 
 
 \begin{document}
 
+\begin{titlepage}
+    \centering
+    \vspace*{1.5cm}
+    
+    {\Large Universität Musterstadt\\[0.3cm]
+    Fakultät für Mathematik und Naturwissenschaften}
+    
+    \vspace{1.5cm}
+    
+    {\huge\bfseries Titel der Bachelorarbeit\\[0.4cm]
+    \Large Untertitel (falls gewünscht)}
+    
+    \vspace{2cm}
+    
+    {\Large test title bachelor6}
+    
+    \vspace{2cm}
+    
+    {\Large Vor- und Nachname\\[0.2cm]
+    Matrikelnummer: 12345678}
+    
+    \vfill
+    
+    {\Large \today}
+    
+\end{titlepage}
 
 
-\title{test title bachelor6}
 
 
 
-\maketitle
 
-test 24.2aad
+% Abstract (optional)
+\begin{abstract}
+    Hier folgt eine kurze Zusammenfassung der Arbeit. Erläutere in wenigen Sätzen das Thema, die Methodik und die wichtigsten Ergebnisse.
+\end{abstract}
+\thispagestyle{empty}
+\newpage
 
-test $a^2 + b^2 = c^2$ $\A$ $\mathcal{A}$ $\mathscr{A}$ 
+% Danksagung (optional)
+\section*{Danksagung}
+Hier kannst du dich bei denjenigen bedanken, die dich während der Arbeit unterstützt haben. 
+\thispagestyle{empty}
+\newpage
+
+% Inhaltsverzeichnis
+\tableofcontents
+\thispagestyle{empty}
+\newpage
+
+% Abbildungsverzeichnis (optional)
+\listoffigures
+\thispagestyle{empty}
+\newpage
+
+% Tabellenverzeichnis (optional)
+\listoftables
+\thispagestyle{empty}
+\newpage
+
+% Beginn des Hauptteils
+\section{Einleitung}
+Die Einleitung gibt einen Überblick über das Thema der Arbeit, die Motivation, sowie den Aufbau der Arbeit.
+
+\section{Grundlagen}
+Beschreibe hier die theoretischen Grundlagen, Notationen und Definitionen, die in der Arbeit benötigt werden.
+
+\section{Hauptteil}
+\subsection{Erster Unterabschnitt}
+Beschreibe hier den ersten inhaltlichen Teil deiner Arbeit.
+
+\subsection{Zweiter Unterabschnitt}
+Weiterführende Erklärungen oder Resultate können hier dargestellt werden.
+
 \begin{equation*}
     \partial \A = \B
 \end{equation*}
@@ -123,9 +117,21 @@ test $a^2 + b^2 = c^2$ $\A$ $\mathcal{A}$ $\mathscr{A}$
     \ii \partial_t u = \mathcal{H}(t) \Ket{a}
 \end{equation}
 
+\section{Ergebnisse und Diskussion}
+Fasse hier die wichtigsten Ergebnisse zusammen und diskutiere sie im Kontext des Themas.
 
+\section{Fazit und Ausblick}
+Gib ein abschließendes Fazit und einen Ausblick auf mögliche weitere Forschungen oder Anwendungen.
 
+% Literaturverzeichnis
+\begin{thebibliography}{99}
+    \bibitem{ref1} Autor, \emph{Titel}, Verlag, Jahr.
+    % Weitere Literaturangaben
+\end{thebibliography}
 
-
+% Anhang (optional)
+\appendix
+\section{Anhang}
+Hier können ergänzende Berechnungen, Tabellen oder Abbildungen eingefügt werden.
 
 \end{document}
