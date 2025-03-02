@@ -23,7 +23,8 @@
 \usepackage{amsmath, amsfonts, amssymb, enumerate, mathtools, mathabx, bbm, mathrsfs} % mathematical packages 
 \usepackage{braket}
 
-\input{tex_files/commands.tex}
+
+\input{tex-files/commands.tex}
 
 
 
@@ -31,91 +32,47 @@
 \begin{document}
 
 
-\input{tex_files/titlepage.tex}
+\input{tex-files/titlepage.tex}
+\newpage
 
 
-
-
-
-
-% Abstract (optional)
 \begin{abstract}
-    Hier folgt eine kurze Zusammenfassung der Arbeit. Erläutere in wenigen Sätzen das Thema, die Methodik und die wichtigsten Ergebnisse.
+    \input{tex-files/abstract.tex}
 \end{abstract}
-\thispagestyle{empty}
-\newpage
 
-% Danksagung (optional)
-\section*{Danksagung}
-Hier kannst du dich bei denjenigen bedanken, die dich während der Arbeit unterstützt haben. 
-\thispagestyle{empty}
-\newpage
 
-% Inhaltsverzeichnis
 \tableofcontents
-\thispagestyle{empty}
 \newpage
 
-% Abbildungsverzeichnis (optional)
-\listoffigures
-\thispagestyle{empty}
+
+\chapter{Einleitung}
+\input{tex-files/chapter1.tex}
 \newpage
 
-% Tabellenverzeichnis (optional)
-\listoftables
-\thispagestyle{empty}
+
+\chapter{Grundlagen}
+\input{tex-files/chapter2.tex}
 \newpage
 
-% Beginn des Hauptteils
-\section{Einleitung}
-Die Einleitung gibt einen Überblick über das Thema der Arbeit, die Motivation, sowie den Aufbau der Arbeit.
 
-\section{Grundlagen}
-Beschreibe hier die theoretischen Grundlagen, Notationen und Definitionen, die in der Arbeit benötigt werden.
+\chapter{Hauptteil}
+\input{tex-files/chapter3.tex}
+\newpage
 
-\section{Hauptteil}
-\subsection{Erster Unterabschnitt}
-Beschreibe hier den ersten inhaltlichen Teil deiner Arbeit.
 
-\subsection{Zweiter Unterabschnitt}
-Weiterführende Erklärungen oder Resultate können hier dargestellt werden.
-
-\begin{equation*}
-    \partial \A = \B
-\end{equation*}
-
-\medskip
-
-\begin{equation}
-    \int_{\R^d} \abs{f(x)}^2 \dd x = \int_{\R^d} \abs{\F f(\xi)}^2 \dd \xi
-\end{equation}
-
-\medskip
-
-\begin{equation}
-    %schrödinger equation
-    \ii \partial_t u = \mathcal{H}(t) \Ket{a} \lambda 
-\end{equation}
-
-\begin{equation}
-    \gimel \overrightarrow{a} \cos \mathrm{cos} \Rightarrow \Longrightarrow \nearrow 
-\end{equation}
-
-\section{Ergebnisse und Diskussion}
-Fasse hier die wichtigsten Ergebnisse zusammen und diskutiere sie im Kontext des Themas.
-
-\section{Fazit und Ausblick}
-Gib ein abschließendes Fazit und einen Ausblick auf mögliche weitere Forschungen oder Anwendungen.
-
-% Literaturverzeichnis
 \begin{thebibliography}{99}
-    \bibitem{ref1} Autor, \emph{Titel}, Verlag, Jahr.
-    % Weitere Literaturangaben
+    \input{tex-files/bibliography.tex}
 \end{thebibliography}
+\newpage
 
-% Anhang (optional)
+
 \appendix
-\section{Anhang}
-Hier können ergänzende Berechnungen, Tabellen oder Abbildungen eingefügt werden.
+\chapter{Anhang}
+\input{tex-files/appendixA.tex}
+\newpage
+
+\chapter{Weiterer Anhang}
+\input{tex-files/appendixB.tex}
+\newpage
 
 \end{document}
