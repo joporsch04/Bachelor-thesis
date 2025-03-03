@@ -6,7 +6,8 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
-\usepackage{hyperref}
+\usepackage[hidelinks]{hyperref}
+\usepackage{graphicx}
 
 
 \usepackage{comment}
@@ -23,11 +24,13 @@
 \usepackage{amsmath, amsfonts, amssymb, enumerate, mathtools, mathabx, bbm, mathrsfs} % mathematical packages 
 \usepackage{braket}
 
+\usepackage{titlesec}
+\titleformat{\chapter}[hang]{\normalfont\huge\bfseries}{\thechapter.}{0.5em}{} 
+
 
 \input{tex-files/commands.tex}
 
-
-
+%-----------------------------------------------------------------
 
 \begin{document}
 
@@ -37,11 +40,19 @@
 
 
 \begin{abstract}
+    \phantomsection
+    \addcontentsline{toc}{chapter}{Abstract}
     \input{tex-files/abstract.tex}
 \end{abstract}
 
 
 \tableofcontents
+\newpage
+
+
+\phantomsection
+\addcontentsline{toc}{chapter}{List of Figures}
+\listoffigures
 \newpage
 
 
@@ -60,12 +71,6 @@
 \newpage
 
 
-\begin{thebibliography}{99}
-    \input{tex-files/bibliography.tex}
-\end{thebibliography}
-\newpage
-
-
 \appendix
 \chapter{Anhang}
 \input{tex-files/appendixA.tex}
@@ -74,5 +79,13 @@
 \chapter{Weiterer Anhang}
 \input{tex-files/appendixB.tex}
 \newpage
+
+
+\phantomsection
+\addcontentsline{toc}{chapter}{Bibliography}
+\bibliographystyle{plain}
+\bibliography{bibliography}
+\newpage
+
 
 \end{document}
