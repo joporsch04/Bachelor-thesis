@@ -5,8 +5,8 @@
 \usepackage[normalem]{ulem}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{lmodern}
-\usepackage[hidelinks]{hyperref}
+\usepackage{lmodern} % personal preference
+\usepackage[hidelinks]{hyperref} % links colourless
 \usepackage{graphicx}
 
 
@@ -21,11 +21,13 @@
 \usepackage{csquotes}
 \usepackage{float}
 
-\usepackage{amsmath, amsfonts, amssymb, enumerate, mathtools, mathabx, bbm, mathrsfs} % mathematical packages 
-\usepackage{braket}
+\usepackage{amsmath, amsfonts, amssymb, enumerate, mathtools, bbm, mathrsfs} % mathematical packages 
+\usepackage{braket} % package for dirac notation
+\usepackage{newtxmath} % different style for mathematical symbols: fourier, newtxmath, stix2, mathabx
 
 \usepackage{titlesec}
-\titleformat{\chapter}[hang]{\normalfont\huge\bfseries}{\thechapter.}{0.5em}{} 
+
+\titleformat{\chapter}[hang]{\normalfont\huge\bfseries}{\thechapter.}{0.5em}{} % formating chapters s.t. they are in the same row
 
 
 \input{tex-files/commands.tex}
@@ -40,8 +42,8 @@
 
 
 \begin{abstract}
-    \phantomsection
-    \addcontentsline{toc}{chapter}{Abstract}
+    \phantomsection % needed for appearence in toc
+    \addcontentsline{toc}{chapter}{Abstract} % ...
     \input{tex-files/abstract.tex}
 \end{abstract}
 
@@ -50,8 +52,8 @@
 \newpage
 
 
-\phantomsection
-\addcontentsline{toc}{chapter}{List of Figures}
+\phantomsection % ...
+\addcontentsline{toc}{chapter}{List of Figures} % ...
 \listoffigures
 \newpage
 
@@ -81,11 +83,13 @@
 \newpage
 
 
-\phantomsection
-\addcontentsline{toc}{chapter}{Bibliography}
+\phantomsection % ...
+\addcontentsline{toc}{chapter}{Bibliografie} % ...
 \bibliographystyle{plain}
 \bibliography{bibliography}
 \newpage
 
 
 \end{document}
+
+%-----------------------------------------------------------------

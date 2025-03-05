@@ -8,3 +8,5 @@
 *.lot
 *.toc
 *.out
+*.bbl
+*.blg
