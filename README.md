@@ -26,6 +26,7 @@ cd tRecX
 docker build -t trecx .
 docker run -it trecx
 ```
+If you choose to use a VM, pay attention to the Linux version. In some distributions libatlas-base-dev and libboost-all-dev are not compatible. In any case, Ubuntu 22.04 works fine. 
 
 ## Max Planck Institute of Quantum Optics (MPQ)
 For more information about the institute, please visit the official website:
