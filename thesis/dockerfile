@@ -4,8 +4,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
     apt-get -y install --no-install-recommends \
-        texlive texlive-latex-extra texlive-fonts-extra \
-        texlive-bibtex-extra biber latexmk make git \
+        texlive-full \
+        biber latexmk make git \
         python3 python3-pip python3-venv && \
     rm -rf /var/lib/apt/lists/*
 
