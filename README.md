@@ -14,7 +14,7 @@ Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod 
 ```
 git clone https://github.com/joporsch04/Bachelor-thesis
 ```
-The folder TIPTOE was created during a research assistant position at MPQ during summer 2024. It is a git submodule and can be cloned with:
+The folder TIPTOE-Hydrogen was created during a research assistant position at MPQ during summer 2024. It is a git submodule and can be cloned with:
 ```
 git submodule update --init --recursive
 ```
