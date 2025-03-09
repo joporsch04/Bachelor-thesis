@@ -1,0 +1,3 @@
+[submodule "TIPTOE-Hydrogen"]
+	path = TIPTOE-Hydrogen
+	url = https://github.com/joporsch04/TIPTOE-Hydrogen
