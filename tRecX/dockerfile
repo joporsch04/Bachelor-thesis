@@ -13,4 +13,10 @@ RUN apt-get update && apt-get install -y \
     python3 \
     && rm -rf /var/lib/apt/lists/*
 
+WORKDIR /opt
+RUN git clone https://github.com/trecx/tRecX.git && \
+    cd tRecX && \
+    cmake . && \
+    make -j6
+
 CMD ["/bin/bash"]
