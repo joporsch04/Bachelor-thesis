@@ -1,3 +1,4 @@
+# dockerfile for bachelor thesis including trecx and latex-compiler
 FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
