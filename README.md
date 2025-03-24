@@ -14,20 +14,20 @@ Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod 
 ```
 git clone https://github.com/joporsch04/Bachelor-thesis
 ```
-The folder TIPTOE-Hydrogen was created during a research assistant position at MPQ during summer 2024 and not part of this thesis. It is a git submodule and can be cloned with:
+<!-- The folder TIPTOE-Hydrogen was created during a research assistant position at MPQ during summer 2024 and not part of this thesis. It is a git submodule and can be cloned with: -->
 ```
 git submodule update --init --recursive
 ```
 
 ## tRecX
-For the installation of tRecX, please visit this [link](https://gitlab.physik.uni-muenchen.de/AG-Scrinzi/tRecX). For simple testing I recommend using [Docker](https://www.docker.com/). The `dockerfile` can be found in the folder tRecX:
+<!-- For the installation of tRecX, please visit this [link](https://gitlab.physik.uni-muenchen.de/AG-Scrinzi/tRecX). For simple testing I recommend using [Docker](https://www.docker.com/). The `dockerfile` can be found in the folder tRecX: -->
 ```
 cd tRecX
 docker build -t trecx .
 docker run -it trecx
 ```
-If you choose to use a VM, pay attention to the Linux version. In some distributions libatlas-base-dev and libboost-all-dev are not compatible. In any case, the `dockerfile` (Ubuntu 22.04) works fine. 
+<!-- If you choose to use a VM, pay attention to the Linux version. In some distributions libatlas-base-dev and libboost-all-dev are not compatible. In any case, the `dockerfile` (Ubuntu 22.04) works fine. 
 
 ## Max Planck Institute of Quantum Optics (MPQ)
 For more information about the institute, please visit the official website:
-[MPQ Homepage](https://www.mpq.mpg.de)
+[MPQ Homepage](https://www.mpq.mpg.de) -->
