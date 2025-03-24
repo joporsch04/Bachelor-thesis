@@ -1,4 +1,4 @@
-# dockerfile for bachelor thesis including trecx and latex-compiler
+# dockerfile for bachelor thesis including python, trecx and latex-compiler
 FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -20,10 +20,10 @@ RUN apt-get update && apt-get install -y \
     python3-venv \
     && rm -rf /var/lib/apt/lists/*
 
-RUN python3 -m pip install --upgrade pip && \
-    pip install numpy matplotlib 
-
 WORKDIR /home
+
+RUN python3 -m pip install --upgrade pip && \
+    pip install numpy matplotlib pandas scipy numba numexpr
 
 RUN git clone https://gitlab.physik.uni-muenchen.de/AG-Scrinzi/tRecX.git && \
     cd tRecX && \
