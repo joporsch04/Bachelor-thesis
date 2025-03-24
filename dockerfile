@@ -30,7 +30,9 @@ RUN git clone https://gitlab.physik.uni-muenchen.de/AG-Scrinzi/tRecX.git && \
     cmake . && \
     make -j6
 
-RUN git clone https://github.com/joporsch04/Bachelor-thesis.git /home/Bachelor-thesis
+RUN git clone https://github.com/joporsch04/Bachelor-thesis.git /home/Bachelor-thesis && \
+    git config --global user.email "joporsch04@gmail.com" && \
+    git config --global user.name "joporsch04"
 
 ENV LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
 
