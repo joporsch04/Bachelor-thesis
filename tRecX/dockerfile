@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt
-RUN git clone https://github.com/trecx/tRecX.git && \
+RUN git clone https://gitlab.physik.uni-muenchen.de/AG-Scrinzi/tRecX.git && \
     cd tRecX && \
     cmake . && \
     make -j6
