@@ -12,9 +12,9 @@ RUN apt-get update && apt-get install -y \
     cmake \
     git \
     python3 \
-    texlive-full \
-    biber \
-    latexmk \
+    #texlive-full \
+    #biber \
+    #latexmk \
     make \
     python3-pip \
     python3-venv \
