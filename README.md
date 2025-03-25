@@ -23,6 +23,7 @@ git pull origin main
 
 ## tRecX
 <!-- For the installation of tRecX, please visit this [link](https://gitlab.physik.uni-muenchen.de/AG-Scrinzi/tRecX). For simple testing I recommend using [Docker](https://www.docker.com/). The `dockerfile` can be found in the folder tRecX: -->
+[link](https://gitlab.physik.uni-muenchen.de/AG-Scrinzi/tRecX)
 ```
 cd tRecX
 docker build -t trecx .
