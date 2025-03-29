@@ -16,19 +16,50 @@ Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod 
 
 \newpage
 \section{Basic Formalism}
+\subsection{schrödinger equation}
 
-Basic Definitions of schröfinger qe, light dyson series, and sotrong field s matrix
+Basic Definitions of schröfinger qe, light dyson series, and strong field s matrix
 
-Starting with schrödinger equation and a general hamiltonian
+We want the time evolution of a quantum system in the presence of an external time dependent field in order to describe the strong field ionization later on.
+The time evolution of a quantum system is given by the time dependent Schrödinger equation and a general hamiltonian
 \begin{equation}
     i \hbar \frac{\partial}{\partial t} \ket{\Psi(t)} = \hat{H}(t) \ket{\Psi(t)}.
 \end{equation}
-The formal solution depends on the time dependence of the hamiltonian and the physical setting. In the following we assume (IMPORTANT) that $[\hat{H(t)}, \hat{H(t')}] = 0$ so we assume some sort of quasi static approximation to the Hamiltons time evolution. 
+The formal solution depends on the time dependence of the hamiltonian and the physical setting. 
+In the following we assume \footnote{How? Later. No physical setting bzw no approximations yet. 
+Its better to juistify it later but have a working formalism instead of the other way around.} (IMPORTANT) that $[\hat{H}(t), \hat{H}(t')] = 0$ so we assume some sort of quasi static approximation to the Hamiltons time evolution. 
 The solution is then given by 
 \begin{equation}
     \ket{\Psi(t)} = e^{-\frac{i}{\hbar} \int_{t_0}^{t} \hat{H}(t') dt'} \ket{\Psi(t=0)}
 \end{equation}
+Now its time so establish a physical setting. We have Hydrogen Atom with nucleus and electron described by time indepentent Hamilton $\hat{H}_0$. 
+The external laser Field is descirbed by an time dependent part $\hat{V}(t)$. To describe the interaction of the atom with the laser field we use in the following the dipole approximation.
 
+\subsection{Light-Matter Interaction}
+A light wave is defined by the Maxwell equations
+\begin{equation}
+    \begin{aligned}
+        \nabla \cdot \mathbf{E}(t) &= \rho \quad & \nabla \times \mathbf{E}(t) &= -\frac{\partial \mathbf{B}(t)}{\partial t} \\
+        \nabla \cdot \mathbf{B}(t) &= 0 \quad & \nabla \times \mathbf{B}(t) &= \mathbf{J} + \frac{\partial \mathbf{E}(t)}{\partial t}
+    \end{aligned}
+\end{equation}
+The Maxwell equations are being solved by
+\begin{equation}
+    \begin{aligned}
+        \mathbf{E}(t) &= -\nabla \phi(t) - \frac{\partial \mathbf{A}(t)}{\partial t}\\
+        \mathbf{B}(t) &= \nabla \times \mathbf{A}(t)
+    \end{aligned}
+\end{equation}
+For these solutions we introduced the vector potential $\mathbf{A}(t)$ and the scalar potential $\phi(t)$. 
+These are not unique such that different choices can result in the same physical setting. In general
+\begin{equation}
+    \begin{align}
+        \mathbf{A}(t) &\to \mathbf{A}(t) + \nabla \chi(t) \\
+        \phi(t) &\to \phi(t) - \frac{\partial}{\partial t} \chi(t)    
+    \end{align}
+\end{equation}
+also fullfil the Maxwell equations while $\chi(t)$ is an arbitrary smooth function. The arbitrarity of $\chi$ is know as gauge freedom and a direct consequenz from the Maxwell equations.
+Choosing a gauge (i.e a specific $\chi$) is a matter of convenience and can be used to simplify the calculations as presentet in the following.
 
 
 
