@@ -6,6 +6,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern} % personal preference
+\usepackage{fix-cm} % because of lmodern does not work with footnotesize
 \usepackage[hidelinks]{hyperref} % links colourless
 \usepackage{graphicx}
 
@@ -69,18 +70,24 @@
 \newpage
 
 
-\chapter{Conclusion}
+\chapter{Numerical Methods}
 \input{tex-files/chapter3.tex}
+\newpage
+
+
+\chapter{Results and Discussion}
+\input{tex-files/chapter4.tex}
+\newpage
+
+
+\chapter{Conclusion and Outlook}
+\input{tex-files/chapter5.tex}
 \newpage
 
 
 \appendix
 \chapter{Appendix A}
 \input{tex-files/appendixA.tex}
-\newpage
-
-\chapter{Appendix B}
-\input{tex-files/appendixB.tex}
 \newpage
 
 
