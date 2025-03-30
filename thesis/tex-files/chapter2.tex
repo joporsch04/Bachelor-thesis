@@ -1,4 +1,4 @@
-Convention: $\Psi$ for an abstract state, $\psi$ for a wavefunction in position space, $\phi$  for a wavefunction in momentum space.
+Convention: $\Psi$ for an abstract state, $\psi$ for a wavefunction in position space, $\phi$  for a wavefunction in momentum space, $\vec{A}$ for abstract vecotr as element in vector space and $\underline{\vec{x}}$ for vector in coordinate space, $\ket{\Psi}$ an abstract element in Hilbert space, $\ket{\Psi_0}$ the ground state of Hydrogen and $\ket{\Psi_n}$ the Eigenstates of the field free Hamiltonian.
 This chapter mainly follows \cite{Ivanov20012005} 
 
 
@@ -21,7 +21,7 @@ The formal solution depends on the time dependence of the hamiltonian and the ph
 In the following we assume \footnote{How? Later. No physical setting bzw no approximations yet. Its better to juistify it later but have a working formalism instead of the other way around.} (IMPORTANT) that $[\hat{H}(t), \hat{H}(t')] = 0$ so we assume some sort of quasi static approximation to the Hamiltons time evolution. 
 The solution is then given by 
 \begin{equation}
-    \ket{\Psi(t)} = e^{-\frac{i}{\hbar} \int_{t_0}^{t} \hat{H}(t') dt'} \ket{\Psi(t=0)}
+    \ket{\Psi(t)} = e^{-\frac{i}{\hbar} \int_{t_0}^{t} \hat{H}(t') dt'} \ket{\Psi(t=0)} = \hat{\U}(t)\ket{\Psi(t=0)}
 \end{equation}
 Now its time so establish a physical setting. We have Hydrogen Atom with nucleus and electron described by time indepentent Hamilton $\hat{H}_0$. 
 The external laser Field is descirbed by an time dependent part $\hat{V}(t)$. To describe the interaction of the atom with the laser field we use in the following the dipole approximation.
@@ -35,41 +35,67 @@ The external laser Field is descirbed by an time dependent part $\hat{V}(t)$. To
 A light wave is defined by the Maxwell equations
 \begin{equation*}
     \begin{aligned}
-        \nabla \cdot \mathbf{E}(t) &= \rho \quad & \nabla \times \mathbf{E}(t) &= -\frac{\partial \mathbf{B}(t)}{\partial t} \\
-        \nabla \cdot \mathbf{B}(t) &= 0 \quad & \nabla \times \mathbf{B}(t) &= \mathbf{J} + \frac{\partial \mathbf{E}(t)}{\partial t}
+        \nabla \cdot \vec{E} &= \rho \quad & \nabla \times \vec{E} &= -\frac{\partial \vec{B}}{\partial t} \\
+        \nabla \cdot \vec{B} &= 0 \quad & \nabla \times \vec{B} &= \vec{J} + \frac{\partial \vec{E}}{\partial t}
     \end{aligned}
 \end{equation*}
 The Maxwell equations are being solved by
-\begin{equation*}
+\begin{equation}
     \begin{aligned}
-        \mathbf{E}(t) &= -\nabla \varphi(t) - \frac{\partial \mathbf{A}(t)}{\partial t}\\
-        \mathbf{B}(t) &= \nabla \times \mathbf{A}(t)
+        \vec{E} &= -\nabla \varphi - \frac{\partial \vec{A}}{\partial t}\\ \label{eq:potentials}
+        \vec{B} &= \nabla \times \vec{A}
     \end{aligned}
-\end{equation*}
-For these solutions we introduced the vector potential $\mathbf{A}(t)$ and the scalar potential $\varphi(t)$. 
+\end{equation}
+For these solutions we introduced the vector potential $\vec{A}(\uvec{x}, t)$ and the scalar potential $\varphi(t)$. 
 These are not unique such that different choices can result in the same physical setting. In general
 \begin{equation*}
     \begin{aligned}
-        \mathbf{A}(t) &\to \mathbf{A}(t) + \nabla \chi \\
-        \varphi(t) &\to \varphi(t) - \frac{\partial}{\partial t} \chi    
+        \vec{A} &\to \vec{A} + \nabla \chi \\
+        \varphi &\to \varphi - \frac{\partial \chi }{\partial t}   
     \end{aligned}
 \end{equation*}
-also fulfill the Maxwell equations while $\chi$ is an arbitrary smooth function. The arbitrariness of $\chi$ is known as gauge freedom and a direct consequence of the Maxwell equations.
+also fulfill the Maxwell equations while $\chi(t)$ is an arbitrary smooth scalar function. The arbitrariness of $\chi$ is known as gauge freedom and a direct consequence of the Maxwell equations.
 Choosing a gauge (i.e., a specific $\chi$) is a matter of convenience and can be used to simplify the calculations as presented in the following.
 
 
 
 
 \subsection{Dipole Approximation}
-Very important approximation. Making it implies that
-\begin{equation}
-    \mathbf{A}(\mathbf{x}, t) \approx \mathbf{A}(t) \quad \text{and} \quad \mathbf{B} = \nabla \times \mathbf{A} \approx 0
-\end{equation}
-Therefore we can rewirte the time dependent part $\hat{V}$ of our Hamiltonian as
-\begin{equation}
-    \hat{V}(t) = -\hat{\mathbf{d}} \cdot \mathbf{E}(t)
-\end{equation}
-where $\hat{\mathbf{d}}$ is the dipole operator and $\mathbf{E}(t)$ is the electric field.
+Very important approximation. 
+The dipole approximation is valid when the wavelength of the optical field is much larger than both the size of the relevant bound electron states and the maximum displacement of a free electron during the light-matter interaction. 
+Additionally, it assumes that the magnetic field of the light has a negligible effect on the electron's motion, meaning the velocities of the charged particles must be nonrelativistic. \\
+To see where exaclty one makes this assumption, first we rewrite the Maxwell equations in the dependence of the vector potential and the scalar potential as defined in \eqref{eq:potentials}. 
+This will result in two coupled differential equations, what does not bring us any further. 
+However we are interestet in making a simple expression for the vector potential $\vec{A}$.
+We achieve this by choosing a certain gauge, the so called Lorentz gauge
+\begin{equation*}
+    \partial_{\mu} \vec{A}^{\mu} = 0 \quad \text{or} \quad \nabla \cdot \vec{A} + \frac{\partial \varphi}{\partial t} = 0
+\end{equation*}
+This can be achieved by solving the inhomogenous wave equation for $\chi$ that comes up when doing this calculation explicitly and is possible when $\vec{A}$ and $\varphi$ are know.
+Now the Maxwell equations are uncoupled and can be written as
+\begin{equation*}
+    \begin{aligned}
+        \nabla^2 \varphi - \frac{\partial^2 \varphi}{\partial t^2} &= \rho \\
+        \nabla^2 \vec{A} - \frac{\partial^2 \vec{A}}{\partial t^2} &= \vec{J} 
+    \end{aligned}
+\end{equation*}
+We are mainly interested in the second equation. The equation is known as the wave equation therefore $\vec{A}$ describes plane waves
+\begin{equation*}
+    \vec{A}(\uvec{x}, t) = \vec{A}_0 \e^{i (\uvec{k} \cdot \uvec{x} - \omega t)}
+\end{equation*}
+The dipole approximation is mathemaically speaking just the leading term in Taylor expansion of $\e^{i\uvec{k} \cdot \uvec{x}}$. The vector potential is therefore independent of the spatial coordinates and can be written as
+\begin{equation*}
+    \vec{A}(\uvec{x}, t) \approx \vec{A}_0 \e^{- i \omega t} = \vec{A}(t)
+\end{equation*}
+In other words
+\begin{equation*}
+    \vec{B} = \nabla \times \vec{A} \approx 0
+\end{equation*}
+Therefore we can rewirte the time dependent part $\hat{V}$ of our Hamiltonian (HOW??) as
+\begin{equation*}
+    \hat{V}(t) = -\hat{\vec{d}} \cdot \vec{E}(t)
+\end{equation*}
+where $\hat{\vec{d}}$ is the dipole operator and $\vec{E}(t)$ is the electric field.
 
 
 
@@ -97,7 +123,7 @@ as can be checked by inserting the solution into the Schrödinger equation using
 Derivation of 
 
 \begin{equation}
-    \lim_{t \to \infty} \ket{\Psi(t)}  = -i \int d^3 p\, \ket{\mathbf{p}} \int_{-\infty}^{\infty} dt'\, e^{-\frac{i}{2}\int_{t'}^{\infty} [\mathbf{p}+\mathbf{A}(t')]^2 \, dt'} e^{i I_\mathrm{p} t'} \langle \mathbf{p} + \mathbf{A}(t') | \hat{\mathbf{d}} \cdot \mathbf{E}(t') | \Psi_0 \rangle
+    \lim_{t \to \infty} \ket{\Psi(t)}  = -i \int d^3 p\, \ket{\vec{p}} \int_{-\infty}^{\infty} dt'\, e^{-\frac{i}{2}\int_{t'}^{\infty} [\vec{p}+\vec{A}(t')]^2 \, dt'} e^{i I_\mathrm{p} t'} \langle \vec{p} + \vec{A}(t') | \hat{\vec{d}} \cdot \vec{E}(t') | \Psi_0 \rangle
 \end{equation}
 
 
