@@ -4,7 +4,7 @@
 Johannes Porsch (Jo.Porsch@campus.lmu.de, joporsch04@gmail.com)
 
 ## Abstract
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+Multiphoton ionization of atoms in strong laser fields is a fundamental process in attosecond physics. In this work, we extend the strong-field approximation (SFA) by incorporating the influence of excited atomic states on ionization rates. Standard SFA formulations neglect these excited states, assuming that the laser field has no effect on the atom before ionization. However, in intense few-cycle laser pulses, the Stark shift and transient population of excited states can significantly modify ionization dynamics. We numerically solve the time-dependent Schrödinger equation (TDSE) using the tRecX code to extract time-dependent probability amplitudes for hydrogen’s ground and excited states. These amplitudes are then integrated into the SFA formalism to evaluate their impact on ionization rates. 
 
 ## Key Publications
 - [Direct sampling of a light wave in air](https://doi.org/10.1364/OPTICA.5.000402)

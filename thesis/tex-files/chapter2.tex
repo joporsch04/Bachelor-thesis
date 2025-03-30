@@ -1,22 +1,14 @@
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-
-\begin{equation}
-    \partial_t u = \mathcal{H}(t)  \lambda 
-\end{equation}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.5\textwidth]{figures/plot.pdf}
-    \caption{Sine function}
-    \label{fig:sinus}
-\end{figure}
+Convention: $\Psi$ for an abstract state, $\psi$ for a wavefunction in position space, $\phi$  for a wavefunction in momentum space.
+This chapter mainly follows \cite{Ivanov20012005} 
 
 
 
 %%%%%%%%%%%%%%%%%%%%%
-\newpage
 \section{Basic Formalism}
-\subsection{schrödinger equation}
+Our goal is to come up with a expression were we can 
+
+
+\subsection{Schrödinger Equation}
 
 Basic Definitions of schröfinger qe, light dyson series, and strong field s matrix
 
@@ -50,19 +42,19 @@ A light wave is defined by the Maxwell equations
 The Maxwell equations are being solved by
 \begin{equation*}
     \begin{aligned}
-        \mathbf{E}(t) &= -\nabla \phi(t) - \frac{\partial \mathbf{A}(t)}{\partial t}\\
+        \mathbf{E}(t) &= -\nabla \varphi(t) - \frac{\partial \mathbf{A}(t)}{\partial t}\\
         \mathbf{B}(t) &= \nabla \times \mathbf{A}(t)
     \end{aligned}
 \end{equation*}
-For these solutions we introduced the vector potential $\mathbf{A}(t)$ and the scalar potential $\phi(t)$. 
+For these solutions we introduced the vector potential $\mathbf{A}(t)$ and the scalar potential $\varphi(t)$. 
 These are not unique such that different choices can result in the same physical setting. In general
 \begin{equation*}
     \begin{aligned}
-        \mathbf{A}(t) &\to \mathbf{A}(t) + \nabla \chi(t) \\
-        \phi(t) &\to \phi(t) - \frac{\partial}{\partial t} \chi(t)    
+        \mathbf{A}(t) &\to \mathbf{A}(t) + \nabla \chi \\
+        \varphi(t) &\to \varphi(t) - \frac{\partial}{\partial t} \chi    
     \end{aligned}
 \end{equation*}
-also fulfill the Maxwell equations while $\chi(t)$ is an arbitrary smooth function. The arbitrariness of $\chi$ is known as gauge freedom and a direct consequence of the Maxwell equations.
+also fulfill the Maxwell equations while $\chi$ is an arbitrary smooth function. The arbitrariness of $\chi$ is known as gauge freedom and a direct consequence of the Maxwell equations.
 Choosing a gauge (i.e., a specific $\chi$) is a matter of convenience and can be used to simplify the calculations as presented in the following.
 
 
@@ -90,8 +82,10 @@ where $\hat{\mathbf{d}}$ is the dipole operator and $\mathbf{E}(t)$ is the elect
 For making the strong field approximation we first have to obtain a poitn where is its good to use. 
 When we treat $\hat{V}(t)$ as the interaction term, we can write an exakt solution to \eqref{eq:schroedinger}
 \begin{equation}
-    \ket{\Psi(t)} = e^{-\frac{i}{\hbar} \int_{t_0}^{t} \hat{H}(t') dt'} \ket{\Psi(t=0)} + \int_{t_0}^{t} dt' e^{-\frac{i}{\hbar} \int_{t'}^{t} \hat{H}(t'') dt''} \hat{V}(t') e^{-\frac{i}{\hbar} \int_{t_0}^{t'} \hat{H}(t'') dt''} \ket{\Psi(t=0)}
+    \ket{\Psi(t)} = -i \int_{t_0}^{t} dt' e^{-\frac{i}{\hbar} \int_{t'}^{t} \hat{H}(t'') dt''} \hat{V}(t') e^{-\frac{i}{\hbar} \int_{t_0}^{t'} \hat{H}(t'') dt''} \ket{\Psi(t=0)} + e^{-\frac{i}{\hbar} \int_{t_0}^{t} \hat{H}(t') dt'} \ket{\Psi(t=0)}
 \end{equation}
+as can be checked by inserting the solution into the Schrödinger equation using the parameter Integral trick.
+
 
 
 
