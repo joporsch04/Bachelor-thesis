@@ -1,10 +1,11 @@
 #ifndef PROJECTIONONEIGENSTATE_H // prevents multiple inclusions
 #define PROJECTIONONEIGENSTATE_H 
 
-#include "projectiononEigenstate.h"
 #include "operatorTree.h"
 #include "eigenSolver.h"
 #include "timePropagatorOutput.h"
+#include "projectionSingle.h"
+#include "projectionEigenstate.h"
 
 class ProjectionOnEigenstate : public ProjectionOperator {
 public:
@@ -24,9 +25,22 @@ public:
         operatorTree->add(std::make_shared<ProjectionOnEigenstate>(*this));
     }
 
-    // i need a method that "makes" the projection operator with the given eigensattes and returns it
 
+
+    // i need a method that "makes" the projection operator with the given eigenstates and returns it
+
+    std::shared_ptr<OperatorTree> createProjectionOperator() const {
+        auto projectionTree = std::make_shared<OperatorTree>("ProjectionOperator", idx(), idx());
     
+        for (const auto& eigenvector : _eigenvectors) {
+            // Add each eigenvector as a projection term
+            projectionTree->add(std::make_shared<ProjectionSingle>(eigenvector, idx(), idx()));
+        }
+    
+        return projectionTree;
+    }
+
+
 
 private:
     const OperatorAbstract* _hamiltonian;
