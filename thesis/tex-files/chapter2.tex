@@ -1,11 +1,16 @@
-Convention: $\Psi$ for an abstract state, $\psi$ for a wavefunction in position space, 
-$\phi$  for a wavefunction in momentum space, 
-$\vec{A}$ for abstract vecotr as element in vector space, 
-$\underline{\vec{x}}$ for vector in coordinate space, 
-$\ket{\Psi}$ an abstract element in Hilbert space, 
-$\ket{\Phi}$ for the abstract Eigenstates of the whole Hamiltonian, 
-$\ket{\Phi_0}$ for the ground state of the field free Hamiltonian $\hat{H}_0$, 
-This chapter mainly follows \cite{Ivanov20012005} 
+Convention: \\
+$\Psi$ wavefunction for the whole system  \\
+$\psi(\uvec{x})$ for a wavefunction in position space without choosing explicit coordinates, \\
+$\psi(\uvec{p})$  for a wavefunction in momentum space, \\
+$\vec{A}$ for abstract vector as element in vector space, \\
+$\uvec{x}$ for vector in $\R^n$ \\
+$\ket{\Psi}$ an abstract element in Hilbert space $\Hc$, \\
+$\ket{\Phi}$ for the abstract Eigenstates of the whole Hamiltonian, \\
+$Y_{l, m}(\theta, \phi) = \braket{\theta, \phi | l, m}$ definition of spherical harmonics, \\
+$\psi_{n, l, m}(r, \theta, \phi)$ for the wavefunction of hydrogen in spherical coordinates, with $\uvec{x}=(r, \theta, \phi)$ \\
+
+
+This chapter mainly follows \cite{Ivanov20012005} with some modifications.
 
 
 
@@ -111,7 +116,7 @@ where $\hat{\vec{d}}$ is the dipole operator and $\vec{E}(t)$ is the electric fi
 \section{Strong Field Approximation}
 %clear defintition of the strong field approximation, and the assumptions that are made.
 
-For making the strong field approximation we first have to obtain a poitn where is its good to use. 
+For making the strong field approximation we first have to obtain a point where is its good to use. 
 When we treat $\hat{V}(t)$ as the interaction term, we can write an exakt solution to \eqref{eq:schroedinger}
 \begin{equation}
     \ket{\Psi(t)} = -i \int_{t_0}^{t} dt' e^{-\frac{i}{\hbar} \int_{t'}^{t} \hat{H}(t'') dt''} \hat{V}(t') e^{-\frac{i}{\hbar} \int_{t_0}^{t'} \hat{H}(t'') dt''} \ket{\Psi(t=0)} + e^{-\frac{i}{\hbar} \int_{t_0}^{t} \hat{H}(t') dt'} \ket{\Psi(t=0)}
