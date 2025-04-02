@@ -102,6 +102,22 @@ In other words
 \begin{equation*}
     \vec{B} = \nabla \times \vec{A} \approx 0
 \end{equation*}
+It is also helpfull to look at the semi classical Hamilton function of our system [Jackson]:
+\begin{equation*}
+    \Hs(\uvec{x}, t) = \frac{1}{2m}(\vec{p} + e \vec{A}(\uvec{x}, t))^2 - e \varphi(\uvec{x}, t) + V(x)
+\end{equation*}
+Under the dipole Approximation this can be simplified to:
+\begin{equation*}
+    \Hs(\uvec{x}, t) = \frac{\vec{p}^2}{2m} + \frac{e}{m}\vec{p}\cdot \vec{A}(t) + \frac{e^2}{2m}\vec{A}^2(t) - e \varphi(\uvec{x}, t) + V(x)
+\end{equation*}
+Now we perform another gauge transformation to the so called length gauge via 
+\begin{equation*}
+    \chi(\uvec{x}) = -\vec{A}(t)\cdot \uvec{x}
+\end{equation*}
+Our Hamilton then reads:
+\begin{equation*}
+    \Hs(\uvec{x}, t) = \frac{\vec{p}^2}{2m} - e \varphi(\uvec{x}, t) + V(x)
+\end{equation*}
 Therefore we can rewirte the time dependent part $\hat{V}$ of our Hamiltonian (HOW??) as
 \begin{equation*}
     \hat{V}(t) = -\hat{\vec{d}} \cdot \vec{E}(t)
@@ -119,9 +135,12 @@ where $\hat{\vec{d}}$ is the dipole operator and $\vec{E}(t)$ is the electric fi
 For making the strong field approximation we first have to obtain a point where is its good to use. 
 When we treat $\hat{V}(t)$ as the interaction term, we can write an exakt solution to \eqref{eq:schroedinger}
 \begin{equation}
-    \ket{\Psi(t)} = -i \int_{t_0}^{t} dt' e^{-\frac{i}{\hbar} \int_{t'}^{t} \hat{H}(t'') dt''} \hat{V}(t') e^{-\frac{i}{\hbar} \int_{t_0}^{t'} \hat{H}(t'') dt''} \ket{\Psi(t=0)} + e^{-\frac{i}{\hbar} \int_{t_0}^{t} \hat{H}(t') dt'} \ket{\Psi(t=0)}
+    \ket{\Psi(t)} = -\frac{i}{\hbar} \int_{t_0}^{t} dt' e^{-\frac{i}{\hbar} \int_{t'}^{t} \hat{H}(t'') dt''} \hat{V}(t') e^{-\frac{i}{\hbar} \int_{t_0}^{t'} \hat{H}(t'') dt''} \ket{\Psi(t=0)} + e^{-\frac{i}{\hbar} \int_{t_0}^{t} \hat{H}(t') dt'} \ket{\Psi(t=0)} \label{eq:schroedingerSolPart}
 \end{equation}
-as can be checked by inserting the solution into the Schrödinger equation using the parameter Integral trick.
+as can be checked by inserting the solution into the Schrödinger equation using the parameter Integral trick. 
+To make this expression more appealing we can project it into an eigenstate in the continuum ie a electron state characterized by its velocity.
+As can be seen in the following, the last term in \eqref{eq:schroedingerSolPart} is now gone.
+
 
 
 
@@ -136,6 +155,9 @@ Derivation of
 \begin{equation}
     \lim_{t \to \infty} \ket{\Psi(t)}  = -i \int d^3 p\, \ket{\vec{p}} \int_{-\infty}^{\infty} dt'\, e^{-\frac{i}{2}\int_{t'}^{\infty} [\vec{p}+\vec{A}(t')]^2 \, dt'} e^{i I_\mathrm{p} t'} \langle \vec{p} + \vec{A}(t') | \hat{\vec{d}} \cdot \vec{E}(t') | \Psi_0 \rangle
 \end{equation}
+
+
+
 
 
 

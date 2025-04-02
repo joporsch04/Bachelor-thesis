@@ -21,23 +21,18 @@ public:
         _eigenvectors = solver.rightVectors();
     }
 
-    void addToOperatorTree(std::shared_ptr<OperatorTree>& operatorTree) const {
-        operatorTree->add(std::make_shared<ProjectionOnEigenstate>(*this));
-    }
 
+    // i need a method that "makes" the projection operators with the given eigenstates and returns it
 
+    std::vector<std::shared_ptr<ProjectionSingle>> createProjectionOperators() const {
+        std::vector<std::shared_ptr<ProjectionSingle>> projectionOperators;
 
-    // i need a method that "makes" the projection operator with the given eigenstates and returns it
-
-    std::shared_ptr<OperatorTree> createProjectionOperator() const {
-        auto projectionTree = std::make_shared<OperatorTree>("ProjectionOperator", idx(), idx());
-    
-        for (const auto& eigenvector : _eigenvectors) {
-            // Add each eigenvector as a projection term
-            projectionTree->add(std::make_shared<ProjectionSingle>(eigenvector, idx(), idx()));
+        for (size_t i = 0; i < _eigenvectors.size(); ++i) {
+            auto projectionSingle = std::make_shared<ProjectionSingle>(_eigenvectors[i], idx(), idx());
+            projectionOperators.push_back(projectionSingle);
         }
-    
-        return projectionTree;
+
+        return projectionOperators;
     }
 
 
@@ -52,12 +47,15 @@ private:
 
 
 
-// next: add operator to operator tree and to this function:
+// next: add operator to this function:
+//
 // void TimePropagatorOutput::addExpec(OperatorAbstract* Op){
 //     _expecOp.push_back(Op);
 //     openExpec(ReadInput::main.output()+"expec");
 // }
+//
 // i think it is called in run_tRecX.cpp right here:
+//
 // if (propOper==0)
 // {
 //     // no actual propagation, only integration of source
