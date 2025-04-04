@@ -153,11 +153,24 @@ as can be checked by inserting the solution into the Schrödinger equation using
 To make this expression more appealing we can project it into an eigenstate in the continuum ie a electron state characterized by its velocity.
 As can be seen in the following, the last term in \eqref{eq:schroedingerSolPart} is now gone because there can be no overlap between a continuum state and the initial state.
 \begin{equation}
-    \ket{\Psi(t)} = -\frac{i}{\hbar} \int_{t_0}^{t} \dd t' \bra{\Xi(t=t_c)} e^{-\frac{i}{\hbar} \int_{t'}^{t} \hat{\Hs}(t'') \dd t''} \hat{V}(t') e^{-\frac{i}{\hbar} \overbrace{\int_{t_0}^{t'} \hat{\Hs_0}(t'') \dd t''}^{\mathclap{\text{Esou}}}} \ket{\Psi(0)} \label{eq:schroedingerSolSMatrix}
+    \ket{\Psi(t)} = -\frac{i}{\hbar} \int_{t_0}^{t} \dd t' \bra{\Xi(t=t_c)} e^{-\frac{i}{\hbar} \int_{t'}^{t} \hat{\Hs}(t'') \dd t''}\hat{V}(t') e^{-\frac{i}{\hbar} \int_{t_0}^{t'} \hat{\Hs_0} \dd t''} \ket{\Psi(0)}
 \end{equation}
 With $\ket{\Xi(t_c)}$ being a continuum state with momentum $p$ at time $t_c$ with $t_c$ being sufficiently big enough for the electron to be in the continuum ($t_c >> t'$). 
-Equation \eqref{eq:schroedingerSolSMatrix} is known as the strong field S-matrix amplitude. Note that $\ket{\Psi(0)}$ is not the ground state of the Hydrogen atom, just the initial state of the system at $t=0$. 
+Equation \eqref{eq:schroedingerSolPart} is known as the strong field S-matrix amplitude. 
+It is best to read this equation from right to left, starting with the initial state of our system and the field free time propagation of the system. 
+At moment $t'$ the Laser starts to interact with the system and it transisions into a virtual state instantaniously. 
+Note that $\ket{\Psi(0)}$ is not the ground state of the Hydrogen atom, just the initial state of the system at $t=0$.
+From time $t'$ to the observed time $t$ the system is described by the full Hamiltonian including both Laser Field and the binding potential.
 Now we have a good place to start with the strong field approximation. 
+In principle, SFA is the neglecting of the Coulomb potential once the electron is in the continuum because the Laser Field is now the dominant force acting on the electron.
+We can therefore write the term with the full Hamiltonian as
+\begin{equation*}
+    \begin{aligned}
+        \hat{\Hs}(t) &= \hat{\Hs}_0 + \hat{V}_I(t) = \hat{\Hs}_p + \hat{V}_C + \hat{V}_I(t) \\
+        \hat{\Hs}_F(t) &= \hat{\Hs}(t) - \hat{V}_C \\
+        e^{-\frac{i}{\hbar} \int_{t'}^{t} \hat{\Hs}(t'') \dd t''} &\approx e^{-\frac{i}{\hbar} \int_{t'}^{t} \hat{\Hs}_F(t'') \dd t''}
+    \end{aligned}
+\end{equation*}
 \begin{equation}
     \lim_{t \to \infty} \ket{\Psi(t)}  = -i \int d^3 p\, \ket{\vec{p}} \int_{-\infty}^{\infty} dt'\, e^{-\frac{i}{2}\int_{t'}^{\infty} [\vec{p}+\vec{A}(t')]^2 \, dt'} e^{i I_\mathrm{p} t'} \langle \vec{p} + \vec{A}(t') | \hat{\vec{d}} \cdot \vec{E}(t') | \Psi_0 \rangle
 \end{equation}
