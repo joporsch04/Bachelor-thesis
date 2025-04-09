@@ -1,71 +1,70 @@
-#ifndef PROJECTIONONEIGENSTATE_H // prevents multiple inclusions
-#define PROJECTIONONEIGENSTATE_H 
-
-#include "operatorTree.h"
-#include "eigenSolver.h"
-#include "timePropagatorOutput.h"
-#include "projectionSingle.h"
-#include "projectionEigenstate.h"
-
-class ProjectionOnEigenstate : public ProjectionOperator {
-public:
-    ProjectionOnEigenstate(const OperatorAbstract* hamiltonian, const Index* idx, unsigned int numEigenstates, double energyCutoff)
-        : ProjectionOperator({}, idx), _hamiltonian(hamiltonian), _numEigenstates(numEigenstates), _energyCutoff(energyCutoff) {
-        computeEigenstates();
-    }
-
-    void computeEigenstates() {
-        EigenSolver solver(-_energyCutoff, _energyCutoff, _numEigenstates);
-        solver.compute(_hamiltonian);
-
-        _eigenvectors = solver.rightVectors();
-    }
-
-
-    // i need a method that "makes" the projection operators with the given eigenstates and returns it
-
-    std::vector<std::shared_ptr<ProjectionSingle>> createProjectionOperators() const {
-        std::vector<std::shared_ptr<ProjectionSingle>> projectionOperators;
-
-        for (size_t i = 0; i < _eigenvectors.size(); ++i) {
-            auto projectionSingle = std::make_shared<ProjectionSingle>(_eigenvectors[i], idx(), idx());
-            projectionOperators.push_back(projectionSingle);
+        // std::vector<Coefficients*> rightVectorsVec;
+        // for(auto k: states){  
+        //     Coefficients* rightVectors_init(slv.rightVectors()[k]);
+        //     rightVectors_init->setToConstant(1.);
+        //     rightVectorsVec.push_back(rightVectors_init);
+        // }
+        // double norm = std::pow(rightVectors->idx()->overlap()->matrixElement(*rightVectors, *rightVectors).real(), 2)+std::pow(rightVectors->idx()->overlap()->matrixElement(*rightVectors, *rightVectors).imag(), 2);
+        // std::cout << "Overlap norm of const vec " << k << ": " << norm << std::endl;
+        // dualVectors->scale(1.0 / norm);
+        // double norm_2 = std::pow(rightVectors->idx()->overlap()->matrixElement(*rightVectors, *rightVectors).real(), 2)+std::pow(rightVectors->idx()->overlap()->matrixElement(*rightVectors, *rightVectors).imag(), 2);
+        // std::cout << "Overlap norm_2 of const vec " << k << ": " << norm_2 << std::endl;
+        // std::cout << "norm after normalization: " << rightVectors->pNorm(2) << std::endl;
+        for (auto* eigenVec : eigenVecs) {
+            wfeig.coefs->idx()->overlap()->apply(1., *wfeig.coefs, 0., *eigenVec);
         }
 
-        return projectionOperators;
-    }
 
 
 
-private:
-    const OperatorAbstract* _hamiltonian;
-    unsigned int _numEigenstates;
-    double _energyCutoff;
-};
+                    // std::ifstream evecFile("/home/user/BachelorThesis/trecxtiptoe/tiptoe/0029/evec", std::ios::binary);
+            // vector<Coefficients*> eigenVecs;
+            // ifstream vecFile(ReadInput::main.output() + "evec", ios::binary);
 
-#endif // PROJECTIONONEIGENSTATE_H
+            // std::ifstream vecFile("/home/user/BachelorThesis/trecxtiptoe/tiptoe_short/0062/evec", std::ios::binary);
+        
+            // std::vector<Coefficients*> eigen_Vecs_vector;
+            // Coefficients* coef = new Coefficients(runD->idx()); // Use the appropriate Index object
+            // if (!coef->read(vecFile, true)) { // Read from the binary file
+            //     delete coef; // Clean up if reading fails
+            //     break;
+            // }
+            // eigen_Vecs_vector.push_back(coef); // Add the successfully read Coefficients object to the vector
+        
 
 
 
-// next: add operator to this function:
-//
-// void TimePropagatorOutput::addExpec(OperatorAbstract* Op){
-//     _expecOp.push_back(Op);
-//     openExpec(ReadInput::main.output()+"expec");
-// }
-//
-// i think it is called in run_tRecX.cpp right here:
-//
-// if (propOper==0)
-// {
-//     // no actual propagation, only integration of source
+            // if (eigen_Vecs_vector.empty()) {
+            //     std::cout << "No eigenstates found in eigenVecs." << std::endl;
+            // }
+            // std::complex<double> result = 0.0;
+            // for (auto* eigen_Vecs_vector : eigen_Vecs_vector) {
+            //     if (eigen_Vecs_vector == nullptr) {
+            //         std::cout << "Encountered a null pointer in eigenVecs." << std::endl;
+            //         continue;
+            //     }
+        
+            //     std::cout << "Eigenstate: " << eigen_Vecs_vector->idx()->str() << std::endl;
+            //     std::cout << "loop" << std::endl;
+        
+            //     // Compute the overlap
+            //     auto overlap = eigen_Vecs_vector->innerProduct(wf.coefs);
+            //     std::cout << "Overlap with eigenstates: " << overlap.real() << " + " << overlap.imag() << "i" << std::endl;
+            // }
 
-//     // add calculation of overlap
-//     out.sampleExpec(1); // put all into expec file
-//     out.addExpec(new OperatorTree("Overlap",OperatorDefinition::defaultOverlap(runD->idx()),
-//                                   runD->idx(),runD->idx()));
-//     out.checkGrowingNorm(false); // do not warn about norm>1
+            // constant wavefunction for eigenstates
+            // Wavefunction wfeig;
+            // for (auto* eigenVec : eigenVecs) {
+            //     wfeig.coefs->idx()->overlap()->apply(1., *wfeig.coefs, 0., *eigenVec);
+            // }
+            // std::shared_ptr<ProjectSubspace> proIni(new ProjectSubspace(std::vector<Coefficients*>(1, wfeig.coefs), eigenVecs));
+            // out.addExpec(new ProjectSubspaceToDual(proIni));
 
-//     //NOTE: we integrate by Euler, sample "sampl" times across shortest cycle in the spectrum
-//     prop->fixStep(2*math::pi/(sampleForSpectrum*energyScale));
-// } else {
+
+            
+            //eigenVecs = tRecX::ComputeEigenvalues_new(eigenSelect, printOps, eigenVectors, eigenElements, proj, eigenVectorsAscii);
+
+
+            , eigenVectorsAscii;
+    std::vector<Coefficients*> eigenVecs;
+    eigenVectorsAscii = true;
