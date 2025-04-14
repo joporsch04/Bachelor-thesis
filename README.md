@@ -31,6 +31,17 @@ docker run -it trecx
 ```
 If you choose to use a VM, pay attention to the Linux version. In some distributions libatlas-base-dev and libboost-all-dev are not compatible. In any case, the `dockerfile` (Ubuntu 22.04) works fine. 
 
+### Debugging
+```
+cd tRecX
+cmake -DCMAKE BUILD TYPE=Develop .
+make -j6
+gdb
+set args tiptoe.inp
+run
+backtrace
+```
+
 ## Max Planck Institute of Quantum Optics (MPQ)
 For more information about the institute, please visit the official website:
 [MPQ Homepage](https://www.mpq.mpg.de)
