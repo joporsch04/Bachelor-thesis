@@ -161,7 +161,7 @@ as can be checked by inserting the solution into the Schrödinger equation using
 To make this expression more appealing we can project it into an eigenstate in the continuum ie a electron state characterized by its velocity.
 As can be seen in the following, the last term in \eqref{eq:schroedingerSolPart} is now gone because there can be no overlap between a continuum state and the initial state.
 \begin{equation}
-    \ket{\Psi(t)} = -i \int_{t_0}^{t} \dd t' \bra{\Xi(t=t_c)} e^{-i \int_{t'}^{t} \hat{\Hs}(t'') \dd t''}\hat{V}_I(t') e^{-i \int_{t_0}^{t'} \hat{\Hs_0} \dd t''} \ket{\Psi(0)}
+    \braket{\Xi(t_c)|\Psi(t)} = -i \int_{t_0}^{t} \dd t' \bra{\Xi(t=t_c)} e^{-i \int_{t'}^{t} \hat{\Hs}(t'') \dd t''}\hat{V}_I(t') e^{-i \int_{t_0}^{t'} \hat{\Hs_0} \dd t''} \ket{\Psi(0)}
 \end{equation}
 With $\ket{\Xi(t_c)}$ being a continuum state with momentum $\uvec{p}$ at time $t_c$ with $t_c$ being sufficiently big enough for the electron to be in the continuum ($t_c >> t'$). 
 Equation \eqref{eq:schroedingerSolPart} is known as the strong field S-matrix amplitude. 
@@ -182,6 +182,7 @@ Now
 \begin{equation}
     \lim_{t \to \infty} \ket{\Psi(t)}  = -i \int d^3 p\, \ket{\vec{p}} \int_{-\infty}^{\infty} dt'\, e^{-\frac{i}{2}\int_{t'}^{\infty} [\vec{p}+\vec{A}(t')]^2 \, dt'} e^{i I_\mathrm{p} t'} \langle \vec{p} + \vec{A}(t') | \hat{\vec{d}} \cdot \vec{E}(t') | \Psi_0 \rangle
 \end{equation}
+This is the equation where most papers start with \cite{Theory_NPS}.
 
 
 
