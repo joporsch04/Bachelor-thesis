@@ -145,7 +145,7 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                 # later i need to replace E_g with c_n(t) \exp\{-i E_n t\} but i need to interpolate the time grid
 
                 # Problem: i dont know how trecx stores the eigenvectors, and therefore i cant just take |n,m,l> 
-                # and weight it with the coefficients from tRecX
+                # and weight it with the coefficients from tRecX 
                 G1_T_p=np.trapz(f_t_1*np.exp(1j*pz*DelA)*np.sin(theta), Theta_grid)#IOF(p_grid,f_t_1,phase_t)
                 # G1_T=IOF(p_grid,G1_T_p*window*p_grid**2,p_grid**2*T)
                 G1_T=np.trapz(G1_T_p*window*p_grid**2*np.exp(1j*p_grid**2*T), p_grid)
