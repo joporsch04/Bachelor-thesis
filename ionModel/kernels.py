@@ -139,13 +139,7 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                 VP_p=VP[tp]-VPt
                 VP_m=VP[tm]-VPt
                 f_t_1= (pz+VP_p)*(pz+VP_m)/(p**2+VP_p**2+2*pz*VP_p+2*E_g)**3/(p**2+VP_m**2+2*pz*VP_m+2*E_g)**3
-                # Apparently it uses canonical momentum
-                # This is the formula used here: \bm{d}_\mathrm{1s, H}=2^{7/2} (2 I_p)^{5/4} \frac{ \bm{p}}{(\bm{p}^2+2I_p)^3}, 
-                # i need to replace |\psi_0> with \sum_n |\Psi_n> but for n>>1 there quite complex
-                # later i need to replace E_g with c_n(t) \exp\{-i E_n t\} but i need to interpolate the time grid
 
-                # Problem: i dont know how trecx stores the eigenvectors, and therefore i cant just take |n,m,l> 
-                # and weight it with the coefficients from tRecX 
                 G1_T_p=np.trapz(f_t_1*np.exp(1j*pz*DelA)*np.sin(theta), Theta_grid)#IOF(p_grid,f_t_1,phase_t)
                 # G1_T=IOF(p_grid,G1_T_p*window*p_grid**2,p_grid**2*T)
                 G1_T=np.trapz(G1_T_p*window*p_grid**2*np.exp(1j*p_grid**2*T), p_grid)
