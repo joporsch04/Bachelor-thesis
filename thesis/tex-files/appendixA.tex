@@ -1,7 +1,7 @@
 \section{Derivation of general transition dipole matrix elements}
-see mathematica notebook\\
 Roadmap: Expand plane wave solution to spherical harmonics and the radial part into bessel functions.\\
 Mathematica can do the rest for you\\
+Important: in atomic units is $E_m=\frac{Z^2}{2n^2}$\\
 Explicitiely for 1s to plane wave as shown here:\\
 Some dipole matrix elements:\\
 First start with transforming the Schroedinger equation into momentum space %https://physics.stackexchange.com/questions/249400/schr%C3%B6dinger-equation-in-momentum-space
@@ -9,6 +9,10 @@ then its interesting to see the form of the fourier ztransform of eigenstate bec
 Note that the prefactor does NOT depend on magentic quantumnumber m.\\
 Spherical harmonic: Instead of $Y_{lm}(\theta, \phi)$ you can write $Y_{lm}(\uvec{r})$ since $\uvec{r}=\hat{e}_x \sin(\theta)\cos(\phi)+\hat{e}_y\sin(\theta)\sin(\phi)+\hat{e}_z\cos(\theta)$\\
 The transition dipole matrix element is given by
+\begin{equation*}
+    % Analytical result for the integral
+    [ \int_0^\infty x^{\mu} e^{-\alpha x} J_\nu(\beta x) dx = \frac{\beta^\nu \Gamma(\mu+\nu+1)}{2^\nu \alpha^{\mu+\nu+1}} , {}_2F_1\left(\frac{\mu+\nu+1}{2}, \frac{\mu+\nu+2}{2}; \nu+1; -\frac{\beta^2}{\alpha^2}\right) ]
+\end{equation*}
 % \begin{equation*}
 %     \vec{d}(\vec{p}) = \braket{\vec{p}|\vec{\hat{d}}|\Psi_{nlm}} = \nabla_{\vec{p}}\Psi_{nlm}(\vec{p})
 % \end{equation*}
