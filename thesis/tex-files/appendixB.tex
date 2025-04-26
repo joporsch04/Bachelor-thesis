@@ -1,11 +1,76 @@
-\section{Derivation of general transition dipole matrix elements}
-Roadmap: Expand plane wave solution to spherical harmonics and the radial part into bessel functions.\\
-Mathematica can do the rest for you\\
-Important: in atomic units is $E_m=\frac{Z^2}{2n^2}$\\
-Explicitiely for 1s to plane wave as shown here:\\
+We want to derive the general transition dipole matrix elements into the continuum for an hydrogen-like atom. The general matrix element in our case is given by:
+\begin{equation*}
+    \uvec{d}(\uvec{p}) = \braket{\Pi|\vec{\hat{d}}|\Psi_{nlm}} = e\braket{p|\vec{\hat{r}}|\Psi_{nlm}}
+\end{equation*}
+With $\ket{p}$ being a plane wave. By partitioning the $\hat{\vec{1}}$, and using the fact that $\vec{\hat{r}} \rightarrow i\nabla_{\uvec{p}}$ %Interesting because by choosing a certain way to display the operator we also choose a natural basis for the representation of the operator. Therefore I write \nabla_{\uvec{p}} instead of \nabla_{\vec{p}}.
+in momentum representation we find a generel formula for the transition:
+\begin{equation*}
+    \uvec{d}(\uvec{p}) = ie\nabla_{\uvec{p}}\int \dd^3\uvec{x}\,\psi_{nlm}(\uvec{x}) e^{-i\uvec{p}\cdot\uvec{x}}
+\end{equation*}
+In principle, this integral or more precise the Fouriertransformation of the wavefunction is all we need to do.
+Because of the structure of $\psi_{nlm}$ we can expect a result simular to (eqref psi=RY).
+A posteriori we will see that:
+\begin{equation*}
+    \F\{\psi_{nlm}(\uvec{x})\} = \phi_{nlm}(\uvec{p}) = F_{nl}(p)Y_{lm}(\theta_p, \phi_p)
+\end{equation*}
+With $F_{nl}(p)$ being the Fouriertransform of the radial part of the wavefunction and $Y_{lm}(\theta_p, \phi_p)$ being the spherical harmonics in momentum space similar to the hydrogen atom in position space.
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%
+\section{Derivation}
+We start with the so called plane wave expansion \cite{Jackson:1998nia} of the exponential part of the integral:
+\begin{equation*}
+    e^{i\uvec{p}\cdot\uvec{x}} = \sum_{l'=0}^\infty (2l'+1)i^{l'} j_{l'}(pr) P_{l'}(\uvec{p}\cdot\uvec{x}) = 4\pi\sum_{l'=0}^\infty \sum_{m'=-l'}^{l'} i^{l'} j_{l'}(pr) Y_{l'm'}(\theta_p, \phi_p) Y_{l'm'}^*(\theta_x, \phi_x)
+\end{equation*}
+With $j_l(pr)$ being the spherical bessel functions. At first it looks messy but we can use the orthogonality of the spherical harmonics we can reduce the integral to:
+\begin{equation*}
+    \phi_{nlm}(\uvec{p}) = 4\pi \sum_{m=-l}^{l}Y_{lm}(\theta_p,\phi_p)i^l\underbrace{\int_{0}^{\infty}\dd r\,r^2j_l(pr)R_{nl}(r)}_{\tilde{R}_{nl}(p)}
+\end{equation*}
+This is the structure we were hoping for. Lets focus on the radial part $\tilde{R}_{nl}(p)$ of the integral.
+The term $R_{nl}(r)$ represents the radial function of the hydrogen atom in position space and is independent of the magnetic bumber $m$. 
+An exponential term dependent of $r$, a polynomial term dependent of $r$, the generalized Laguerre polynomials and the normalization constant. 
+It would be convenient to have a closed expression for the generalzied Laguerre polynomials. 
+I choose to represent them as following:
+\begin{equation*}
+    L_n^l(r) = \sum_{\iota=0}^{l} \frac{(-1)^{\iota}}{\iota!}\binom{n+l}{n-\iota}r^{\iota}
+\end{equation*}
+The Laguerre polynomials are therefore only dependent on and exponential term and finitely many polynomial terms. 
+$\tilde{R}_{nl}(p)$ can be expressed (without prefactors and summation over $\iota$) as:
+\begin{equation*}
+    \int_{0}^{\infty}\dd r\,r^{2+l+\iota} e^{-\frac{r}{n}} j_l(pr)
+\end{equation*}
+Before we can solve the Integral using caomputational methods, we need to transform the spherical bessel function into the ordinary ones:
+\begin{equation*}
+    j_l(pr) = \sqrt{\frac{\pi}{2pr}}J_{l+\frac{1}{2}}(pr)
+\end{equation*}
+Now it is a good time to write all the prefactors and summations in one expression and look at the integral as a whole:
+\begin{align*}
+    \phi_{nlm}(\uvec{p}) =\ & \frac{\pi^{3/2}}{\sqrt{2p}}\sqrt{\left(\frac{2}{n}\right)^3\frac{(n-l-1)!}{n(n+1)!}}\\
+    & \times \sum_{m=-l}^{l}\sum_{\iota=0}^{n-l-1}i^l\frac{(-1)^{\iota}}{\iota!}\left(\frac{2}{n}\right)^{l+\iota}\binom{n+l}{n-l-1}\int_{0}^{\infty}\dd r\,r^{l+\iota+\frac{3}{2}}e^{-\frac{r}{n}}J_{l+\frac{1}{2}}(pr) Y_{lm}(\theta_p,\phi_p)
+\end{align*}
+To calculate the remaining Integral, I used mathematica, so I can not give a detailed explanation of that. 
+
+
+
+
+
+
+
+% \phi_{nlm}(\uvec{p}) =\ & \sqrt{2} \left(\frac{1}{n}\right)^{-2 l-3} 
+% \sqrt{\frac{(-l+n-1)!}{n^4 (l+n)!}} \\
+% & \times \sum _{\iota =0}^{-l+n-1} 
+% \frac{(-2)^{\iota } i^l p^l \Gamma (2 l+\iota +3)
+% \binom{l+n}{-l+n-\iota -1} \, 
+% {}_2\tilde{F}_1\left(l+\frac{\iota }{2}+2,\frac{1}{2} (2 l+\iota +3);l+\frac{3}{2};-n^2 p^2\right)}
+% {\iota !} Y_{lm}(\theta_p,\phi_p)
+
+
+
+
 Some dipole matrix elements:\\
 First start with transforming the Schroedinger equation into momentum space %https://physics.stackexchange.com/questions/249400/schr%C3%B6dinger-equation-in-momentum-space
-then its interesting to see the form of the fourier ztransform of eigenstate because same strcuture with spherical harmonics ust in momentum space now.\\
 Note that the prefactor does NOT depend on magentic quantumnumber m.\\
 Spherical harmonic: Instead of $Y_{lm}(\theta, \phi)$ you can write $Y_{lm}(\uvec{r})$ since $\uvec{r}=\hat{e}_x \sin(\theta)\cos(\phi)+\hat{e}_y\sin(\theta)\sin(\phi)+\hat{e}_z\cos(\theta)$\\
 The transition dipole matrix element is given by
@@ -13,6 +78,33 @@ The transition dipole matrix element is given by
     % Analytical result for the integral
     [ \int_0^\infty x^{\mu} e^{-\alpha x} J_\nu(\beta x) dx = \frac{\beta^\nu \Gamma(\mu+\nu+1)}{2^\nu \alpha^{\mu+\nu+1}} , {}_2F_1\left(\frac{\mu+\nu+1}{2}, \frac{\mu+\nu+2}{2}; \nu+1; -\frac{\beta^2}{\alpha^2}\right) ]
 \end{equation*}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 % \begin{equation*}
 %     \vec{d}(\vec{p}) = \braket{\vec{p}|\vec{\hat{d}}|\Psi_{nlm}} = \nabla_{\vec{p}}\Psi_{nlm}(\vec{p})
 % \end{equation*}

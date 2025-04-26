@@ -1,7 +1,7 @@
 Convention: \\
 $\Psi$ wavefunction for the whole system  \\
 $\psi(\uvec{x})$ for a wavefunction in position space without choosing explicit coordinates, \\
-$\psi(\uvec{p})$  for a wavefunction in momentum space, \\
+$\phi(\uvec{p})$  for a wavefunction in momentum space, \\
 $\vec{A}$ for abstract vector as element in vector space, \\
 $\uvec{x}$ for vector in $\R^n$ \\
 $\ket{\Psi}$ an abstract element in Hilbert space $\Hc$, \\
@@ -10,6 +10,7 @@ $Y_{l, m}(\theta, \phi) = \braket{\theta, \phi | l, m}$ definition of spherical 
 $\psi_{n, l, m}(r, \theta, \phi)$ for the wavefunction of hydrogen in spherical coordinates, with $\uvec{x}=(r, \theta, \phi)$ \\
 I use underlined vectors when they are the coordinates and bold vectors when they are abstract elements in a vector space. \\
 The canonical momentum $\uvec{P}$ parametrises the phase space but the kinetic momentum does not so kinetic momentum $\hat{=} \vec{p}$.\\
+The position and momentum operator are in boldface $\hat{\vec{x}}$ because they do not choose any kind of basis not even a representation in which they are displayed.\\
 
 
 This chapter mainly follows \cite{Ivanov20012005} with some modifications.
@@ -130,7 +131,7 @@ Another general assumption one made when working with semi classical Hamiltonian
 This is reasonable approximation because in our case the intensity of the Laser is sufficiently high, so we dont have to worry about that.
 Now we perform another gauge transformation to the so called length gauge via 
 \begin{equation*}
-    \chi = -\vec{A}(t)\cdot \vec{x} %r=(x/3, y/3, z/3)
+    \chi = -\vec{A}(t)\cdot \uvec{x} %r=(x/3, y/3, z/3)
 \end{equation*}
 This gauge sets $\vec{A}$ to zero, and $\varphi$ will have the following form:
 \begin{equation*}
