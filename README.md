@@ -8,7 +8,7 @@ Multiphoton ionization of atoms in strong laser fields is a fundamental process 
 
 ## Key Publications
 - [Anatomy of strong field ionization](https://doi.org/10.1080/0950034042000275360)
-- [Direct sampling of a light wave in air](https://doi.org/10.1364/OPTICA.5.000402)
+- [Theory of Nonlinear Photoconductive Sampling in Atomic Gases](https://doi.org/10.1002/andp.202300322)
 - [An environment for solving schrödinger-like problems](https://gitlab.physik.uni-muenchen.de/AG-Scrinzi/tRecX)
 
 ## Git
