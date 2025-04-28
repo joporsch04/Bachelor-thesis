@@ -264,7 +264,7 @@ def QSRate(field, param_dict):
     return rate
 
 #@njit(parallel=True,fastmath = False, cache=True)
-def analyticalRate(t_grid, laser_field,param_dict):
+def analyticalRate(t_grid, laser_field, param_dict):
     """ return the ionization rate for a define pulse computed with provided parameters 
      
     Args:
