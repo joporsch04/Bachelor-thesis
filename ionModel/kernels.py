@@ -19,6 +19,7 @@ import matplotlib.pyplot as plt
 import json
 # from numba.core import types
 # from numba.typed import Dict
+from matrixElements import dipolElement_vec
 
 
 ########################
@@ -139,6 +140,12 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                 VP_p=VP[tp]-VPt
                 VP_m=VP[tm]-VPt
                 f_t_1= (pz+VP_p)*(pz+VP_m)/(p**2+VP_p**2+2*pz*VP_p+2*E_g)**3/(p**2+VP_m**2+2*pz*VP_m+2*E_g)**3
+
+                pArray = np.linspace(0, 2, 10000)
+                thetaArray = np.linspace(0, np.pi, 10000)
+                phiArray = np.linspace(0, 2*np.pi, 10000)
+
+                dipoleElement = dipolElement_vec(1, 0, 0, pArray, thetaArray, phiArray)
 
                 G1_T_p=np.trapz(f_t_1*np.exp(1j*pz*DelA)*np.sin(theta), Theta_grid)#IOF(p_grid,f_t_1,phase_t)
                 # G1_T=IOF(p_grid,G1_T_p*window*p_grid**2,p_grid**2*T)
