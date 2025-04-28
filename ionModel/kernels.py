@@ -104,7 +104,7 @@ def Kernel_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, nmin
     return f0, phase0
 
 @njit(parallel=True, fastmath=False, cache=True)
-def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, nmin, Ti_ar, p_grid, Theta_grid, window, p, theta):
+def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, nmin, Ti_ar, p_grid, Theta_grid, window, p, theta, excitedStates):
     """ return the kernel(t_grid,T_grid) for a given laser field computed with provided parameters using a jit optimized implementation
     Args:
         tar (np.ndarray): the grid of moment of ionization
@@ -147,7 +147,7 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                 f0[i, j] = EF[tp]*EF[tm]*2**9 *(2*E_g)**2.5/np.pi*G1_T
     return f0, phase0
 
-def Kernel_jit(t_grid, T_grid, laser_field, param_dict, kernel_type="GASFIR"):
+def Kernel_jit(t_grid, T_grid, laser_field, param_dict, kernel_type="GASFIR", excitedStates=0):
     """ return the kernel(t_grid,T_grid) for a given laser field computed with provided parameters using a jit optimized implementation
     Args:
         t_grid (np.ndarray): the grid of moment of ionization   
@@ -196,7 +196,7 @@ def Kernel_jit(t_grid, T_grid, laser_field, param_dict, kernel_type="GASFIR"):
         p_grid, Theta_grid, window = get_momentum_grid(div_p, div_theta, laser_field, Ip=param_dict["E_g"])
         #print(p_grid.size, Theta_grid.size)
         p, theta = meshgrid(p_grid, Theta_grid)
-        f0, phase0 = exact_SFA_jit_helper(t, T, params, EF, EF2, VP, intA, intA2, dT, N, n, nmin, Ti_ar, p_grid, Theta_grid, window, p, theta)
+        f0, phase0 = exact_SFA_jit_helper(t, T, params, EF, EF2, VP, intA, intA2, dT, N, n, nmin, Ti_ar, p_grid, Theta_grid, window, p, theta, excitedStates=excitedStates)
     elif kernel_type=="GASFIR":
         f0, phase0= Kernel_jit_helper(t, T, params, EF, EF2, VP, intA, intA2, dT, N, n, nmin, Ti_ar)
     else:
@@ -204,7 +204,7 @@ def Kernel_jit(t_grid, T_grid, laser_field, param_dict, kernel_type="GASFIR"):
     return f0, phase0
 
 
-def IonRate(t_grid, laser_field, param_dict, dT, kernel_type="GASFIR"):
+def IonRate(t_grid, laser_field, param_dict, dT, kernel_type="GASFIR", excitedStates=0):
     """ return the ionization rate for a define pulse computed with provided parameters 
     Args:
         t_grid (np.ndarray): the grid of moment of ionization   
@@ -220,7 +220,7 @@ def IonRate(t_grid, laser_field, param_dict, dT, kernel_type="GASFIR"):
     t_min, t_max = laser_field.get_time_interval()
     tau_injection=max(abs(t_min), abs(t_max))
     T_grid=np.arange(0, tau_injection+dT, dT, dtype=np.float64)
-    f, phase=Kernel_jit(t_grid, T_grid, laser_field, param_dict, kernel_type=kernel_type)
+    f, phase=Kernel_jit(t_grid, T_grid, laser_field, param_dict, kernel_type=kernel_type, excitedStates=excitedStates)
     rate=2*np.real(IOF(T_grid, f, phase))
     # the factor two is to account for the fact that the kernel 
     # is symmetric in T and we integrate from 0 to inf
@@ -294,7 +294,7 @@ def analyticalProb(laser_field, param_dict, dt=2):
     tmp = analyticalRate(t_grid, laser_field, param_dict)
     return np.double(simpson(tmp, x=t_grid, axis=-1, even='simpson'))
 
-def IonProb(laser_field, param_dict, dt=2., dT=0.25, filterTreshold=0.0, kernel_type="GASFIR", ret_Rate=False):
+def IonProb(laser_field, param_dict, dt=2., dT=0.25, filterTreshold=0.0, kernel_type="GASFIR", ret_Rate=False, excitedStates=0):
     """ return the ionization probability for the defined pulse computed with provided parameters 
     Note: by default this function filters out the t_grid such that |E(t_grid)|>=1% of max(E(t_grid)) 
     Args:
@@ -336,7 +336,7 @@ def IonProb(laser_field, param_dict, dt=2., dT=0.25, filterTreshold=0.0, kernel_
         if zeroCr[0]>0 and zeroCr[-1]<0:
             zeroCr=zeroCr[::-1]
         t_grid=np.arange(np.floor(zeroCr[zeroCr<extr[0]][-1]), np.ceil(zeroCr[zeroCr>extr[-1]][0])+dt, dt, dtype=np.float64)
-    rate=IonRate(t_grid, laser_field, param_dict, dT, kernel_type=kernel_type)
+    rate=IonRate(t_grid, laser_field, param_dict, dT, kernel_type=kernel_type, excitedStates=excitedStates)
     # return 1-np.exp(-np.double(simpson(rate, x=t_grid, axis=-1, even='simpson')))
     if ret_Rate:
         return 1-np.exp(-np.double(simpson(rate, x=t_grid, axis=-1, even='simpson'))), (t_grid, rate)
