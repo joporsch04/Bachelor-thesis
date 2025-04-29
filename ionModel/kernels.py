@@ -11,15 +11,13 @@
 
 from scipy.integrate import simpson
 import numpy as np
-from field_functions import LaserField, find_zero_crossings, find_extrema_positions, create_pulse, get_momentum_grid, meshgrid
-from field_functions import integrate_oscillating_function_numexpr as IOF
-from __init__ import soft_window
+from field_functions import find_zero_crossings, find_extrema_positions, create_pulse, get_momentum_grid, meshgrid
+from field_functions import integrate_oscillating_function_jit as IOF
+from field_functions import integrate_oscillating_function_numexpr as IOF_numexpr
 from numba import njit, typed, types, prange
-import matplotlib.pyplot as plt
 import json
 # from numba.core import types
 # from numba.typed import Dict
-from matrixElements import dipolElement_vec
 
 
 ########################
@@ -35,6 +33,8 @@ def Kernel_f_term(EFp, EFm, term1, term2, Ti, params):
     t4=params['t4']
     tau=params['tau']
     return t0*((1+0j)*EFp*EFm)**t4*(np.pi/(Ti+1j*tau))**(1.5+t3)*tau**(2.5+t3)*(1j/(Ti+1j*tau)-4*t1*term1+4*Ti**2/(Ti+1j*tau)**2*t2*term2)
+    #return t0*EFp*EFm*(np.pi/(Ti+1j*tau))**1.5*tau**2.5*(1j/(Ti+1j*tau)-4*t1*term1+4*Ti**2/(Ti+1j*tau)**2*t2*term2)# *(1j/(T+1j*tau)-4*t1*term1+4*t2*term2)*tau**2.5
+    
 
 @njit(fastmath=False, cache=True)
 def Kernel_phase_term(term1, term2, DelAbar, DelA2bar, E2diff, Ti, params):
@@ -49,7 +49,7 @@ def Kernel_phase_term(term1, term2, DelAbar, DelA2bar, E2diff, Ti, params):
     # 1j*(Ti*(2*E_g+DelA2bar-DelAbar**2) + 3*np.pi/4 + αPol * E2diff/2 ) -  tau*(e1*term1) is UNTOUCHED
     # term2 is zero in QS case so changes there are irrelevant
     
-    return 1j*(Ti*(2*E_g+DelA2bar-DelAbar**2) + (1.5+t3)*np.pi/2 + αPol * E2diff/2 ) -  tau*(e1*term1+e2*term2*Ti/(Ti+1j*tau))
+    return 1j*(Ti*(2*E_g+DelA2bar-DelAbar**2) + (1.5+t3)*np.pi/2  + αPol * E2diff/2 ) -  tau*(e1*term1+e2*term2*Ti/(Ti+1j*tau))
 
 @njit(parallel=True, fastmath=False, cache=True)
 def Kernel_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, nmin, Ti_ar):
@@ -89,23 +89,18 @@ def Kernel_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, nmin
                     term2 = (VP[tp]/2 + VP[tm]/2-DelAbar)**2
                     DelA2bar = (intA2[tp] - intA2[tm])/2/T+VPt**2-2*VPt*DelAbar
                     DelAbar = DelAbar - VPt
-                    # phase0[i, j] =  1j*(T*(2*E_g+DelA2bar-DelAbar**2) + 3*np.pi/4 + αPol * E2diff/2 ) -  tau*(e1*term1+term2*T/(T+1j*tau))
-                    # f0[i, j] = t0*EF[tp]*EF[tm]*(np.pi/(T+1j*tau))**1.5*tau**2.5*(1j/(T+1j*tau)-4*t1*term1+4*T**2/(T+1j*tau)**2*t2*term2)# *(1j/(T+1j*tau)-4*t1*term1+4*t2*term2)*tau**2.5# 
-                    phase0[i, j] = Kernel_phase_term(term1, term2, DelAbar, DelA2bar, E2diff, T, params)
-                    f0[i, j] = Kernel_f_term(EF[tp], EF[tm], term1, term2, T, params)
-                    #
                 else:
-                    t0=params['t0']
-                    t3=params['t3']
-                    t4=params['t4']
-                    f0[i, j] =  t0*((1+0j)*EF[tp]*EF[tm])**t4*(np.pi/1j)**(1.5+t3)
-                    phase0[i, j] = 1j*(np.pi/2)*(1.5+t3)
-                    # f0[i, j] =  Kernel_f_term(EF[tp], EF[tm], 0, 0, T, params)
-                    # phase0[i, j] = Kernel_phase_term(0, 0, 0, 0, 0, T, params)
+                    E2diff=0
+                    term1 = 0
+                    DelAbar = 0
+                    term2 = 0
+                    DelA2bar = 0
+                phase0[i, j] = Kernel_phase_term(term1, term2, DelAbar, DelA2bar, E2diff, T, params)
+                f0[i, j] = Kernel_f_term(EF[tp], EF[tm], term1, term2, T, params)
     return f0, phase0
 
-@njit(parallel=True, fastmath=False, cache=True)
-def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, nmin, Ti_ar, p_grid, Theta_grid, window, p, theta, excitedStates):
+@njit(parallel=True, fastmath=True, cache=False)
+def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, nmin, Ti_ar, p_grid, Theta_grid, window, p, theta):
     """ return the kernel(t_grid,T_grid) for a given laser field computed with provided parameters using a jit optimized implementation
     Args:
         tar (np.ndarray): the grid of moment of ionization
@@ -134,27 +129,22 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
             tp=tj+Ti
             tm=tj-Ti
             if tp>=0 and tp<EF.size and tm>=0 and tm<EF.size:
-                VPt = VP[tj]
+                VPt = 0 # VP[tj]
                 T= Ti*dT
                 DelA = (intA[tp] - intA[tm])-2*VPt*T
                 VP_p=VP[tp]-VPt
                 VP_m=VP[tm]-VPt
                 f_t_1= (pz+VP_p)*(pz+VP_m)/(p**2+VP_p**2+2*pz*VP_p+2*E_g)**3/(p**2+VP_m**2+2*pz*VP_m+2*E_g)**3
-
-                pArray = np.linspace(0, 2, 10000)
-                thetaArray = np.linspace(0, np.pi, 10000)
-                phiArray = np.linspace(0, 2*np.pi, 10000)
-
-                dipoleElement = dipolElement_vec(1, 0, 0, pArray, thetaArray, phiArray)
-
-                G1_T_p=np.trapz(f_t_1*np.exp(1j*pz*DelA)*np.sin(theta), Theta_grid)#IOF(p_grid,f_t_1,phase_t)
-                # G1_T=IOF(p_grid,G1_T_p*window*p_grid**2,p_grid**2*T)
+                G1_T_p=np.trapz(f_t_1*np.exp(1j*pz*DelA)*np.sin(theta), Theta_grid)
                 G1_T=np.trapz(G1_T_p*window*p_grid**2*np.exp(1j*p_grid**2*T), p_grid)
+                # G1_T_p = IOF(p_grid,f_t_1,phase_t)
+                # G1_T=IOF(p_grid,G1_T_p*window*p_grid**2,p_grid**2*T)
+                DelA = DelA + 2 * VPt * T
                 phase0[i, j]  = (intA2[tp] - intA2[tm])/2 +2*E_g*T + T*VPt**2-VPt*DelA
                 f0[i, j] = EF[tp]*EF[tm]*2**9 *(2*E_g)**2.5/np.pi*G1_T
-    return f0, phase0
+    return f0, phase0*1j
 
-def Kernel_jit(t_grid, T_grid, laser_field, param_dict, kernel_type="GASFIR", excitedStates=0):
+def Kernel_jit(t_grid, T_grid, laser_field, param_dict, kernel_type="GASFIR"):
     """ return the kernel(t_grid,T_grid) for a given laser field computed with provided parameters using a jit optimized implementation
     Args:
         t_grid (np.ndarray): the grid of moment of ionization   
@@ -203,15 +193,14 @@ def Kernel_jit(t_grid, T_grid, laser_field, param_dict, kernel_type="GASFIR", ex
         p_grid, Theta_grid, window = get_momentum_grid(div_p, div_theta, laser_field, Ip=param_dict["E_g"])
         #print(p_grid.size, Theta_grid.size)
         p, theta = meshgrid(p_grid, Theta_grid)
-        f0, phase0 = exact_SFA_jit_helper(t, T, params, EF, EF2, VP, intA, intA2, dT, N, n, nmin, Ti_ar, p_grid, Theta_grid, window, p, theta, excitedStates=excitedStates)
+        f0, phase0 = exact_SFA_jit_helper(t, T, params, EF, EF2, VP, intA, intA2, dT, N, n, nmin, Ti_ar, p_grid, Theta_grid, window, p, theta)
     elif kernel_type=="GASFIR":
         f0, phase0= Kernel_jit_helper(t, T, params, EF, EF2, VP, intA, intA2, dT, N, n, nmin, Ti_ar)
     else:
         return None, None
     return f0, phase0
 
-
-def IonRate(t_grid, laser_field, param_dict, dT, kernel_type="GASFIR", excitedStates=0):
+def IonRate(t_grid, laser_field, param_dict, dT, kernel_type="GASFIR"):
     """ return the ionization rate for a define pulse computed with provided parameters 
     Args:
         t_grid (np.ndarray): the grid of moment of ionization   
@@ -227,8 +216,9 @@ def IonRate(t_grid, laser_field, param_dict, dT, kernel_type="GASFIR", excitedSt
     t_min, t_max = laser_field.get_time_interval()
     tau_injection=max(abs(t_min), abs(t_max))
     T_grid=np.arange(0, tau_injection+dT, dT, dtype=np.float64)
-    f, phase=Kernel_jit(t_grid, T_grid, laser_field, param_dict, kernel_type=kernel_type, excitedStates=excitedStates)
+    f, phase=Kernel_jit(t_grid, T_grid, laser_field, param_dict, kernel_type=kernel_type)
     rate=2*np.real(IOF(T_grid, f, phase))
+    #rate=2*np.real(np.trapz(f*np.exp(phase), x=T_grid, axis=0))
     # the factor two is to account for the fact that the kernel 
     # is symmetric in T and we integrate from 0 to inf
     return np.array(rate)
@@ -271,7 +261,7 @@ def QSRate(field, param_dict):
     return rate
 
 #@njit(parallel=True,fastmath = False, cache=True)
-def analyticalRate(t_grid, laser_field, param_dict):
+def analyticalRate(t_grid, laser_field,param_dict):
     """ return the ionization rate for a define pulse computed with provided parameters 
      
     Args:
@@ -301,7 +291,7 @@ def analyticalProb(laser_field, param_dict, dt=2):
     tmp = analyticalRate(t_grid, laser_field, param_dict)
     return np.double(simpson(tmp, x=t_grid, axis=-1, even='simpson'))
 
-def IonProb(laser_field, param_dict, dt=2., dT=0.25, filterTreshold=0.0, kernel_type="GASFIR", ret_Rate=False, excitedStates=0):
+def IonProb(laser_field, param_dict, dt=2., dT=0.25, filterTreshold=0.0, kernel_type="GASFIR", ret_Rate=False):
     """ return the ionization probability for the defined pulse computed with provided parameters 
     Note: by default this function filters out the t_grid such that |E(t_grid)|>=1% of max(E(t_grid)) 
     Args:
@@ -328,6 +318,9 @@ def IonProb(laser_field, param_dict, dt=2., dT=0.25, filterTreshold=0.0, kernel_
     if np.any(np.array(laser_field.get_central_wavelength())<140):
         dt=0.5
         dT=0.25
+    
+    elif kernel_type=="exact_SFA":
+        dt=np.ceil(laser_field.get_central_wavelength()/400)
     t_grid=np.arange(-tau_injection,tau_injection+dt, dt)
     
     if filterTreshold > 0:
@@ -343,7 +336,7 @@ def IonProb(laser_field, param_dict, dt=2., dT=0.25, filterTreshold=0.0, kernel_
         if zeroCr[0]>0 and zeroCr[-1]<0:
             zeroCr=zeroCr[::-1]
         t_grid=np.arange(np.floor(zeroCr[zeroCr<extr[0]][-1]), np.ceil(zeroCr[zeroCr>extr[-1]][0])+dt, dt, dtype=np.float64)
-    rate=IonRate(t_grid, laser_field, param_dict, dT, kernel_type=kernel_type, excitedStates=excitedStates)
+    rate=IonRate(t_grid, laser_field, param_dict, dT, kernel_type=kernel_type)
     # return 1-np.exp(-np.double(simpson(rate, x=t_grid, axis=-1, even='simpson')))
     if ret_Rate:
         return 1-np.exp(-np.double(simpson(rate, x=t_grid, axis=-1, even='simpson'))), (t_grid, rate)
