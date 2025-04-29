@@ -34,7 +34,7 @@ delay = pd.read_csv("/home/user/BachelorThesis/Bachelor-thesis/ionModel/delay.cs
 
 delay = np.array(delay["delay"].values) 
 
-REDO_comp = False
+REDO_comp = True
 for file_name, lam0_pump, I_pump, lam0_probe, I_probe, FWHM_probe, cep_pump, cep_probe in file_params:
     if REDO_comp:
         laser_pulses = LaserField(cache_results=True)

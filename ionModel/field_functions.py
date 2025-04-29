@@ -207,7 +207,7 @@ def find_extrema_positions(X, Y):
     dY_dX = (Y[1:] - Y[:-1]) / (X[1:] - X[:-1])
     return find_zero_crossings(0.5 * (X[1:] + X[:-1]), dY_dX)
 
-@njit(parallel=True, fastmath = False,cache = True)
+@njit(parallel=True, fastmath = False,cache = False)
 def integrate_oscillating_function_jit(X, f, phi, phase_step_threshold=1e-3):
     r""" The function evaluates \int dx f(x) exp[i phi(x)] using an algorithm
     suitable for integrating quickly oscillating functions.
@@ -247,6 +247,7 @@ def integrate_oscillating_function_jit(X, f, phi, phase_step_threshold=1e-3):
         Z=np.where(np.abs(dphi).real < phase_step_threshold,  (0.5 * (f1+f2) + 0.125*1j * dphi * df) *np.exp(0.5*1j*(phi1 + phi2)), 1 / dphi**2 * (np.exp(1j * phi1) * (df - 1j*f2*dphi)-(df - 1j*f1*dphi) * np.exp(1j * phi2)))
         result[i]=np.sum(Z*dx)
     return result
+
 
 
 def integrate_oscillating_function_numexpr(X, f, phi, phase_step_threshold=1e-3):
@@ -412,7 +413,7 @@ class LaserField:
     def get_central_wavelength(self):
         au = AtomicUnits()
         lam= [(2*np.pi*au.speed_of_light/i*au.nm) for i in self.__omega0_list]
-        return lam
+        return np.array(lam)
 
     def add_pulse(self, central_wavelength, peak_intensity, CEP, FWHM, envelope_N=8, t0=0.0):
         au = AtomicUnits()
@@ -457,7 +458,7 @@ class LaserField:
         if t_min is None or t_max is None:
             return None
         return np.linspace(t_min, t_max, npoint)
-
+    
     def reset(self, cache_results=True):
         self.__number_of_pulses = 0
         self.__omega0_list = []
@@ -630,13 +631,13 @@ def get_momentum_grid(div_p, div_theta, laser_field, Ip):
 
     dcostheta=1/(2**2*p_phys_max)/div_theta
     density_theta=int(np.log2(2/dcostheta-1))+1
-    length_cos=min(max(15,int(2**(density_theta))+1),27)
+    length_cos=max(15,int(2**(density_theta))+1)
     Theta_grid=np.linspace(0, np.pi, length_cos)
     intA=laser_field.int_A(laser_field.get_tgrid())
     Int_max=max(max(intA)-min(intA),1)
-    dp=min(np.pi/(2*tau_injection*4), np.pi/abs(4*Int_max))/div_p
+    dp=min(10*np.pi/(tau_injection), np.pi/abs(4*Int_max))/div_p # np.pi/(2*tau_injection*4)
     p_grid=np.unique(np.concatenate((np.arange(0, p_phys_max+dp, dp)
-                                            , np.arange(p_phys_max+dp, 2*p_phys_max, dp*4))))
+                                            , np.arange(p_phys_max+dp, 2*p_phys_max, dp*8))))
     window = soft_window(p_grid, p_phys_max, 2*p_phys_max)
     return p_grid, Theta_grid, window
 
@@ -646,5 +647,6 @@ def fwhmOC_to_fwhmAU(fwhmOC, wavel):
 def create_pulse(wavel, intens, cep, fwhmCyc):
     tmpObj = LaserField()
     fwhmAU = fwhmOC_to_fwhmAU(fwhmCyc, wavel)
+    # print("FWHM in AU: ", fwhmAU) # DEBUGGING
     tmpObj.add_pulse(central_wavelength=wavel, peak_intensity=intens, CEP=cep, FWHM=fwhmAU)
     return tmpObj
