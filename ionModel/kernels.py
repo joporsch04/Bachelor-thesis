@@ -18,7 +18,7 @@ from numba import njit, typed, types, prange
 import json
 # from numba.core import types
 # from numba.typed import Dict
-from matrixElements import dipolElement_vec
+from matrixElements import dipoleElement
 
 
 ########################
@@ -136,7 +136,7 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                 VP_p=VP[tp]-VPt
                 VP_m=VP[tm]-VPt
                 f_t_1= (pz+VP_p)/(p**2+VP_p**2+2*pz*VP_p+2*E_g)**3*(pz+VP_m)/(p**2+VP_m**2+2*pz*VP_m+2*E_g)**3
-                #dipolElement = dipolElement_vec(excitedStates, 0, 0, pz, theta, 0)
+                #dipoleElement = dipoleElement(excitedStates, 0, 0, pz, theta, 0)
 
                 G1_T_p=np.trapz(f_t_1*np.exp(1j*pz*DelA)*np.sin(theta), Theta_grid)
                 G1_T=np.trapz(G1_T_p*window*p_grid**2*np.exp(1j*p_grid**2*T), p_grid)

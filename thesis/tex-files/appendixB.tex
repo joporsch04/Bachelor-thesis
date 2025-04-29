@@ -39,7 +39,7 @@ I choose to represent them as following:
 The Laguerre polynomials are therefore only dependent on and exponential term and finitely many polynomial terms. 
 $\tilde{R}_{nl}(p)$ can be expressed (without prefactors and summation over $\iota$) as:
 \begin{equation*}
-    \int_{0}^{\infty}\dd r\,r^{2+l+\iota} e^{-\frac{r}{n}} j_l(pr)
+    \int_{0}^{\infty}\dd r\,r^{2+l+\iota} e^{-\frac{Zr}{n}} j_l(pr)
 \end{equation*}
 Before we can solve the Integral using caomputational methods, we need to transform the spherical bessel function into the ordinary ones:
 \begin{equation*}
@@ -48,10 +48,23 @@ Before we can solve the Integral using caomputational methods, we need to transf
 Now it is a good time to write all the prefactors and summations in one expression and look at the integral as a whole:
 \begin{align*}
     \phi_{nlm}(\uvec{p}) =\ & \frac{\pi^{3/2}}{\sqrt{2p}}\sqrt{\left(\frac{2}{n}\right)^3\frac{(n-l-1)!}{n(n+1)!}}\\
-    & \times \sum_{m=-l}^{l}\sum_{\iota=0}^{n-l-1}i^l\frac{(-1)^{\iota}}{\iota!}\left(\frac{2}{n}\right)^{l+\iota}\binom{n+l}{n-l-1}\int_{0}^{\infty}\dd r\,r^{l+\iota+\frac{3}{2}}e^{-\frac{r}{n}}J_{l+\frac{1}{2}}(pr) Y_{lm}(\theta_p,\phi_p)
+    & \times \sum_{m=-l}^{l}\sum_{\iota=0}^{n-l-1}i^l\frac{(-1)^{\iota}}{\iota!}\left(\frac{2}{n}\right)^{l+\iota}\binom{n+l}{n-l-1}\underbrace{\int_{0}^{\infty}\dd r\,r^{l+\iota+\frac{3}{2}}e^{-\frac{Zr}{n}}J_{l+\frac{1}{2}}(pr)}_{(*)} Y_{lm}(\theta_p,\phi_p)
 \end{align*}
 To calculate the remaining Integral, I used mathematica, so I can not give a detailed explanation of that. Interestingly, there is an analytical solution for that. 
-
+The result for $(*)$ is:
+\begin{equation}
+    (*) = {}_2\tilde{F}_1\left(2 + l + \frac{\iota}{2}, \frac{1}{2}(5 + 2l + \iota); \frac{3}{2} + l; -\frac{n^2 p^2}{Z^2}\right)
+\end{equation}
+With ${}_2\tilde{F}_1$ being the regularized hypergeometric function defined by:
+\begin{equation*}
+    {}_2\tilde{F}_1(a,b;c;z) = \frac{{}_2F_1(a,b;c;z)}{\Gamma(c)} = \frac{1}{\Gamma(a)\,\Gamma(b)} \sum_{n=0}^{\infty} \frac{\Gamma(a+n)\,\Gamma(b+n)}{\Gamma(c+n)} \frac{z^n}{n!}
+\end{equation*}
+The final formula $\phi_{nlm}(\uvec{p})$ that can be also found in [atoms and molekulse] in slightely different form, can then be expressed as:
+\begin{align}
+    \phi_{nlm}(\uvec{p}) =\ & \frac{\pi^{3/2}}{\sqrt{2p}}\sqrt{\left(\frac{2}{n}\right)^3\frac{(n-l-1)!}{n(n+1)!}}\\
+    & \times \sum_{m=-l}^{l}\sum_{\iota=0}^{n-l-1}i^l\frac{(-1)^{\iota}}{\iota!}\left(\frac{2}{n}\right)^{l+\iota}\binom{n+l}{n-l-1}\,2^{-\left(\frac{1}{2} + l\right)} \left(p^2\right)^{\frac{1}{4} + \frac{l}{2}} \left(\frac{Z}{n}\right)^{-4 - 2l - \iota} \Gamma\left(4 + 2l + \iota\right)\\ 
+    & \times {}_2\tilde{F}_1\left(2 + l + \frac{\iota}{2}, \frac{1}{2}(5 + 2l + \iota); \frac{3}{2} + l; -\frac{n^2 p^2}{Z^2}\right) Y_{lm}(\theta_p,\phi_p)
+\end{align}
 
 
 
@@ -69,15 +82,15 @@ To calculate the remaining Integral, I used mathematica, so I can not give a det
 
 
 
-Some dipole matrix elements:\\
-First start with transforming the Schroedinger equation into momentum space %https://physics.stackexchange.com/questions/249400/schr%C3%B6dinger-equation-in-momentum-space
-Note that the prefactor does NOT depend on magentic quantumnumber m.\\
-Spherical harmonic: Instead of $Y_{lm}(\theta, \phi)$ you can write $Y_{lm}(\uvec{r})$ since $\uvec{r}=\hat{e}_x \sin(\theta)\cos(\phi)+\hat{e}_y\sin(\theta)\sin(\phi)+\hat{e}_z\cos(\theta)$\\
-The transition dipole matrix element is given by
-\begin{equation*}
-    % Analytical result for the integral
-    [ \int_0^\infty x^{\mu} e^{-\alpha x} J_\nu(\beta x) dx = \frac{\beta^\nu \Gamma(\mu+\nu+1)}{2^\nu \alpha^{\mu+\nu+1}} , {}_2F_1\left(\frac{\mu+\nu+1}{2}, \frac{\mu+\nu+2}{2}; \nu+1; -\frac{\beta^2}{\alpha^2}\right) ]
-\end{equation*}
+% Some dipole matrix elements:\\
+% First start with transforming the Schroedinger equation into momentum space %https://physics.stackexchange.com/questions/249400/schr%C3%B6dinger-equation-in-momentum-space
+% Note that the prefactor does NOT depend on magentic quantumnumber m.\\
+% Spherical harmonic: Instead of $Y_{lm}(\theta, \phi)$ you can write $Y_{lm}(\uvec{r})$ since $\uvec{r}=\hat{e}_x \sin(\theta)\cos(\phi)+\hat{e}_y\sin(\theta)\sin(\phi)+\hat{e}_z\cos(\theta)$\\
+% The transition dipole matrix element is given by
+% \begin{equation*}
+%     % Analytical result for the integral
+%     [ \int_0^\infty x^{\mu} e^{-\alpha x} J_\nu(\beta x) dx = \frac{\beta^\nu \Gamma(\mu+\nu+1)}{2^\nu \alpha^{\mu+\nu+1}} , {}_2F_1\left(\frac{\mu+\nu+1}{2}, \frac{\mu+\nu+2}{2}; \nu+1; -\frac{\beta^2}{\alpha^2}\right) ]
+% \end{equation*}
 
 
 

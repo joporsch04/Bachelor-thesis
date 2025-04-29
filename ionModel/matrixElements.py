@@ -4,78 +4,55 @@ import cmath
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 
-def dipolElement_vec(n, l, m, p, thetap, phip):
-    return np.array([phip_analytical_Dp(n, l, m, p, thetap, phip), phip_analytical_Dthetap(n, l, m, p, thetap, phip), phip_analytical_Dphip(n, l, m, p, thetap, phip)])
+def regularized_hypergeometric2F1(a, b, c, z):
+    return hyp2f1(a, b, c, z) / gamma(c)
 
-def phip_analytical_Dp(n, l, m, p, thetap, phip):
-    prefactor = np.sqrt(2) * (1/n)**(-3 - l) * np.sqrt(gamma(-l + n) / (n**4 * gamma(1 + l + n)))
-    sph = sph_harm(m, l, phip, thetap)
-    sum_term = 0
-    for iota in range(0, -1 - l + n + 1):
-        binomial = binom(l + n, -1 - l + n - iota)
-        gamma1 = gamma(3 + 2*l + iota)
-        gamma2 = gamma(5 + 2*l + iota)
-        denom = gamma(1 + iota)
-        I_l = cmath.exp(1j * np.pi/2 * l)
+def dipoleElement(l, n, px, py, pz):
+    p = np.sqrt(px**2 + py**2 + pz**2)
+    result = 0.0 + 0.0j
+    for m in range(-l, l+1):
+        # Pre-factors
+        sqrt2 = np.sqrt(2)
+        n_factor = (1/n)**(-3-l)
+        sqrt_fact = np.sqrt(factorial(-1-l+n) / (n**4 * factorial(l+n)))
+        theta = np.arccos(pz/p)
+        phi = np.arctan2(py, px)
+        Ylm = sph_harm(m, l, phi, theta)
+        Yl1m = sph_harm(1+m, l, phi, theta) if (1+m <= l) else 0
 
-        num1 = ((-2)**iota) * I_l * l * p**(-1 + l) * binomial * gamma1
-        hyp1 = hyp2f1(2 + l + iota/2, 0.5 * (3 + 2*l + iota), 1.5 + l, -n**2 * p**2) / gamma(1.5 + l)
-        term1 = num1 * hyp1 / denom
+        # First sum over iota
+        sum1 = 0.0 + 0.0j
+        for iota in range(0, -1-l+n+1):
+            binomial = binom(l+n, -1-l+n-iota)
+            gamma_term = gamma(3+2*l+iota)
+            hyp = regularized_hypergeometric2F1(2+l+iota/2, 0.5*(3+2*l+iota), 1.5+l, -n**2*p**2)
+            term = ((-2)**iota) * (1j)**l * (p**2)**(l/2) * binomial * gamma_term * hyp / factorial(iota)
+            sum1 += term
 
-        num2 = ((-1)**iota) * I_l * 2**(-1 + iota) * n**2 * p**(1 + l) * binomial * gamma2
-        hyp2 = hyp2f1(3 + l + iota/2, 1 + 0.5 * (3 + 2*l + iota), 2.5 + l, -n**2 * p**2) / gamma(2.5 + l)
-        term2 = num2 * hyp2 / denom
-        sum_term += (term1 - term2)
-    return prefactor * sph * sum_term
+        # Second sum over iota
+        sum2 = 0.0 + 0.0j
+        for iota in range(0, -1-l+n+1):
+            binomial = binom(l+n, -1-l+n-iota)
+            gamma_term = gamma(3+2*l+iota)
+            hyp1 = regularized_hypergeometric2F1(2+l+iota/2, 0.5*(3+2*l+iota), 1.5+l, -n**2*p**2)
+            hyp2 = regularized_hypergeometric2F1(3+l+iota/2, 1+0.5*(3+2*l+iota), 2.5+l, -n**2*p**2)
+            term1 = ((-2)**iota) * (1j)**l * l * (p**2)**(-1+l/2) * pz * binomial * gamma_term * hyp1 / factorial(iota)
+            term2 = ((-2)**iota) * (1j)**l * n**2 * (p**2)**(l/2) * pz * (2+l+iota/2) * (3+2*l+iota) * binomial * gamma_term * hyp2 / factorial(iota)
+            sum2 += (term1 - term2)
 
-def phip_analytical_Dthetap(n, l, m, p, thetap, phip):
-    prefactor = (
-        np.sqrt(2)
-        * (1/n)**(-3 - l)
-        * np.sqrt(gamma(-l + n) / (n**4 * factorial(l + n)))
-    )
-    sphY_lm = sph_harm(m, l, phip, thetap)
-    angular = m * 1/np.tan(thetap) * sphY_lm
-    if np.abs(gamma(l - m)) > 0 and np.abs(gamma(1 + l + m)) > 0:
-        sphY_lmp1 = sph_harm(m + 1, l, phip, thetap)
-        angular += (
-            np.exp(-1j * phip)
-            * np.sqrt(gamma(1 + l - m))
-            * np.sqrt(gamma(2 + l + m))
-            * sphY_lmp1
-            / (np.sqrt(gamma(l - m)) * np.sqrt(gamma(1 + l + m)))
-        )
-    sum_term = 0
-    for iota in range(0, -1 - l + n + 1):
-        coeff = ((-2)**iota) * (cmath.exp(1j * np.pi/2 * l)) * (p**l)
-        binomial = binom(l + n, -1 - l + n - iota)
-        gamma_val = gamma(3 + 2*l + iota)
-        a = 2 + l + iota/2
-        b = 0.5 * (3 + 2*l + iota)
-        c = 1.5 + l
-        z = -n**2 * p**2
-        hyp = hyp2f1(a, b, c, z) / gamma(c)
-        denom = factorial(iota)
-        sum_term += coeff * binomial * gamma_val * hyp / denom
-    return prefactor * angular * sum_term
+        # Main expression
+        prefactor1 = -1 / np.sqrt(1 - (pz**2)/(p**2))
+        bracket1 = (1/np.sqrt(p**2) - (pz**2)/(p**3))
+        termA = sqrt2 * n_factor * bracket1 * sqrt_fact
+        part1 = (m * pz * Ylm) / (np.sqrt(p**2) * np.sqrt(1 - (pz**2)/(p**2)))
+        part2 = (np.exp(-1j*phi) * np.sqrt(gamma(1+l-m)) * np.sqrt(gamma(2+l+m)) * Yl1m) / (np.sqrt(gamma(l-m)) * np.sqrt(gamma(1+l+m)))
+        sum_part = (part1 + part2) * sum1
 
-def phip_analytical_Dphip(n, l, m, p, thetap, phip):
-    prefactor = (
-        1j * np.sqrt(2) * m
-        * (1/n)**(-3 - l)
-        * np.sqrt(gamma(-l + n) / (n**4 * gamma(1 + l + n)))
-    )
-    sphY_lm = sph_harm(m, l, phip, thetap)
-    sum_term = 0
-    for iota in range(0, -1 - l + n + 1):
-        coeff = ((-2)**iota) * (cmath.exp(1j * np.pi/2 * l)) * (p**l)
-        binomial = binom(l + n, -1 - l + n - iota)
-        gamma_val = gamma(3 + 2*l + iota)
-        a = 2 + l + iota/2
-        b = 0.5 * (3 + 2*l + iota)
-        c = 1.5 + l
-        z = -n**2 * p**2
-        hyp = hyp2f1(a, b, c, z) / gamma(c)
-        denom = factorial(iota)
-        sum_term += coeff * binomial * gamma_val * hyp / denom
-    return prefactor * sphY_lm * sum_term
+        termB = sqrt2 * n_factor * sqrt_fact * Ylm * sum2
+
+        result += prefactor1 * termA * sum_part + termB
+
+    return result
+
+
+result = dipoleElement(1, 0, 0, 0, 0)
