@@ -54,5 +54,3 @@ def dipoleElement(l, n, px, py, pz):
 
     return result
 
-
-result = dipoleElement(1, 0, 0, 0, 0)
