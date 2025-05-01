@@ -24,7 +24,7 @@ We start with the so called plane wave expansion \cite{Jackson:1998nia} of the e
 \begin{equation*}
     e^{i\uvec{p}\cdot\uvec{x}} = \sum_{l'=0}^\infty (2l'+1)i^{l'} j_{l'}(pr) P_{l'}(\uvec{p}\cdot\uvec{x}) = 4\pi\sum_{l'=0}^\infty \sum_{m'=-l'}^{l'} i^{l'} j_{l'}(pr) Y_{l'm'}(\theta_p, \phi_p) Y_{l'm'}^*(\theta_x, \phi_x)
 \end{equation*}
-With $j_l(pr)$ being the spherical bessel functions. At first it looks messy but we can use the orthogonality of the spherical harmonics we can reduce the integral to:
+With $j_l(pr)$ being the spherical bessel functions. Also note that we are integrating over spherical kordinates now. At first it looks messy but we can use the orthogonality of the spherical harmonics we can reduce the integral to:
 \begin{equation*}
     \phi_{nlm}(\uvec{p}) = 4\pi \sum_{m=-l}^{l}Y_{lm}(\theta_p,\phi_p)i^l\underbrace{\int_{0}^{\infty}\dd r\,r^2j_l(pr)R_{nl}(r)}_{\tilde{R}_{nl}(p)}
 \end{equation*}
@@ -61,9 +61,12 @@ With ${}_2\tilde{F}_1$ being the regularized hypergeometric function defined by:
 \end{equation*}
 The final formula $\phi_{nlm}(\uvec{p})$ that can be also found in [atoms and molekulse] in slightely different form, can then be expressed as:
 \begin{align}
-    \phi_{nlm}(\uvec{p}) =\ & \frac{\pi^{3/2}}{\sqrt{2p}}\sqrt{\left(\frac{2}{n}\right)^3\frac{(n-l-1)!}{n(n+1)!}}\\
-    & \times \sum_{m=-l}^{l}\sum_{\iota=0}^{n-l-1}i^l\frac{(-1)^{\iota}}{\iota!}\left(\frac{2}{n}\right)^{l+\iota}\binom{n+l}{n-l-1}\,2^{-\left(\frac{1}{2} + l\right)} \left(p^2\right)^{\frac{1}{4} + \frac{l}{2}} \left(\frac{Z}{n}\right)^{-4 - 2l - \iota} \Gamma\left(4 + 2l + \iota\right)\\ 
-    & \times {}_2\tilde{F}_1\left(2 + l + \frac{\iota}{2}, \frac{1}{2}(5 + 2l + \iota); \frac{3}{2} + l; -\frac{n^2 p^2}{Z^2}\right) Y_{lm}(\theta_p,\phi_p)
+    \phi_{nlm}(\uvec{p}) = \sum_{\iota=0}^{2l+1} \;
+        & \frac{(-1)^{\iota} \; 2^{\iota + \frac{1}{2}} \; n \; (i n)^l \; (p^2)^{l/2} \; Z^{-l-3} \; \Gamma(2l+\iota+3)}{\iota!} \nonumber \\
+        & \times \binom{l+n}{-l+n-\iota-1} 
+        \sqrt{\frac{Z^3 \Gamma(n-l)}{\Gamma(l+n+1)}} \nonumber \\
+        & \times Y_l^m(\theta_p, \phi_p) \,
+        {}_2\tilde{F}_1\left(l+\frac{\iota}{2}+2, \frac{1}{2}(2l+\iota+3); l+\frac{3}{2}; -\frac{n^2 p^2}{Z^2}\right)
 \end{align}
 
 
