@@ -46,55 +46,44 @@ def get_hydrogen_states(maxStates):
 def hyp2f1_regularized(a, b, c, z):
     return hyp2f1(a, b, c, z) / gamma(c)
 
-def transitionElement(n, l, m, p, px, py, pz, VP, Ip):
-    Ap = VP + p
-    Apz = VP + pz
-    sqrt_Ap2 = np.sqrt(Ap**2 + 1e-12)
-    x = Apz / sqrt_Ap2
-    phi = np.arctan2(py, px)
-    theta = 0.5 * (np.pi - (2 * Ap * np.arcsin(x)) / sqrt_Ap2)
-    z = -n**2 * Ap**2 / (2 * Ip)
-    total = 0.0
-    
-    if np.any(Ap == 0):
-        print("Warning: Ap is zero!")
-    if np.any(Ap**2 == 0):
-        print("Warning: Ap^2 is zero!")
-    if np.any(1 - (Apz**2)/(Ap**2) < 0):
-        print("Warning: sqrt argument negative!")
-
-    for iota in range(0, n - l):
-        prefac = (1/factorial(iota)) * (-1)**iota * 2**(-2.25 - l/2 + iota)
-        prefac *= Ip**(-1.75 - l/2) * n * (1j * n * sqrt_Ap2)**l
-        prefac *= binom(l + n, -1 - l + n - iota)
-        prefac *= np.sqrt(gamma(-l + n) / gamma(1 + l + n))
-        prefac *= gamma(3 + 2*l + iota)
-
-        F1 = hyp2f1_regularized(2.5 + l + iota/2, 3 + l + iota/2, 2.5 + l, z)
-        F2 = hyp2f1_regularized(2 + l + iota/2, 0.5 * (3 + 2*l + iota), 1.5 + l, z)
-
-        Ylm = sph_harm(l, m, theta, phi)
-        Yl1m = sph_harm(l, 1 + m, theta, phi)
-
-        sqrt_g1 = np.sqrt(gamma(1 + l - m))
-        sqrt_g2 = np.sqrt(gamma(2 + l + m))
-        sqrt_g3 = np.sqrt(gamma(l - m))
-        sqrt_g4 = np.sqrt(gamma(1 + l + m))
-
-        sqrt1_arg = 1 - (Apz**2) / (Ap**2 + 1e-12)
-        sqrt1_arg = np.where(sqrt1_arg < 0, 0, sqrt1_arg)
-        sqrt1 = np.sqrt(sqrt1_arg)
-
-        exp1 = np.exp(-1j * phi)
-
-        term1 = (
-            -n**2 * Apz * (3 + 2*l + iota) * (4 + 2*l + iota) * F1 * Ylm
-            + 4 * Ip * F2 * (
-                ((l - m) * Apz * Ylm) / (Ap**2)
-                - (exp1 * sqrt1 * sqrt_g1 * sqrt_g2 * Yl1m) / (sqrt_Ap2 * sqrt_g3 * sqrt_g4)
+def transitionElement(n, l, m, p, px, py, pz, Az, Ip):
+    with np.errstate(invalid='raise', divide='raise'):
+        sum = 0
+        for iota in range(0, n-l):
+            prefactor = (
+                (-1)**iota
+                * 2**(-(9/4) - l/2 + iota)
+                * Ip**(-(7/4) - l/2)
+                * n
+                * (1j * n * np.sqrt((Az + p)**2))**l
+                * binom(l + n, -1 - l + n - iota)
+                * np.sqrt(gamma(-l + n) / gamma(1 + l + n))
+                * gamma(3 + 2*l + iota)
             )
-        )
 
-        total += prefac * term1
-
-    return total
+            theta = 0.5 * (np.pi - (2 * (Az + p) * np.arcsin((Az + pz)/(Az + p))) / np.sqrt((Az + p)**2))
+            phi = np.arctan2(py, px)
+            
+            z = -((n**2 * (Az + p)**2) / (2 * Ip))
+            F1 = hyp2f1_regularized(2.5 + l + iota/2, 3 + l + iota/2, 2.5 + l, z)
+            F2 = hyp2f1_regularized(2 + l + iota/2, 0.5 * (3 + 2*l + iota), 1.5 + l, z)
+            Ylm = sph_harm(m, l, phi, theta)
+            
+            Ylmp1 = sph_harm(m+1, l, phi, theta)
+            
+            term1 = (
+                -n**2 * (Az + pz) * (3 + 2*l + iota) * (4 + 2*l + iota) * F1 * Ylm
+            )
+            
+            sqrt1 = np.sqrt(1 - (Az + pz)**2 / (Az + p)**2)
+            sqrt2 = np.sqrt(gamma(1 + l - m)) * np.sqrt(gamma(2 + l + m))
+            sqrt3 = np.sqrt(gamma(l - m)) * np.sqrt(gamma(1 + l + m))
+            exp_phi = np.exp(-1j * phi)
+            term2 = (
+                4 * Ip * F2 * (
+                    ((l - m) * (Az + pz) * Ylm) / (Az + p)**2
+                    - (exp_phi * sqrt1 * sqrt2 * Ylmp1) / (np.sqrt((Az + p)**2) * sqrt3)
+                )
+            )
+            sum += prefactor * (term1 + term2)
+        return sum
