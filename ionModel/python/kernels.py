@@ -18,7 +18,7 @@ from numba import njit, typed, types, prange
 import json
 # from numba.core import types
 # from numba.typed import Dict
-from matrixElements import transitionElement, get_coefficients, get_eigenEnergy, get_hydrogen_states, testelement, test2element
+from matrixElements import transitionElement, get_coefficients, get_eigenEnergy, get_hydrogen_states
 import matplotlib.pyplot as plt
 
 ########################
@@ -128,37 +128,36 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
         coefficients = get_coefficients(excitedStates, tar)
         eigenEnergy = get_eigenEnergy(excitedStates)
         config = get_hydrogen_states(excitedStates)
-        for i in prange(Tar.size):
-            Ti=Ti_ar[i]
-            for j in range(tar.size):
-                tj=N+nmin+j*n
-                tp=tj+Ti
-                tm=tj-Ti
-                if tp>=0 and tp<EF.size and tm>=0 and tm<EF.size:
-                    VPt = 0 # VP[tj]
-                    T= Ti*dT
-                    DelA = (intA[tp] - intA[tm])-2*VPt*T
-                    VP_p=VP[tp]-VPt
-                    VP_m=VP[tm]-VPt
-                    counter += 1
-                    print("counter", counter)
-                    for states in range(excitedStates):
-                        nH, lH, mH = config[states]
-                        #f_t_1= test2element(E_g, VP_p, pz, p)*test2element(E_g, VP_m, pz, p)
+        rate = np.zeros(tar.size, dtype=np.cdouble)
+        for state in range(excitedStates):
+            for i in prange(Tar.size):
+                Ti=Ti_ar[i]
+                for j in range(tar.size):
+                    tj=N+nmin+j*n
+                    tp=tj+Ti
+                    tm=tj-Ti
+                    if tp>=0 and tp<EF.size and tm>=0 and tm<EF.size:
+                        VPt = 0 # VP[tj]
+                        T= Ti*dT
+                        DelA = (intA[tp] - intA[tm])-2*VPt*T
+                        VP_p=VP[tp]-VPt
+                        VP_m=VP[tm]-VPt
+                        counter += 1
+                        phase_array = []
+                        f_array = []
+                        print("counter", counter)         #they are exactly 4pi apart
+                        nH, lH, mH = config[state]
                         f_t_1= transitionElement(nH, lH, p, pz, VP_p, E_g)*transitionElement(nH, lH, p, pz, VP_m, E_g)
-                        #f_t_1=testelement(E_g, VP_p, pz, p)*testelement(E_g, VP_m, pz, p)
                         #f_t_1= (pz+VP_p)/(p**2+VP_p**2+2*pz*VP_p+2*E_g)**3*(pz+VP_m)/(p**2+VP_m**2+2*pz*VP_m+2*E_g)**3
                         G1_T_p=np.trapz(f_t_1*np.exp(1j*pz*DelA)*np.sin(theta), Theta_grid)
                         G1_T=np.trapz(G1_T_p*window*p_grid**2*np.exp(1j*p_grid**2*T), p_grid)
                         DelA = DelA + 2 * VPt * T
-                        phase0[i, j]  = (intA2[tp] - intA2[tm])/2  + T*VPt**2-VPt*DelA +2*E_g*T
+                        phase0[i, j]  = (intA2[tp] - intA2[tm])/2  + T*VPt**2-VPt*DelA +2*eigenEnergy[state]*T
                         f0[i, j] = EF[tp]*EF[tm]*G1_T
 
-        for states in range(excitedStates):
-            plt.plot(Tar, 2*np.real(IOF(Tar, f0, (phase0)*1j)))
-            plt.show()
-            plt.close()
-            return 2*np.real(IOF(Tar, f0, (phase0)*1j))  #+ 2*eigenEnergy[states]*T
+            c = coefficients[state,:]
+            rate += 2*np.real(IOF(Tar, f0*c[np.newaxis, :], (phase0)*1j))
+        return rate
     else:
         for i in prange(Tar.size):
             Ti=Ti_ar[i]
@@ -181,7 +180,7 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                     # G1_T=IOF(p_grid,G1_T_p*window*p_grid**2,p_grid**2*T)
                     DelA = DelA + 2 * VPt * T
                     phase0[i, j]  = (intA2[tp] - intA2[tm])/2 +2*E_g*T + T*VPt**2-VPt*DelA
-                    f0[i, j] = EF[tp]*EF[tm]*2**9 *(2*E_g)**2.5/np.pi*G1_T
+                    f0[i, j] = EF[tp]*EF[tm]*2**9 *(2*E_g)**2.5/np.pi*G1_T #should be 7 instead of 9?
         return f0, phase0*1j
 
 def Kernel_jit(t_grid, T_grid, laser_field, param_dict, kernel_type="GASFIR", excitedStates=0):
