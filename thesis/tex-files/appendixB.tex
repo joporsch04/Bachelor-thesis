@@ -34,7 +34,7 @@ An exponential term dependent of $r$, a polynomial term dependent of $r$, the ge
 It would be convenient to have a closed expression for the generalzied Laguerre polynomials. 
 I choose to represent them as following:
 \begin{equation*}
-    L_n^l(r) = \sum_{\iota=0}^{l} \frac{(-1)^{\iota}}{\iota!}\binom{n+l}{n-\iota}r^{\iota}
+    L_n^l(r) = \sum_{\iota=0}^{n} \frac{(-1)^{\iota}}{\iota!}\binom{n+l}{n-\iota}r^{\iota}
 \end{equation*}
 The Laguerre polynomials are therefore only dependent on and exponential term and finitely many polynomial terms. 
 $\tilde{R}_{nl}(p)$ can be expressed (without prefactors and summation over $\iota$) as:
@@ -69,9 +69,53 @@ The final formula $\phi_{nlm}(\uvec{p})$ that can be also found in [atoms and mo
         {}_2\tilde{F}_1\left(l+\frac{\iota}{2}+2, \frac{1}{2}(2l+\iota+3); l+\frac{3}{2}; -\frac{n^2 p^2}{Z^2}\right)
 \end{align}
 
-
-
-
+new eq
+\begin{align}
+    \sum _{\iota =0}^{2 l+1} \left(-\frac{(-1)^{\iota } n \text{Ip}^{-l-3} 2^{\iota -l-1} (i n)^l \left(p^2\right)^{l/2}
+   \left(\frac{1}{\sqrt{p^2}}-\frac{\text{pz}^2}{\left(p^2\right)^{3/2}}\right) \Gamma (2 l+\iota +3) \binom{l+n}{-l+n-\iota -1} \sqrt{\frac{\text{Ip}^3 \Gamma
+   (n-l)}{\Gamma (l+n+1)}} \, _2\tilde{F}_1\left(l+\frac{\iota }{2}+2,\frac{1}{2} (2 l+\iota +3);l+\frac{3}{2};-\frac{n^2 p^2}{4 \text{Ip}^2}\right) \left(\frac{m
+   \text{pz} Y_l^m\left(\cos ^{-1}\left(\frac{\text{pz}}{\sqrt{p^2}}\right),\tan ^{-1}(\text{px},\text{py})\right)}{\sqrt{p^2}
+   \sqrt{1-\frac{\text{pz}^2}{p^2}}}+\frac{\sqrt{\Gamma (l-m+1)} \sqrt{\Gamma (l+m+2)} e^{-i \tan ^{-1}(\text{px},\text{py})} Y_l^{m+1}\left(\cos
+   ^{-1}\left(\frac{\text{pz}}{\sqrt{p^2}}\right),\tan ^{-1}(\text{px},\text{py})\right)}{\sqrt{\Gamma (l-m)} \sqrt{\Gamma (l+m+1)}}\right)}{\iota !
+   \sqrt{1-\frac{\text{pz}^2}{p^2}}}+\frac{(-1)^{\iota } l n \text{pz} \text{Ip}^{-l-3} 2^{\iota -l-1} (i n)^l \left(p^2\right)^{\frac{l}{2}-1} \Gamma (2 l+\iota +3)
+   \binom{l+n}{-l+n-\iota -1} \sqrt{\frac{\text{Ip}^3 \Gamma (n-l)}{\Gamma (l+n+1)}} \, _2\tilde{F}_1\left(l+\frac{\iota }{2}+2,\frac{1}{2} (2 l+\iota
+   +3);l+\frac{3}{2};-\frac{n^2 p^2}{4 \text{Ip}^2}\right) Y_l^m\left(\cos ^{-1}\left(\frac{\text{pz}}{\sqrt{p^2}}\right),\tan
+   ^{-1}(\text{px},\text{py})\right)}{\iota !}-\frac{(-1)^{\iota } n^3 \text{pz} \text{Ip}^{-l-5} 2^{\iota -l-3} \left(\frac{\iota }{2}+l+2\right) (\iota +2 l+3) (i
+   n)^l \left(p^2\right)^{l/2} \Gamma (2 l+\iota +3) \binom{l+n}{-l+n-\iota -1} \sqrt{\frac{\text{Ip}^3 \Gamma (n-l)}{\Gamma (l+n+1)}} \,
+   _2\tilde{F}_1\left(l+\frac{\iota }{2}+3,\frac{1}{2} (2 l+\iota +3)+1;l+\frac{5}{2};-\frac{n^2 p^2}{4 \text{Ip}^2}\right) Y_l^m\left(\cos
+   ^{-1}\left(\frac{\text{pz}}{\sqrt{p^2}}\right),\tan ^{-1}(\text{px},\text{py})\right)}{\iota !}\right)
+\end{align}
+\begin{align}
+    \sum_{\iota=0}^{2l+1} \Bigg(
+        & -\frac{(-1)^{\iota} n\, \text{Ip}^{-l-3} 2^{\iota-l-1} (i n)^l (p^2)^{l/2}
+        \left(\frac{1}{\sqrt{p^2}} - \frac{\text{pz}^2}{(p^2)^{3/2}}\right) \Gamma(2l+\iota+3)
+        \binom{l+n}{-l+n-\iota-1}
+        \sqrt{\frac{\text{Ip}^3 \Gamma(n-l)}{\Gamma(l+n+1)}} }{\iota! \sqrt{1-\frac{\text{pz}^2}{p^2}}} \nonumber \\
+        & \times {}_2\tilde{F}_1\left(l+\frac{\iota}{2}+2, \frac{1}{2}(2l+\iota+3); l+\frac{3}{2}; -\frac{n^2 p^2}{4 \text{Ip}^2}\right)
+        \left(
+            \frac{m\, \text{pz}\, Y_l^m\left(\cos^{-1}\left(\frac{\text{pz}}{\sqrt{p^2}}\right), \tan^{-1}(\text{px},\text{py})\right)}
+            {\sqrt{p^2} \sqrt{1-\frac{\text{pz}^2}{p^2}}}
+        \right. \nonumber \\
+        & \qquad \left.
+            + \frac{
+                \sqrt{\Gamma(l-m+1)} \sqrt{\Gamma(l+m+2)} e^{-i \tan^{-1}(\text{px},\text{py})}
+                Y_l^{m+1}\left(\cos^{-1}\left(\frac{\text{pz}}{\sqrt{p^2}}\right), \tan^{-1}(\text{px},\text{py})\right)
+            }{
+                \sqrt{\Gamma(l-m)} \sqrt{\Gamma(l+m+1)}
+            }
+        \right) \nonumber \\
+        & + \frac{(-1)^{\iota} l n\, \text{pz}\, \text{Ip}^{-l-3} 2^{\iota-l-1} (i n)^l (p^2)^{\frac{l}{2}-1}
+            \Gamma(2l+\iota+3) \binom{l+n}{-l+n-\iota-1}
+            \sqrt{\frac{\text{Ip}^3 \Gamma(n-l)}{\Gamma(l+n+1)}} }{\iota!}
+        {}_2\tilde{F}_1\left(l+\frac{\iota}{2}+2, \frac{1}{2}(2l+\iota+3); l+\frac{3}{2}; -\frac{n^2 p^2}{4 \text{Ip}^2}\right)
+        Y_l^m\left(\cos^{-1}\left(\frac{\text{pz}}{\sqrt{p^2}}\right), \tan^{-1}(\text{px},\text{py})\right) \nonumber \\
+        & - \frac{(-1)^{\iota} n^3 \text{pz} \text{Ip}^{-l-5} 2^{\iota-l-3} \left(\frac{\iota}{2}+l+2\right) (\iota+2l+3) (i n)^l (p^2)^{l/2}
+            \Gamma(2l+\iota+3) \binom{l+n}{-l+n-\iota-1}
+            \sqrt{\frac{\text{Ip}^3 \Gamma(n-l)}{\Gamma(l+n+1)}} }{\iota!}
+        {}_2\tilde{F}_1\left(l+\frac{\iota}{2}+3, \frac{1}{2}(2l+\iota+3)+1; l+\frac{5}{2}; -\frac{n^2 p^2}{4 \text{Ip}^2}\right)
+        Y_l^m\left(\cos^{-1}\left(\frac{\text{pz}}{\sqrt{p^2}}\right), \tan^{-1}(\text{px},\text{py})\right)
+    \Bigg)
+\end{align}
 
 
 % \phi_{nlm}(\uvec{p}) =\ & \sqrt{2} \left(\frac{1}{n}\right)^{-2 l-3} 

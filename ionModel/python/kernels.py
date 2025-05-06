@@ -18,8 +18,8 @@ from numba import njit, typed, types, prange
 import json
 # from numba.core import types
 # from numba.typed import Dict
-from matrixElements import dipoleElement
-
+from matrixElements import transitionElement, get_coefficients, get_eigenEnergy, get_hydrogen_states
+import matplotlib.pyplot as plt
 
 ########################
 
@@ -123,29 +123,76 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
     phase0 = np.zeros((Tar.size, tar.size), dtype=np.cdouble)
     E_g = params['E_g']
     pz=p*np.cos(theta)
-    for i in prange(Tar.size):
-        Ti=Ti_ar[i]
-        for j in range(tar.size):
-            tj=N+nmin+j*n
-            tp=tj+Ti
-            tm=tj-Ti
-            if tp>=0 and tp<EF.size and tm>=0 and tm<EF.size:
-                VPt = 0 # VP[tj]
-                T= Ti*dT
-                DelA = (intA[tp] - intA[tm])-2*VPt*T
-                VP_p=VP[tp]-VPt
-                VP_m=VP[tm]-VPt
-                f_t_1= (pz+VP_p)/(p**2+VP_p**2+2*pz*VP_p+2*E_g)**3*(pz+VP_m)/(p**2+VP_m**2+2*pz*VP_m+2*E_g)**3
-                #dipoleElement = dipoleElement(excitedStates, 0, 0, pz, theta, 0)
+    counter = 0
+    if (excitedStates!=0):
+        px=pz*0
+        py=pz*0
+        coefficients = get_coefficients(excitedStates, tar)
+        eigenEnergy = get_eigenEnergy(excitedStates)
+        config = get_hydrogen_states(excitedStates)
+        for i in prange(Tar.size):
+            Ti=Ti_ar[i]
+            for j in range(tar.size):
+                tj=N+nmin+j*n
+                tp=tj+Ti
+                tm=tj-Ti
+                if tp>=0 and tp<EF.size and tm>=0 and tm<EF.size:
+                    VPt = 0 # VP[tj]
+                    T= Ti*dT
+                    DelA = (intA[tp] - intA[tm])-2*VPt*T
+                    VP_p=VP[tp]-VPt
+                    VP_m=VP[tm]-VPt
+                    counter += 1
+                    #print("counter", counter)
+                    for states in range(excitedStates):
+                        nH, lH, mH = config[states]
+                        f_t_1= transitionElement(nH, lH, 0, p, px, py, pz, VP_p, E_g)*transitionElement(nH, lH, 0, p, px, py, pz, VP_m, E_g)
+                        print(f_t_1)
+                        #f_t_1= (pz+VP_p)/(p**2+VP_p**2+2*pz*VP_p+2*E_g)**3*(pz+VP_m)/(p**2+VP_m**2+2*pz*VP_m+2*E_g)**3
+                        G1_T_p=np.trapz(f_t_1*np.exp(1j*pz*DelA)*np.sin(theta), Theta_grid)
+                        G1_T=np.trapz(G1_T_p*window*p_grid**2*np.exp(1j*p_grid**2*T), p_grid)
+                        DelA = DelA + 2 * VPt * T
+                        phase0[i, j]  = (intA2[tp] - intA2[tm])/2  + T*VPt**2-VPt*DelA +2*E_g*T
+                        f0[i, j] = EF[tp]*EF[tm]*G1_T
 
-                G1_T_p=np.trapz(f_t_1*np.exp(1j*pz*DelA)*np.sin(theta), Theta_grid)
-                G1_T=np.trapz(G1_T_p*window*p_grid**2*np.exp(1j*p_grid**2*T), p_grid)
-                # G1_T_p = IOF(p_grid,f_t_1,phase_t)
-                # G1_T=IOF(p_grid,G1_T_p*window*p_grid**2,p_grid**2*T)
-                DelA = DelA + 2 * VPt * T
-                phase0[i, j]  = (intA2[tp] - intA2[tm])/2 +2*E_g*T + T*VPt**2-VPt*DelA
-                f0[i, j] = EF[tp]*EF[tm]*2**9 *(2*E_g)**2.5/np.pi*G1_T
-    return f0, phase0*1j
+        for states in range(excitedStates):
+            if np.any(np.isnan(coefficients[states,:])):
+                print(f"NaN in coefficients")
+            if np.any(np.isnan(f0)):
+                print("NaN in f0!")
+            if np.any(np.isnan(phase0)):
+                print("NaN in phase0!")
+            plt.plot(tar, coefficients[states,:])
+            plt.show()
+            plt.close()
+            plt.plot(Tar, 2*np.real(IOF(Tar, f0, (phase0)*1j)))
+            plt.show()
+            plt.close()
+            return 2*np.real(IOF(Tar, f0, (phase0)*1j))  #+ 2*eigenEnergy[states]*T
+    else:
+        for i in prange(Tar.size):
+            Ti=Ti_ar[i]
+            for j in range(tar.size):
+                tj=N+nmin+j*n
+                tp=tj+Ti
+                tm=tj-Ti
+                if tp>=0 and tp<EF.size and tm>=0 and tm<EF.size:
+                    VPt = 0 # VP[tj]
+                    T= Ti*dT
+                    DelA = (intA[tp] - intA[tm])-2*VPt*T
+                    VP_p=VP[tp]-VPt
+                    VP_m=VP[tm]-VPt
+                    counter += 1
+                    print("counter", counter)
+                    f_t_1= (pz+VP_p)/(p**2+VP_p**2+2*pz*VP_p+2*E_g)**3*(pz+VP_m)/(p**2+VP_m**2+2*pz*VP_m+2*E_g)**3
+                    G1_T_p=np.trapz(f_t_1*np.exp(1j*pz*DelA)*np.sin(theta), Theta_grid)
+                    G1_T=np.trapz(G1_T_p*window*p_grid**2*np.exp(1j*p_grid**2*T), p_grid)
+                    # G1_T_p = IOF(p_grid,f_t_1,phase_t)
+                    # G1_T=IOF(p_grid,G1_T_p*window*p_grid**2,p_grid**2*T)
+                    DelA = DelA + 2 * VPt * T
+                    phase0[i, j]  = (intA2[tp] - intA2[tm])/2 +2*E_g*T + T*VPt**2-VPt*DelA
+                    f0[i, j] = EF[tp]*EF[tm]*2**9 *(2*E_g)**2.5/np.pi*G1_T
+        return f0, phase0*1j
 
 def Kernel_jit(t_grid, T_grid, laser_field, param_dict, kernel_type="GASFIR", excitedStates=0):
     """ return the kernel(t_grid,T_grid) for a given laser field computed with provided parameters using a jit optimized implementation
@@ -196,7 +243,10 @@ def Kernel_jit(t_grid, T_grid, laser_field, param_dict, kernel_type="GASFIR", ex
         p_grid, Theta_grid, window = get_momentum_grid(div_p, div_theta, laser_field, Ip=param_dict["E_g"])
         #print(p_grid.size, Theta_grid.size)
         p, theta = meshgrid(p_grid, Theta_grid)
-        f0, phase0 = exact_SFA_jit_helper(t, T, params, EF, EF2, VP, intA, intA2, dT, N, n, nmin, Ti_ar, p_grid, Theta_grid, window, p, theta, excitedStates=excitedStates)
+        if (excitedStates!=0):
+            return exact_SFA_jit_helper(t, T, params, EF, EF2, VP, intA, intA2, dT, N, n, nmin, Ti_ar, p_grid, Theta_grid, window, p, theta, excitedStates=excitedStates)
+        else:
+            f0, phase0 = exact_SFA_jit_helper(t, T, params, EF, EF2, VP, intA, intA2, dT, N, n, nmin, Ti_ar, p_grid, Theta_grid, window, p, theta, excitedStates=excitedStates)
     elif kernel_type=="GASFIR":
         f0, phase0= Kernel_jit_helper(t, T, params, EF, EF2, VP, intA, intA2, dT, N, n, nmin, Ti_ar)
     else:
@@ -219,8 +269,12 @@ def IonRate(t_grid, laser_field, param_dict, dT, kernel_type="GASFIR", excitedSt
     t_min, t_max = laser_field.get_time_interval()
     tau_injection=max(abs(t_min), abs(t_max))
     T_grid=np.arange(0, tau_injection+dT, dT, dtype=np.float64)
-    f, phase=Kernel_jit(t_grid, T_grid, laser_field, param_dict, kernel_type=kernel_type, excitedStates=excitedStates)
-    rate=2*np.real(IOF(T_grid, f, phase))
+    if (excitedStates!=0):
+        rate=Kernel_jit(t_grid, T_grid, laser_field, param_dict, kernel_type=kernel_type, excitedStates=excitedStates)
+    else:
+        f, phase=Kernel_jit(t_grid, T_grid, laser_field, param_dict, kernel_type=kernel_type, excitedStates=excitedStates)
+        rate=2*np.real(IOF(T_grid, f, phase))
+
     #rate=2*np.real(np.trapz(f*np.exp(phase), x=T_grid, axis=0))
     # the factor two is to account for the fact that the kernel 
     # is symmetric in T and we integrate from 0 to inf
