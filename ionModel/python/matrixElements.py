@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from scipy.special import gamma, binom, hyp2f1, sph_harm, factorial
+from scipy.special import gamma, binom, hyp2f1, sph_harm, lpmv
 from scipy.interpolate import interp1d
 import plotly.graph_objects as go
 
@@ -46,44 +46,56 @@ def get_hydrogen_states(maxStates):
 def hyp2f1_regularized(a, b, c, z):
     return hyp2f1(a, b, c, z) / gamma(c)
 
-def transitionElement(n, l, m, p, px, py, pz, Az, Ip):
+def transitionElement(n, l, p, pz, Az, Ip):
     with np.errstate(invalid='raise', divide='raise'):
-        sum = 0
-        for iota in range(0, n-l):
+        result = 0
+        Apsqrt = Az**2 + p**2 + 2*Az*pz +1e-14
+        Apz = Az + pz
+        sqrt_pi = np.sqrt(np.pi)
+        for iota in range(0, -1 - l + n + 1):
             prefactor = (
-                (-1)**iota
-                * 2**(-(9/4) - l/2 + iota)
-                * Ip**(-(7/4) - l/2)
-                * n
-                * (1j * n * np.sqrt((Az + p)**2))**l
-                * binom(l + n, -1 - l + n - iota)
-                * np.sqrt(gamma(-l + n) / gamma(1 + l + n))
-                * gamma(3 + 2*l + iota)
+                (-1)**iota /
+                (gamma(0.5 + l) * gamma(1 + iota)) *
+                2**(-9/4 - l/2 + iota) *
+                Ip**(0.5 * (-5 - l)) *
+                (1j * n)**l * n *
+                (Apsqrt)**(0.5 * (-3 + l)) *
+                binom(l + n, -1 - l + n - iota) *
+                np.sqrt(Ip**(3/2) * gamma(-l + n) / gamma(l + n + 1)) *
+                gamma(3 + 2*l + iota)
             )
 
-            theta = 0.5 * (np.pi - (2 * (Az + p) * np.arcsin((Az + pz)/(Az + p))) / np.sqrt((Az + p)**2))
-            phi = np.arctan2(py, px)
-            
-            z = -((n**2 * (Az + p)**2) / (2 * Ip))
-            F1 = hyp2f1_regularized(2.5 + l + iota/2, 3 + l + iota/2, 2.5 + l, z)
-            F2 = hyp2f1_regularized(2 + l + iota/2, 0.5 * (3 + 2*l + iota), 1.5 + l, z)
-            Ylm = sph_harm(m, l, phi, theta)
-            
-            Ylmp1 = sph_harm(m+1, l, phi, theta)
-            
+            z = -((n**2 * Apsqrt) / (2 * Ip))
+            x = Apz / np.sqrt(Apsqrt)
+
+            Pl = lpmv(0, l, x)  # m=0 for LegendreP
+
+            F1 = hyp2f1(1 - l, 2 + l, 2, 0.5 - Apz / (2 * np.sqrt(Apsqrt)))
+            F2 = hyp2f1(2 + l + iota/2, 0.5 * (3 + 2*l + iota), 1.5 + l, z)
+            F3 = hyp2f1(2 + l + iota/2, 0.5 * (3 + 2*l + iota), 1.5 + l, z)
+            F4 = hyp2f1(3 + l + iota/2, 0.5 * (3 + 2*l + iota), 1.5 + l, z)
+
             term1 = (
-                -n**2 * (Az + pz) * (3 + 2*l + iota) * (4 + 2*l + iota) * F1 * Ylm
+                2 * Ip * l * (1 + l) * (p - pz) * (2 * Az + p + pz) * F1 * F2 /
+                np.sqrt(np.pi + 2 * l * np.pi)
             )
-            
-            sqrt1 = np.sqrt(1 - (Az + pz)**2 / (Az + p)**2)
-            sqrt2 = np.sqrt(gamma(1 + l - m)) * np.sqrt(gamma(2 + l + m))
-            sqrt3 = np.sqrt(gamma(l - m)) * np.sqrt(gamma(1 + l + m))
-            exp_phi = np.exp(-1j * phi)
+
+            sqrt_Ap2 = np.sqrt(Apsqrt)
             term2 = (
-                4 * Ip * F2 * (
-                    ((l - m) * (Az + pz) * Ylm) / (Az + p)**2
-                    - (exp_phi * sqrt1 * sqrt2 * Ylmp1) / (np.sqrt((Az + p)**2) * sqrt3)
-                )
+                4 * Ip * np.sqrt(Apsqrt / (np.pi + 2 * l * np.pi)) * (Az + pz) *
+                (
+                    -(4 + l + iota) * F3 +
+                    (4 + 2*l + iota) * F4
+                ) * Pl
             )
-            sum += prefactor * (term1 + term2)
-        return sum
+
+            result += prefactor * (term1 + term2)
+        return result
+
+def test2element(E_g, VP_p, pz, p):
+    return (pz+VP_p)/(p**2+VP_p**2+2*pz*VP_p+2*E_g)**3
+
+def testelement(Ip, Az, pz, p):
+    numerator = - (Az + pz) #*16 * 2**(3/4) * Ip**2
+    denominator = ((2 * Ip + (Az + p)**2)**3) #*np.sqrt(Ip**(3/2))
+    return numerator / denominator

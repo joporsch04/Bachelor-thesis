@@ -18,7 +18,7 @@ from numba import njit, typed, types, prange
 import json
 # from numba.core import types
 # from numba.typed import Dict
-from matrixElements import transitionElement, get_coefficients, get_eigenEnergy, get_hydrogen_states
+from matrixElements import transitionElement, get_coefficients, get_eigenEnergy, get_hydrogen_states, testelement, test2element
 import matplotlib.pyplot as plt
 
 ########################
@@ -125,8 +125,6 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
     pz=p*np.cos(theta)
     counter = 0
     if (excitedStates!=0):
-        px=pz*0+1e10
-        py=pz*0+1e10
         coefficients = get_coefficients(excitedStates, tar)
         eigenEnergy = get_eigenEnergy(excitedStates)
         config = get_hydrogen_states(excitedStates)
@@ -143,11 +141,12 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                     VP_p=VP[tp]-VPt
                     VP_m=VP[tm]-VPt
                     counter += 1
-                    #print("counter", counter)
+                    print("counter", counter)
                     for states in range(excitedStates):
-                        print(transitionElement(1, 0, 0, p, px, py, pz, VP_p, E_g))
                         nH, lH, mH = config[states]
-                        f_t_1= transitionElement(nH, lH, 0, p, px, py, pz, VP_p, E_g)*transitionElement(nH, lH, 0, p, px, py, pz, VP_m, E_g)
+                        #f_t_1= test2element(E_g, VP_p, pz, p)*test2element(E_g, VP_m, pz, p)
+                        f_t_1= transitionElement(nH, lH, p, pz, VP_p, E_g)*transitionElement(nH, lH, p, pz, VP_m, E_g)
+                        #f_t_1=testelement(E_g, VP_p, pz, p)*testelement(E_g, VP_m, pz, p)
                         #f_t_1= (pz+VP_p)/(p**2+VP_p**2+2*pz*VP_p+2*E_g)**3*(pz+VP_m)/(p**2+VP_m**2+2*pz*VP_m+2*E_g)**3
                         G1_T_p=np.trapz(f_t_1*np.exp(1j*pz*DelA)*np.sin(theta), Theta_grid)
                         G1_T=np.trapz(G1_T_p*window*p_grid**2*np.exp(1j*p_grid**2*T), p_grid)
@@ -156,15 +155,6 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                         f0[i, j] = EF[tp]*EF[tm]*G1_T
 
         for states in range(excitedStates):
-            if np.any(np.isnan(coefficients[states,:])):
-                print(f"NaN in coefficients")
-            if np.any(np.isnan(f0)):
-                print("NaN in f0!")
-            if np.any(np.isnan(phase0)):
-                print("NaN in phase0!")
-            plt.plot(tar, coefficients[states,:])
-            plt.show()
-            plt.close()
             plt.plot(Tar, 2*np.real(IOF(Tar, f0, (phase0)*1j)))
             plt.show()
             plt.close()
