@@ -46,7 +46,7 @@ def get_hydrogen_states(maxStates):
 def hyp2f1_regularized(a, b, c, z):
     return hyp2f1(a, b, c, z) / gamma(c)
 
-def transitionElement(n, l, p, pz, Az, Ip):
+def transitionElement(n, l, m, p, pz, Az, Ip):
     result = 0
     Apsqrt = Az**2 + p**2 + 2*Az*pz +1e-14
     Apz = Az + pz
@@ -90,3 +90,14 @@ def transitionElement(n, l, p, pz, Az, Ip):
 
         result += prefactor * (term1 + term2)
     return result
+
+def transitionElementtest(n, l, m, p, pz, Az, Ip):
+    termsqrt = Az**2 + p**2 + 2*Az*pz + 1e-14
+    if n == 2:
+        numerator = 128 * 2**(1/4) * Ip**2 * (Ip - termsqrt) * (Az + pz)
+        denominator = (np.sqrt(Ip**(3/2)) *(Ip + 2 * termsqrt)**4 *np.pi)
+        return numerator / denominator
+    elif n == 1:
+        numerator = 16 * 2**(3/4) * Ip**2 * (Az + pz)
+        denominator = (np.sqrt(Ip**(3/2)) *(2 * Ip + termsqrt)**3 * np.pi)
+        return numerator / denominator
