@@ -125,11 +125,15 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
     pz=p*np.cos(theta)
     counter = 0
     if (excitedStates!=0):
-        coefficients = get_coefficients(excitedStates, tar)
+        EF_grid=np.arange(-N, N+1, 1) * dT
+        coefficients = get_coefficients(excitedStates, EF_grid)
+        c = coefficients
         eigenEnergy = get_eigenEnergy(excitedStates)
         config = get_hydrogen_states(excitedStates)
         rate = np.zeros(tar.size, dtype=np.cdouble)
         for state in range(excitedStates):
+            f0 = np.zeros((Tar.size, tar.size), dtype=np.cdouble)
+            phase0 = np.zeros((Tar.size, tar.size), dtype=np.cdouble)
             for i in prange(Tar.size):
                 Ti=Ti_ar[i]
                 for j in range(tar.size):
@@ -143,7 +147,7 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                         VP_p=VP[tp]-VPt
                         VP_m=VP[tm]-VPt
                         counter += 1
-                        #print("counter", counter)         #first state and normal SFA are exactly 4pi apart
+                        #print("counter", counter)         #first state and normal SFA are exactly 4pi apart 
                         nH, lH, mH = config[state]
                         f_t_1= transitionElementtest(nH, lH, mH, p, pz, VP_p, E_g)*transitionElementtest(nH, lH, mH, p, pz, VP_m, E_g)
                         #f_t_1= (pz+VP_p)/(p**2+VP_p**2+2*pz*VP_p+2*E_g)**3*(pz+VP_m)/(p**2+VP_m**2+2*pz*VP_m+2*E_g)**3
@@ -151,10 +155,10 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                         G1_T=np.trapz(G1_T_p*window*p_grid**2*np.exp(1j*p_grid**2*T), p_grid)
                         DelA = DelA + 2 * VPt * T
                         phase0[i, j]  = (intA2[tp] - intA2[tm])/2  + T*VPt**2-VPt*DelA -2*eigenEnergy[state]*T
-                        f0[i, j] = EF[tp]*EF[tm]*G1_T
-
-            c = coefficients[state,:]
-            rate += 2*np.real(IOF(Tar, f0*c[np.newaxis, :], (phase0)*1j))
+                        f0[i, j] = EF[tp]*EF[tm]*G1_T*(np.real(c[state,tp])*np.real(c[state,tm])+np.imag(c[state,tp])*np.imag(c[state,tm]))
+                        #print("coefficients", np.real(c[state,tp])*np.real(c[state,tm])+np.imag(c[state,tp])*np.imag(c[state,tm]))
+            #c = coefficients[state,:]
+            rate += 2*np.real(IOF(Tar, f0, (phase0)*1j))    #*c[np.newaxis, :]
         return rate
     else:
         for i in prange(Tar.size):

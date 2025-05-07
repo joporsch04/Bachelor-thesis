@@ -10,7 +10,7 @@ def get_eigenEnergy(excitedStates):
     return np.array([0.5*1/(i**2) for i in range(1, excitedStates+1)])
 
 def get_coefficients(excitedStates, t_grid):
-    df=pd.read_csv("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0012/expec", sep='\s+', header=8)
+    df=pd.read_csv("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0013/expec", sep='\s+', header=8)
     #shift every column name by one and remove the first column
     df.columns = df.columns[1:].tolist() + [""]
     #remove last column
@@ -20,8 +20,8 @@ def get_coefficients(excitedStates, t_grid):
 
     c_list = []
     for i in range(excitedStates):
-        #c = np.array(df[f"Re{{<H0:{i}|psi>}}"]) + np.array(df[f"Imag{{<H0:{i}|psi>}}"]) * 1j
-        c = np.array(df[f"<Occ{{H0:{i}}}>"])
+        c = np.array(df[f"Re{{<H0:{i}|psi>}}"]) + np.array(df[f"Imag{{<H0:{i}|psi>}}"]) * 1j
+        #c = np.array(df[f"<Occ{{H0:{i}}}>"])
         interp_real = interp1d(time, c.real, kind='cubic', fill_value="extrapolate")
         interp_imag = interp1d(time, c.imag, kind='cubic', fill_value="extrapolate")
         c_interp = interp_real(t_grid) + 1j * interp_imag(t_grid)
@@ -94,10 +94,12 @@ def transitionElement(n, l, m, p, pz, Az, Ip):
 def transitionElementtest(n, l, m, p, pz, Az, Ip):
     termsqrt = Az**2 + p**2 + 2*Az*pz + 1e-14
     if n == 2:
+        print("n=2")
         numerator = 128 * 2**(1/4) * Ip**2 * (Ip - termsqrt) * (Az + pz)
         denominator = (np.sqrt(Ip**(3/2)) *(Ip + 2 * termsqrt)**4 *np.pi)
         return numerator / denominator
     elif n == 1:
+        print("n=1")
         numerator = 16 * 2**(3/4) * Ip**2 * (Az + pz)
         denominator = (np.sqrt(Ip**(3/2)) *(2 * Ip + termsqrt)**3 * np.pi)
         return numerator / denominator
