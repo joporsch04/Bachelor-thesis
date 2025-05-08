@@ -1,11 +1,11 @@
 We want to derive the general transition dipole matrix elements into the continuum for an hydrogen-like atom. The general matrix element in our case is given by:
 \begin{equation*}
-    \uvec{d}(\uvec{p}) = \braket{\Pi|\vec{\hat{d}}|\Psi_{nlm}} = e\braket{p|\vec{\hat{r}}|\Psi_{nlm}}
+    \uvec{d}(\uvec{p}) = \braket{\Pi|\vec{\hat{d}}|\Psi_{nlm}} \stackrel{\mathrm{a.u.}}{=} \braket{p|\vec{\hat{r}}|\Psi_{nlm}}
 \end{equation*}
 With $\ket{p}$ being a plane wave. By partitioning the $\hat{\vec{1}}$, and using the fact that $\vec{\hat{r}} \rightarrow i\nabla_{\uvec{p}}$ %Interesting because by choosing a certain way to display the operator we also choose a natural basis for the representation of the operator. Therefore I write \nabla_{\uvec{p}} instead of \nabla_{\vec{p}}.
 in momentum representation we find a generel formula for the transition:
 \begin{equation*}
-    \uvec{d}(\uvec{p}) = ie\nabla_{\uvec{p}}\int \dd^3\uvec{x}\,\psi_{nlm}(\uvec{x}) e^{-i\uvec{p}\cdot\uvec{x}} = ie\nabla_{\uvec{p}}\phi_{nlm}(\uvec{p})
+    \uvec{d}(\uvec{p}) = i\nabla_{\uvec{p}}\int \dd^3\uvec{x}\,\psi_{nlm}(\uvec{x}) e^{-i\uvec{p}\cdot\uvec{x}} = i\nabla_{\uvec{p}}\phi_{nlm}(\uvec{p})
 \end{equation*}
 In principle, this integral or more precise the Fouriertransformation of the wavefunction is all we need to do.
 Because of the structure of $\psi_{nlm}$ we can expect a result simular to (eqref psi=RY).
@@ -19,7 +19,7 @@ With $F_{nl}(p)$ being the Fouriertransform of the radial part of the wavefuncti
 
 
 %%%%%%%%%%%%%%%%%%%%%%%
-\section{Derivation}
+\section{Momentum space}
 We start with the so called plane wave expansion \cite{Jackson:1998nia} of the exponential part of the integral:
 \begin{equation*}
     e^{i\uvec{p}\cdot\uvec{x}} = \sum_{l'=0}^\infty (2l'+1)i^{l'} j_{l'}(pr) P_{l'}(\uvec{p}\cdot\uvec{x}) = 4\pi\sum_{l'=0}^\infty \sum_{m'=-l'}^{l'} i^{l'} j_{l'}(pr) Y_{l'm'}(\theta_p, \phi_p) Y_{l'm'}^*(\theta_x, \phi_x)
@@ -52,15 +52,16 @@ Now it is a good time to write all the prefactors and summations in one expressi
 \end{align*}
 To calculate the remaining Integral, I used mathematica, so I can not give a detailed explanation of that. Interestingly, there is an analytical solution for that. 
 The result for $(*)$ is:
-\begin{equation}
+\begin{equation*}
     (*) = {}_2\tilde{F}_1\left(2 + l + \frac{\iota}{2}, \frac{1}{2}(5 + 2l + \iota); \frac{3}{2} + l; -\frac{n^2 p^2}{Z^2}\right)
-\end{equation}
+\end{equation*}
 With ${}_2\tilde{F}_1$ being the regularized hypergeometric function defined by:
 \begin{equation*}
     {}_2\tilde{F}_1(a,b;c;z) = \frac{{}_2F_1(a,b;c;z)}{\Gamma(c)} = \frac{1}{\Gamma(a)\,\Gamma(b)} \sum_{n=0}^{\infty} \frac{\Gamma(a+n)\,\Gamma(b+n)}{\Gamma(c+n)} \frac{z^n}{n!}
 \end{equation*}
 The final formula $\phi_{nlm}(\uvec{p})$ that can be also found in [atoms and molekulse] in slightely different form, can then be expressed as:
 \begin{align}
+    \label{eq:phi_nlm}
     \phi_{nlm}(\uvec{p}) = \sum_{\iota=0}^{2l+1} \;
         & \frac{(-1)^{\iota} \; 2^{\iota + \frac{1}{2}} \; n \; (i n)^l \; (p^2)^{l/2} \; Z^{-l-3} \; \Gamma(2l+\iota+3)}{\iota!} \nonumber \\
         & \times \binom{l+n}{-l+n-\iota-1} 
@@ -68,6 +69,18 @@ The final formula $\phi_{nlm}(\uvec{p})$ that can be also found in [atoms and mo
         & \times Y_l^m(\theta_p, \phi_p) \,
         {}_2\tilde{F}_1\left(l+\frac{\iota}{2}+2, \frac{1}{2}(2l+\iota+3); l+\frac{3}{2}; -\frac{n^2 p^2}{Z^2}\right)
 \end{align}
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%
+\section{Transition Element}
+Now all thats left is to differentiate \eqref{eq:phi_nlm} with respect to $\uvec{p}$. 
+
 
 new eq
 \begin{align}

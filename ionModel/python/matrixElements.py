@@ -48,7 +48,7 @@ def hyp2f1_regularized(a, b, c, z):
 
 def transitionElement(n, l, m, p, pz, Az, Ip):
     result = 0
-    Apsqrt = Az**2 + p**2 + 2*Az*pz +1e-14
+    Apsqrt = Az**2 + p**2 + 2*Az*pz +1e-14 #can also take the limit
     Apz = Az + pz
     sqrt_pi = np.sqrt(np.pi)
     for iota in range(0, -1 - l + n + 1):
@@ -94,12 +94,10 @@ def transitionElement(n, l, m, p, pz, Az, Ip):
 def transitionElementtest(n, l, m, p, pz, Az, Ip):
     termsqrt = Az**2 + p**2 + 2*Az*pz + 1e-14
     if n == 2:
-        print("n=2")
         numerator = 128 * 2**(1/4) * Ip**2 * (Ip - termsqrt) * (Az + pz)
         denominator = (np.sqrt(Ip**(3/2)) *(Ip + 2 * termsqrt)**4 *np.pi)
         return numerator / denominator
     elif n == 1:
-        print("n=1")
         numerator = 16 * 2**(3/4) * Ip**2 * (Az + pz)
         denominator = (np.sqrt(Ip**(3/2)) *(2 * Ip + termsqrt)**3 * np.pi)
         return numerator / denominator

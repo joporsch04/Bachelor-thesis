@@ -154,11 +154,10 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                         G1_T_p=np.trapz(f_t_1*np.exp(1j*pz*DelA)*np.sin(theta), Theta_grid)
                         G1_T=np.trapz(G1_T_p*window*p_grid**2*np.exp(1j*p_grid**2*T), p_grid)
                         DelA = DelA + 2 * VPt * T
-                        phase0[i, j]  = (intA2[tp] - intA2[tm])/2  + T*VPt**2-VPt*DelA -2*eigenEnergy[state]*T
-                        f0[i, j] = EF[tp]*EF[tm]*G1_T*(np.real(c[tp])*np.real(c[tm])+np.imag(c[tp])*np.imag(c[tm]))
-                        #print("coefficients", np.real(c[state,tp])*np.real(c[state,tm])+np.imag(c[state,tp])*np.imag(c[state,tm]))
-            #c = coefficients[state,:]
-            rate += 2*np.real(IOF(Tar, f0, (phase0)*1j))    #*c[np.newaxis, :]
+                        phase0[i, j]  = (intA2[tp] - intA2[tm])/2  + T*VPt**2-VPt*DelA +2*E_g*T
+                        f0[i, j] = EF[tp]*EF[tm]*G1_T*np.conjugate(c[tp])*c[tm]#(np.real(c[tp])*np.real(c[tm])+np.imag(c[tp])*np.imag(c[tm]))
+
+            rate += 2*(IOF(Tar, f0, (phase0)*1j))    #*c[np.newaxis, :]
         return rate
     else:
         for i in prange(Tar.size):
@@ -229,8 +228,8 @@ def Kernel_jit(t_grid, T_grid, laser_field, param_dict, kernel_type="GASFIR", ex
     for key, value in param_dict.items():
         params[key]=value
     if kernel_type=="exact_SFA":
-        div_theta=param_dict["div_theta"]
-        div_p=param_dict["div_p"]
+        div_theta=param_dict["div_theta"]*32
+        div_p=param_dict["div_p"]*32
         p_grid, Theta_grid, window = get_momentum_grid(div_p, div_theta, laser_field, Ip=param_dict["E_g"])
         #print(p_grid.size, Theta_grid.size)
         p, theta = meshgrid(p_grid, Theta_grid)
