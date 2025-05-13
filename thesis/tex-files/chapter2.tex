@@ -11,10 +11,11 @@ $\psi_{n, l, m}(r, \theta, \phi)$ for the wavefunction of hydrogen in spherical 
 I use underlined vectors when they are the coordinates and bold vectors when they are abstract elements in a vector space. \\
 The canonical momentum $\uvec{P}$ parametrises the phase space but the kinetic momentum does not so kinetic momentum $\hat{=} \vec{p}$.\\
 The position and momentum operator are in boldface $\hat{\vec{x}}$ because they do not choose any kind of basis not even a representation in which they are displayed.\\
-When i use $\ket{\vec{k}}$ I mean a plane wave solution so "special" a continuum state.
+When i use $\ket{\vec{k}}$ I mean a plane wave solution so "special" a continuum state.\\
+A $\cdot$ denotes a scalar product between two vectors, $\times$ is just normal multiplication. \\
 
 
-This chapter mainly follows \cite{Ivanov20012005} with some modifications.
+The strucutre in this chapter mainly follows \cite{Ivanov20012005} with some modifications.
 
 
 
@@ -162,20 +163,21 @@ where $\hat{\vec{d}}=e\vec{\hat{x}}$ is the dipole operator and $\vec{E}(t)$ is 
 For making the strong field approximation we first have to obtain a point where is its good to use. 
 When we treat $\hat{V}_I(t)$ as the interaction term, we can write an exakt solution to \eqref{eq:schroedinger}:
 \begin{equation}
-    \ket{\Psi(t)} = -i \int_{t_0}^{t} \dd t' e^{-i \int_{t'}^{t} \hat{\Hs}(t'') \dd t''} \hat{V}_I(t') e^{-i \int_{t_0}^{t'} \hat{\Hs_0}(t'') \dd t''} \ket{\Psi(0)} + e^{-i \int_{t_0}^{t} \hat{\Hs_0}(t') \dd t'} \ket{\Psi(0)} \label{eq:schroedingerSolPart}
+    \ket{\Psi(t)} = -i \int_{t_0}^{t} \dd t' e^{-i \int_{t'}^{t} \hat{\Hs}(t'') \dd t''} \hat{V}_I(t') e^{-i \int_{t_0}^{t'} \hat{\Hs_0}(t'') \dd t''} \sum_{n}c_n(t')\ket{\Psi_n} + e^{-i \int_{t_0}^{t} \hat{\Hs_0}(t') \dd t'} \sum_{n}c_n(t')\ket{\Psi_n}\label{eq:schroedingerSolPart}
 \end{equation}
-as can be checked by inserting the solution into the Schrödinger equation using the parameter Integral trick. 
+as can be checked by inserting the solution into the Schrödinger equation.\\
+The key difference in this formula compared to other literature is the fact that instead of choosing the ground state as the initial state, we use a timdependent superposition of all states $\sum_{n}c_n(t')\ket{\Psi_n}$.
+Why this solution even works and for more details, see \ref{sec:tdsesolution}.\\
 To make this expression more appealing we can project it into an eigenstate in the continuum ie a electron state characterized by its velocity.
 As can be seen in the following, the last term in \eqref{eq:schroedingerSolPart} is now gone because there can be no overlap between a continuum state and the initial state.
 \begin{equation}
-    \braket{\Pi(t_c)|\Psi(t)} = -i \int_{t_0}^{t} \dd t' \bra{\Pi(t=t_c)} e^{-i \int_{t'}^{t} \hat{\Hs}(t'') \dd t''}\hat{V}_I(t') e^{-i \int_{t_0}^{t'} \hat{\Hs_0} \dd t''} \ket{\Psi(0)}
+    \braket{\Pi(t_c)|\Psi(t)} = -i \int_{t_0}^{t} \dd t' \bra{\Pi(t=t_c)} e^{-i \int_{t'}^{t} \hat{\Hs}(t'') \dd t''}\hat{V}_I(t') e^{-i \int_{t_0}^{t'} \hat{\Hs_0} \dd t''} \sum_{n}c_n(t')\ket{\Psi_n}
 \end{equation}
-With $\ket{\Pi(t_c)}$ being a continuum state with momentum $\uvec{p}$ at time $t_c$ with $t_c$ being sufficiently big enough for the electron to be in the continuum ($t_c >> t'$). 
+With $\ket{\Pi(t_c)}$ being a continuum state with momentum $\uvec{p}$ at time $t_c$ with $t_c$ being sufficiently big enough for the electron to be in the continuum ($t_c >> t'$).\\
 Equation \eqref{eq:schroedingerSolPart} is known as the strong field S-matrix amplitude. 
 It is best to read this equation from right to left, starting with the initial state of our system and the field free time propagation of the system. 
 At moment $t'$ the Laser starts to interact with the system and it transisions into a virtual state instantaniously. 
-Note that $\ket{\Psi(0)}$ is not the ground state of the Hydrogen atom, just the initial state of the system at $t=0$.
-From time $t'$ to the observed time $t$ the system is described by the full Hamiltonian including both Laser Field and the binding potential.
+From time $t'$ to the observed time $t$ the system is described by the full Hamiltonian including both Laser Field and the binding potential.\\
 Now we have a good place to start with the strong field approximation. 
 In principle, SFA is the neglecting of the Coulomb potential once the electron is in the continuum because the Laser Field is now the dominant force acting on the electron.
 We can therefore write the term with the full Hamiltonian as
@@ -185,7 +187,8 @@ We can therefore write the term with the full Hamiltonian as
         e^{-i \int_{t'}^{t} \hat{\Hs}(t'') \dd t''} &\approx e^{-i \int_{t'}^{t} \hat{\Hs}_{SFA}(t'') \dd t''} \quad \text{with} \quad \hat{\Hs}_{SFA}(t) &= \hat{\Hs}(t) - \hat{V}_C
     \end{aligned}
 \end{equation*}
-This is very usefull because for $\hat{\Hs}_{SFA}$ we know an exact analytical solution. For that lets take another look at the semi classical Hamilton \eqref{eq:semiClassicalHamilton}. Classically, the momentum operator $\hat{\vec{P}}$ is known as the canonical momentum and is given by:
+This is very usefull because for $\hat{\Hs}_{SFA}$ we know an exact analytical solution. For that lets take another look at the semi classical Hamilton \eqref{eq:semiClassicalHamilton}. 
+Classically, the physics driven by the momentum operator $\hat{\vec{P}}$ is known as the canonical momentum and given by:
 \begin{equation*}
     \frac{\partial \Ls}{\partial \dot{\uvec{x}}} = \uvec{P} = m\uvec{\dot{x}} + \frac{e}{c}\vec{A} \stackrel{\mathrm{a.u.}}{=} \vec{p} + \vec{A}
 \end{equation*}
@@ -225,14 +228,23 @@ I need to derive in paper from manoram 2023 the same thing as app A just instead
 %%%%%%%%%%%%%%%%%%%%
 \newpage
 \section{Derivation of SFA Rate}
-For the derivation of the SFA rate we need to think more about the groudn state ...\\\\
+This mainly follows \cite{Theory_NPS} with some modification.\\
 The ground state is now a superosition $\sum_{n}c_n(t)\ket{\Psi_n}$.\\
 We can write the SFA rate as:
-\begin{equation*}
-    \braket{\Psi(t)|\hat{\vec{1}}|\Psi(t)} = \int_{\R} \Gamma(t) \dd t = 
-\end{equation*}
-
-
+\begin{align*}
+    \braket{\Psi(t)|\hat{\vec{1}}|\Psi(t)} = &\int_{-\infty}^{\infty} \Gamma(t) \dd t\\ 
+    = &\int \dd^3 p \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} \dd t_1  \dd t_2 \, e^{iIp(t_1-t_2)+\frac{i}{2}\int_{t_1}^{t_2}(\vec{p}+\vec{A}(t''))^2\dd t''} \vec{E}(t_1)\cdot\vec{E}(t_2)\\
+    &\times\left(\sum_{n}c_n^*(t_1)\vec{d}_n^*(\vec{p}+\vec{A}(t_1))\right)\cdot\left(\sum_{n}c_n(t_2)\vec{d}_n(\vec{p}+\vec{A}(t_2))\right)
+\end{align*}
+Changing variables to $t=\frac{t_1+t_2}{2}$ and $T=\frac{t_1-t_2}{2}$ and using the fact that our Laser pulse is polarized along the z Axis gives us:
+\begin{align*}
+    \Gamma(t) &= \int \dd^3 p \int_{-\infty}^{\infty} \dd T \, e^{2iIpT+\frac{i}{2}\int_{t-T}^{t+T}(\vec{p}+\vec{A}(t''))^2\dd t''} E_z(t-T)\cdot E_z(t+T)\\
+    &\times\left(\sum_{n}c_n^*(t-T)d_{z,n}^*(\vec{p}+\vec{A}(t-T))\right)\cdot\left(\sum_{n}c_n(t+T)d_{z,n}(\vec{p}+\vec{A}(t+T))\right)
+\end{align*}
+\begin{align*}
+    \Gamma(t) &= \sum_{n_1}\sum_{n_2}\int \dd^3 p \int_{-\infty}^{\infty} \dd T \, e^{2iIpT+\frac{i}{2}\int_{t-T}^{t+T}(\vec{p}+\vec{A}(t''))^2\dd t''} \\
+    &\times E_z(t-T) E_z(t+T)c_{n_1}^*(t-T)c_{n_2}(t+T) d_{z,n_1}^*(\vec{p}+\vec{A}(t-T))d_{z,n_2}(\vec{p}+\vec{A}(t+T))
+\end{align*}
 
 
 %%%%%%%%%%%%%%%%%%%%%

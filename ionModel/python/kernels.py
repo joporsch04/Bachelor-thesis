@@ -131,33 +131,40 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
         config = get_hydrogen_states(excitedStates)
         rate = np.zeros(tar.size, dtype=np.cdouble)
         for state in range(excitedStates):
-            c = coefficients[state, :]
-            f0 = np.zeros((Tar.size, tar.size), dtype=np.cdouble)
-            phase0 = np.zeros((Tar.size, tar.size), dtype=np.cdouble)
-            for i in prange(Tar.size):
-                Ti=Ti_ar[i]
-                for j in range(tar.size):
-                    tj=N+nmin+j*n
-                    tp=tj+Ti
-                    tm=tj-Ti
-                    if tp>=0 and tp<EF.size and tm>=0 and tm<EF.size:
-                        VPt = 0 # VP[tj]
-                        T= Ti*dT
-                        DelA = (intA[tp] - intA[tm])-2*VPt*T
-                        VP_p=VP[tp]-VPt
-                        VP_m=VP[tm]-VPt
-                        counter += 1
-                        #print("counter", counter)         #first state and normal SFA are exactly 4pi apart 
-                        nH, lH, mH = config[state]
-                        f_t_1= np.conjugate(transitionElement(nH, lH, mH, p, pz, VP_p, E_g))*transitionElement(nH, lH, mH, p, pz, VP_m, E_g)
-                        #f_t_1= (pz+VP_p)/(p**2+VP_p**2+2*pz*VP_p+2*E_g)**3*(pz+VP_m)/(p**2+VP_m**2+2*pz*VP_m+2*E_g)**3
-                        G1_T_p=np.trapz(f_t_1*np.exp(1j*pz*DelA)*np.sin(theta), Theta_grid)
-                        G1_T=np.trapz(G1_T_p*window*p_grid**2*np.exp(1j*p_grid**2*T), p_grid)
-                        DelA = DelA + 2 * VPt * T
-                        phase0[i, j]  = (intA2[tp] - intA2[tm])/2  + T*VPt**2-VPt*DelA +2*E_g*T
-                        f0[i, j] = EF[tp]*EF[tm]*G1_T*np.conjugate(c[tm])*c[tp]#(np.real(c[tp])*np.real(c[tm])+np.imag(c[tp])*np.imag(c[tm]))
-
-            rate += 2*(IOF(Tar, f0, (phase0)*1j))    #*c[np.newaxis, :]
+            for stateRange in range(excitedStates):
+                cLeft = coefficients[state, :]
+                cRight = coefficients[stateRange, :]
+                f0 = np.zeros((Tar.size, tar.size), dtype=np.cdouble)
+                phase0 = np.zeros((Tar.size, tar.size), dtype=np.cdouble)
+                for i in prange(Tar.size):
+                    Ti=Ti_ar[i]
+                    for j in range(tar.size):
+                        tj=N+nmin+j*n
+                        tp=tj+Ti
+                        tm=tj-Ti
+                        if tp>=0 and tp<EF.size and tm>=0 and tm<EF.size:
+                            VPt = 0 # VP[tj]
+                            T= Ti*dT
+                            DelA = (intA[tp] - intA[tm])-2*VPt*T
+                            VP_p=VP[tp]-VPt
+                            VP_m=VP[tm]-VPt
+                            counter += 1
+                            #print("counter", counter)         #first state and normal SFA are exactly 4pi apart 
+                            nL, lL, mL = config[state]
+                            nR, lR, mR = config[stateRange]
+                            f_t_1= np.conjugate(transitionElementtest(nL, lL, mL, p, pz, VP_m, E_g))*transitionElementtest(nR, lR, mR, p, pz, VP_p, E_g)
+                            #f_t_1= (pz+VP_p)/(p**2+VP_p**2+2*pz*VP_p+2*E_g)**3*(pz+VP_m)/(p**2+VP_m**2+2*pz*VP_m+2*E_g)**3
+                            G1_T_p=np.trapz(f_t_1*np.exp(1j*pz*DelA)*np.sin(theta), Theta_grid)
+                            G1_T=np.trapz(G1_T_p*window*p_grid**2*np.exp(1j*p_grid**2*T), p_grid)
+                            DelA = DelA + 2 * VPt * T
+                            phase0[i, j]  = (intA2[tp] - intA2[tm])/2  + T*VPt**2-VPt*DelA +2*E_g*T
+                            f0[i, j] = EF[tp]*EF[tm]*G1_T*np.conjugate(cLeft[tm])*cRight[tp]#(np.real(c[tp])*np.real(c[tm])+np.imag(c[tp])*np.imag(c[tm]))
+                print("state", state, "stateRange", stateRange)
+                print("config", config[state], "configRange", config[stateRange])
+                plt.plot(tar, 2*np.real(IOF(Tar, f0, (phase0)*1j)))
+                plt.show()
+                plt.close()
+                rate += 2*np.real(IOF(Tar, f0, (phase0)*1j))    #*c[np.newaxis, :]
         return rate
     else:
         for i in prange(Tar.size):
@@ -228,8 +235,8 @@ def Kernel_jit(t_grid, T_grid, laser_field, param_dict, kernel_type="GASFIR", ex
     for key, value in param_dict.items():
         params[key]=value
     if kernel_type=="exact_SFA":
-        div_theta=param_dict["div_theta"] # also gives good results for *2
-        div_p=param_dict["div_p"]
+        div_theta=param_dict["div_theta"]#*8 # also gives good results for *2
+        div_p=param_dict["div_p"]*2     # p is way harder to get a good convergence
         p_grid, Theta_grid, window = get_momentum_grid(div_p, div_theta, laser_field, Ip=param_dict["E_g"])
         #print(p_grid.size, Theta_grid.size)
         p, theta = meshgrid(p_grid, Theta_grid)
