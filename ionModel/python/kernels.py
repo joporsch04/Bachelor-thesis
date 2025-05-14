@@ -150,9 +150,7 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                             VP_m=VP[tm]-VPt
                             counter += 1
                             #print("counter", counter)         #first state and normal SFA are exactly 4pi apart 
-                            nL, lL, mL = config[state]
-                            nR, lR, mR = config[stateRange]
-                            f_t_1= np.conjugate(transitionElementtest(nL, lL, mL, p, pz, VP_m, E_g))*transitionElementtest(nR, lR, mR, p, pz, VP_p, E_g)
+                            f_t_1= np.conjugate(transitionElementtest(config[state], p, pz, VP_m, E_g))*transitionElementtest(config[stateRange], p, pz, VP_p, E_g)#for excitedState=1 use only phase of coefficients to see stark effect
                             #f_t_1= (pz+VP_p)/(p**2+VP_p**2+2*pz*VP_p+2*E_g)**3*(pz+VP_m)/(p**2+VP_m**2+2*pz*VP_m+2*E_g)**3
                             G1_T_p=np.trapz(f_t_1*np.exp(1j*pz*DelA)*np.sin(theta), Theta_grid)
                             G1_T=np.trapz(G1_T_p*window*p_grid**2*np.exp(1j*p_grid**2*T), p_grid)
@@ -235,7 +233,7 @@ def Kernel_jit(t_grid, T_grid, laser_field, param_dict, kernel_type="GASFIR", ex
     for key, value in param_dict.items():
         params[key]=value
     if kernel_type=="exact_SFA":
-        div_theta=param_dict["div_theta"]#*8 # also gives good results for *2
+        div_theta=param_dict["div_theta"] # also gives good results for *2
         div_p=param_dict["div_p"]*2     # p is way harder to get a good convergence
         p_grid, Theta_grid, window = get_momentum_grid(div_p, div_theta, laser_field, Ip=param_dict["E_g"])
         #print(p_grid.size, Theta_grid.size)

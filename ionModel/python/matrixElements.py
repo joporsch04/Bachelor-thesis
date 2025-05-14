@@ -24,7 +24,7 @@ def get_coefficients(excitedStates, t_grid):
         c = np.array(df[f"Re{{<H0:{i}|psi>}}"]) + np.array(df[f"Imag{{<H0:{i}|psi>}}"]) * 1j
         interp_real = interp1d(time, c.real, kind='cubic', fill_value="extrapolate")
         interp_imag = interp1d(time, c.imag, kind='cubic', fill_value="extrapolate")
-        c_interp = (interp_real(t_grid) + 1j * interp_imag(t_grid))#*np.exp(+1j*eigenEnergy[i]*t_grid)
+        c_interp = (interp_real(t_grid) + 1j * interp_imag(t_grid))*np.exp(-1j*eigenEnergy[i]*t_grid)
         c_list.append(c_interp)
     return np.vstack(c_list)
 
@@ -91,7 +91,8 @@ def transitionElement(n, l, m, p, pz, Az, Ip):
         result += prefactor * (term1 + term2)
     return result
 
-def transitionElementtest(n, l, m, p, pz, Az, Ip):      #first state and normal SFA are exactly 4pi apart
+def transitionElementtest(configState, p, pz, Az, Ip):      #first state and normal SFA are exactly 4pi apart
+    n, l, m = configState
     termsqrt = Az**2 + p**2 + 2*Az*pz + 1e-14
     if n == 2 and l == 0:
         numerator = 128 * 2**(1/4) * Ip**2 * (Ip - termsqrt) * (Az + pz)
