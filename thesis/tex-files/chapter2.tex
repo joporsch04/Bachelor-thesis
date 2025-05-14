@@ -216,8 +216,12 @@ Furthermore (how??)
     \ket{\Pi} = \ket{p+A}
 \end{equation*}
 \begin{equation}
-    \braket{\Xi(t_c)|\Psi(t)} = -i \int_{t_0}^{t} \dd t' e^{-i \int_{t'}^{t} \hat{\Hs}(t'') \dd t''}e^{-i \int_{t_0}^{t'} \hat{\Hs_0} \dd t''} \bra{\Xi(t=t_c)}|\vec{\hat{d}}\cdot\vec{E}(t')|\ket{\Psi(0)}
+    \braket{\Pi(t_c)|\Psi(t)} = -i \int_{t_0}^{t} \dd t' e^{-\frac{i}{2}\int_{t'}^{\infty}(\vec{p}+\vec{A}(t''))^2\dd t''}e^{-i \hat{\Hs_0} (t')} \sum_{n}c_n(t')\braket{\vec{p}+\vec{A}(t')|\vec{\hat{d}}\cdot\vec{E}(t')|\Psi_n}
 \end{equation}
+\begin{equation*}
+    = -i \int_{0}^{t} \dd t' e^{-\frac{i}{2}\int_{t'}^{\infty}(\vec{p}+\vec{A}(t''))^2\dd t''} \sum_{n}e^{-iE_n(t')}c_n(t')\vec{E}(t')\cdot\vec{d}_n(\vec{p}+\vec{A}(t'))
+\end{equation*}
+With $\vec{d}_n(\vec{p}) = \braket{\vec{p}|\vec{\hat{d}}|\Psi_n}$
 This is the equation where most papers start with \cite{Theory_NPS}.\\\\
 Note that SFA is not about strong laser pulses since here we are also dealing with small ionisation proabilities (<0.01) so SFA states that when ionisation does happen (regardless if its unlikely) the laser pulse will then be the dominant force.
 
@@ -233,16 +237,16 @@ The ground state is now a superosition $\sum_{n}c_n(t)\ket{\Psi_n}$.\\
 We can write the SFA rate as:
 \begin{align*}
     \braket{\Psi(t)|\hat{\vec{1}}|\Psi(t)} = &\int_{-\infty}^{\infty} \Gamma(t) \dd t\\ 
-    = &\int \dd^3 p \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} \dd t_1  \dd t_2 \, e^{iIp(t_1-t_2)+\frac{i}{2}\int_{t_1}^{t_2}(\vec{p}+\vec{A}(t''))^2\dd t''} \vec{E}(t_1)\cdot\vec{E}(t_2)\\
-    &\times\left(\sum_{n}c_n^*(t_1)\vec{d}_n^*(\vec{p}+\vec{A}(t_1))\right)\cdot\left(\sum_{n}c_n(t_2)\vec{d}_n(\vec{p}+\vec{A}(t_2))\right)
+    = &\int \dd^3 p \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} \dd t_1  \dd t_2 \, e^{\frac{i}{2}\int_{t_1}^{t_2}(\vec{p}+\vec{A}(t''))^2\dd t''} \vec{E}(t_1)\cdot\vec{E}(t_2)\\
+    &\times\left(\sum_{n}e^{iE_nt_1}c_n^*(t_1)\vec{d}_n^*(\vec{p}+\vec{A}(t_1))\right)\cdot\left(\sum_{n}e^{-iE_nt_2}c_n(t_2)\vec{d}_n(\vec{p}+\vec{A}(t_2))\right)
 \end{align*}
-Changing variables to $t=\frac{t_1+t_2}{2}$ and $T=\frac{t_1-t_2}{2}$ and using the fact that our Laser pulse is polarized along the z Axis gives us:
+Changing variables to $t=\frac{t_2+t_1}{2}$ and $T=\frac{t_2-t_1}{2}$ and using the fact that our Laser pulse is polarized along the z Axis gives us:
 \begin{align*}
     \Gamma(t) &= \int \dd^3 p \int_{-\infty}^{\infty} \dd T \, e^{2iIpT+\frac{i}{2}\int_{t-T}^{t+T}(\vec{p}+\vec{A}(t''))^2\dd t''} E_z(t-T)\cdot E_z(t+T)\\
-    &\times\left(\sum_{n}c_n^*(t-T)d_{z,n}^*(\vec{p}+\vec{A}(t-T))\right)\cdot\left(\sum_{n}c_n(t+T)d_{z,n}(\vec{p}+\vec{A}(t+T))\right)
+    &\times\left(\sum_{n}e^{iE_n(t-T)}c_n^*(t-T)d_{z,n}^*(\vec{p}+\vec{A}(t-T))\right)\cdot\left(\sum_{n}e^{-iE_n(t+T)}c_n(t+T)d_{z,n}(\vec{p}+\vec{A}(t+T))\right)
 \end{align*}
 \begin{align*}
-    \Gamma(t) &= \sum_{n_1}\sum_{n_2}\int \dd^3 p \int_{-\infty}^{\infty} \dd T \, e^{2iIpT+\frac{i}{2}\int_{t-T}^{t+T}(\vec{p}+\vec{A}(t''))^2\dd t''} \\
+    \Gamma(t) &= \sum_{n_1}\sum_{n_2}\int \dd^3 p \int_{-\infty}^{\infty} \dd T \, e^{\frac{i}{2}\int_{t-T}^{t+T}(\vec{p}+\vec{A}(t''))^2\dd t''} e^{iE_{n_1}(t-T)-iE_{n_1}(t+T)}\\
     &\times E_z(t-T) E_z(t+T)c_{n_1}^*(t-T)c_{n_2}(t+T) d_{z,n_1}^*(\vec{p}+\vec{A}(t-T))d_{z,n_2}(\vec{p}+\vec{A}(t+T))
 \end{align*}
 

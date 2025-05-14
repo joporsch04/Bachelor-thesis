@@ -157,7 +157,7 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                             G1_T_p=np.trapz(f_t_1*np.exp(1j*pz*DelA)*np.sin(theta), Theta_grid)
                             G1_T=np.trapz(G1_T_p*window*p_grid**2*np.exp(1j*p_grid**2*T), p_grid)
                             DelA = DelA + 2 * VPt * T
-                            phase0[i, j]  = (intA2[tp] - intA2[tm])/2  + T*VPt**2-VPt*DelA +2*E_g*T
+                            phase0[i, j]  = (intA2[tp] - intA2[tm])/2  + T*VPt**2-VPt*DelA + (eigenEnergy[state]*tm*0.25 - eigenEnergy[stateRange]*tp*0.25)*0 +2*E_g*T
                             f0[i, j] = EF[tp]*EF[tm]*G1_T*np.conjugate(cLeft[tm])*cRight[tp]#(np.real(c[tp])*np.real(c[tm])+np.imag(c[tp])*np.imag(c[tm]))
                 print("state", state, "stateRange", stateRange)
                 print("config", config[state], "configRange", config[stateRange])

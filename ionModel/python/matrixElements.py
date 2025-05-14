@@ -24,7 +24,7 @@ def get_coefficients(excitedStates, t_grid):
         c = np.array(df[f"Re{{<H0:{i}|psi>}}"]) + np.array(df[f"Imag{{<H0:{i}|psi>}}"]) * 1j
         interp_real = interp1d(time, c.real, kind='cubic', fill_value="extrapolate")
         interp_imag = interp1d(time, c.imag, kind='cubic', fill_value="extrapolate")
-        c_interp = (interp_real(t_grid) + 1j * interp_imag(t_grid))*np.exp(-1j*eigenEnergy[i]*t_grid)
+        c_interp = (interp_real(t_grid) + 1j * interp_imag(t_grid))#*np.exp(+1j*eigenEnergy[i]*t_grid)
         c_list.append(c_interp)
     return np.vstack(c_list)
 
