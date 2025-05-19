@@ -162,6 +162,9 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                 plt.plot(tar, 2*np.real(IOF(Tar, f0, (phase0)*1j)))
                 plt.show()
                 plt.close()
+                plt.plot(EF_grid, (np.real(cLeft)*np.real(cRight)+np.imag(cLeft)*np.imag(cRight)), label=f"cRight {state}")
+                plt.show()
+                plt.close()
                 rate += 2*np.real(IOF(Tar, f0, (phase0)*1j))    #*c[np.newaxis, :]
         return rate
     else:

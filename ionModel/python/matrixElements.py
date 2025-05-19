@@ -4,6 +4,8 @@ from scipy.special import gamma, binom, hyp2f1, sph_harm, lpmv
 from scipy.interpolate import interp1d
 import plotly.graph_objects as go
 
+from coeffNumerical import get_coeffNumerical
+
 #print(get_coefficients(4)[1,:])
 
 def get_eigenEnergy(excitedStates):
@@ -21,10 +23,11 @@ def get_coefficients(excitedStates, t_grid):
     eigenEnergy = get_eigenEnergy(excitedStates)
     c_list = []
     for i in range(excitedStates):
-        c = np.array(df[f"Re{{<H0:{i}|psi>}}"]) + np.array(df[f"Imag{{<H0:{i}|psi>}}"]) * 1j
+        #c = np.array(df[f"Re{{<H0:{i}|psi>}}"]) + np.array(df[f"Imag{{<H0:{i}|psi>}}"]) * 1j
+        c = get_coeffNumerical(time, i)
         interp_real = interp1d(time, c.real, kind='cubic', fill_value="extrapolate")
         interp_imag = interp1d(time, c.imag, kind='cubic', fill_value="extrapolate")
-        c_interp = (interp_real(t_grid) + 1j * interp_imag(t_grid))*np.exp(-1j*eigenEnergy[i]*t_grid)
+        c_interp = (interp_real(t_grid) + 1j * interp_imag(t_grid))#*np.exp(-1j*eigenEnergy[i]*t_grid)
         c_list.append(c_interp)
     return np.vstack(c_list)
 
