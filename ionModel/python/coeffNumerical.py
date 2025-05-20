@@ -124,7 +124,7 @@ def get_coeffNumerical(time, state):
 
 
 
-    # --- Basis Set ---
+
     basis_states = []
     max_n_basis = 3
     for n_val in range(1, max_n_basis + 1):
@@ -143,10 +143,7 @@ def get_coeffNumerical(time, state):
                 z_jk_matrix[j, k] = val
                 z_jk_matrix[k, j] = val
 
-    # --- 4. Coupled ODEs ---
 
-
-    # --- 5. Numerical Solution ---
     s1_state = HydrogenState(1,0,0)
     idx_1s = basis_states.index(s1_state)
     c_initial = np.zeros(num_states, dtype=np.complex128)

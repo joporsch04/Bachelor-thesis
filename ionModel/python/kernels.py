@@ -132,6 +132,8 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
         rate = np.zeros(tar.size, dtype=np.cdouble)
         for state in range(excitedStates):
             for stateRange in range(excitedStates):
+                if state!=stateRange:
+                    continue
                 cLeft = coefficients[state, :]
                 cRight = coefficients[stateRange, :]
                 f0 = np.zeros((Tar.size, tar.size), dtype=np.cdouble)
@@ -166,6 +168,9 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                 plt.show()
                 plt.close()
                 rate += 2*np.real(IOF(Tar, f0, (phase0)*1j))    #*c[np.newaxis, :]
+                plt.plot(tar, rate)
+                plt.show()
+                plt.close()
         return rate
     else:
         for i in prange(Tar.size):

@@ -20,35 +20,36 @@ The strucutre in this chapter mainly follows \cite{Ivanov20012005} with some mod
 
 
 %%%%%%%%%%%%%%%%%%%%%
+\newpage
 \section{Basic Formalism}
-Our goal is to come up with a expression were we can 
+Our goal is to come up with a expression were we can use the strong field approximation effectively.
+We want the time evolution of a quantum system in the presence of an external time dependent field in order to describe the strong field ionization later on.
+For that we first need to solve the schroedinger equation for a given Hamiltonian.
 
 
 \subsection{Schrödinger Equation}
-
-Basic Definitions of schröfinger qe, light dyson series, and strong field s matrix
-
-We want the time evolution of a quantum system in the presence of an external time dependent field in order to describe the strong field ionization later on.
 The time evolution of a quantum system is given by the time dependent Schrödinger equation and a general hamiltonian
 \begin{equation}
     i \frac{\partial}{\partial t} \ket{\Psi(t)} = \hat{\Hs}(t) \ket{\Psi(t)}. \label{eq:schroedinger}
 \end{equation}
 The formal solution depends on the time dependence of the hamiltonian and the physical setting. 
-In the following we assume \footnote{How? Later. No physical setting bzw no approximations yet. Its better to juistify it later but have a working formalism instead of the other way around.} (IMPORTANT) that $[\hat{\Hs}(t), \hat{\Hs}(t')] = 0$ so we assume some sort of quasi static approximation to the Hamiltons time evolution. 
+With no further assumptions about our Hamiltonian becasue $[\hat{\Hs}(t), \hat{\Hs}(t')] \neq 0$ we can write the formal solution to \eqref{eq:schroedinger} as a Dyson series:
 The solution is then given by 
 \begin{equation}
-    \ket{\Psi(t)} = e^{-i \int_{t_0}^{t} \hat{\Hs}(t') dt'} \ket{\Psi(t=0)} = \hat{\U}(t)\ket{\Psi(0)}
+    \ket{\Psi(t)} = \hat{\U}(t)\ket{\Psi(0)} = \hat{1} + \sum_{n=1}^{\infty} (-i)^n \int_{t_0}^{t} \dd t_1 \int_{t_0}^{t_1} \dd t_2 \cdots \int_{t_0}^{t_{n-1}} \dd t_n \hat{\Hs}(t_n) \hat{\Hs}(t_{n-1})\cdots\hat{\Hs}(t_1) \ket{\Psi(0)}. \label{eq:dyson}
 \end{equation}
-Now its time so establish a physical setting. We have Hydrogen Atom with nucleus and electron described by time indepentent Hamilton $\hat{\Hs}_0$. 
-The external laser Field is described by an time dependent part $\hat{V}_I(t)$. To describe the interaction of the atom with the laser field we use in the following the dipole approximation.\\
-There are two ways of representing $\ket{\Psi(t)}$, schroedinger and interaction picture. Coefficients.
-
+% Now its time so establish a physical setting. We have Hydrogen Atom with nucleus and electron described by time indepentent Hamilton $\hat{\Hs}_0$. 
+% The external laser Field is described by an time dependent part $\hat{V}(t)$. To describe the interaction of the atom with the laser field we use in the following the dipole approximation.\\
+% There are two ways of representing $\ket{\Psi(t)}$, schroedinger and interaction picture. Coefficients.
+\subsection{Interaction picture and Projection operators}
+Solving the schroedinger equation can be cumbersome, especially when we have to deal with a time dependent Hamiltonian that doesnt commutate with itself at different times.
+To make the calculations easier we can use projection operators with a method called feshbach method within the interaction picture.
 
 
 
 
 %%%%%%%%%%%%%%%%%%%%%
-\newpage
+%\newpage
 \subsection{Light-Matter Interaction}
 A light wave is defined by the Maxwell equations
 \begin{equation*}
@@ -236,7 +237,7 @@ This mainly follows \cite{Theory_NPS} with some modification.\\
 The ground state is now a superosition $\sum_{n}c_n(t)\ket{\Psi_n}$.\\
 We can write the SFA rate as:
 \begin{align*}
-    \braket{\Psi(t)|\hat{\vec{1}}|\Psi(t)} = &\int_{-\infty}^{\infty} \Gamma(t) \dd t\\ 
+    \braket{\Psi(t)|\Psi(t)} = &\int_{-\infty}^{\infty} \Gamma(t) \dd t\\ 
     = &\int \dd^3 p \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} \dd t_1  \dd t_2 \, e^{\frac{i}{2}\int_{t_1}^{t_2}(\vec{p}+\vec{A}(t''))^2\dd t''} \vec{E}(t_1)\cdot\vec{E}(t_2)\\
     &\times\left(\sum_{n}e^{iE_nt_1}c_n^*(t_1)\vec{d}_n^*(\vec{p}+\vec{A}(t_1))\right)\cdot\left(\sum_{n}e^{-iE_nt_2}c_n(t_2)\vec{d}_n(\vec{p}+\vec{A}(t_2))\right)
 \end{align*}
