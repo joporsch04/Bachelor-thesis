@@ -149,7 +149,7 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                             T= Ti*dT
                             DelA = (intA[tp] - intA[tm])-2*VPt*T
                             VP_p=VP[tp]-VPt
-                            VP_m=VP[tm]-VPt
+                            VP_m=VP[tm]-VPt # to save computation time we can neglect cross terms!! just look at formula for <p|d|psi> there is i^l and because of the transition rules l has to be +-1 so if we sum over all states and one is complex conjugatet and we sum it up they will cancel out !!! but be carefull we only can use states that are allowed theoretically
                             counter += 1
                             #print("counter", counter)         #first state and normal SFA are exactly 4pi apart 
                             f_t_1= np.conjugate(transitionElementtest(config[state], p, pz, VP_m, E_g))*transitionElementtest(config[stateRange], p, pz, VP_p, E_g)#for excitedState=1 use only phase of coefficients to see stark effect
