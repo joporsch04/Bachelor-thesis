@@ -20,6 +20,8 @@ import json
 # from numba.typed import Dict
 from matrixElements import transitionElement, get_coefficients, get_eigenEnergy, get_hydrogen_states, transitionElementtest
 import matplotlib.pyplot as plt
+import csv
+import plotly.graph_objects as go
 
 ########################
 
@@ -119,8 +121,6 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
         f0 (np.ndarray, shape=(T_grid.size, t_grid.size)): 2d grid to store pre-exponential
         phase0 (np.ndarray, shape=(T_grid.size, t_grid.size)):2d grid storing complex agument of the exponential function
     """
-    f0 = np.zeros((Tar.size, tar.size), dtype=np.cdouble)
-    phase0 = np.zeros((Tar.size, tar.size), dtype=np.cdouble)
     E_g = params['E_g']
     pz=p*np.cos(theta)
     counter = 0
@@ -130,49 +130,60 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
         eigenEnergy = get_eigenEnergy(excitedStates)
         config = get_hydrogen_states(excitedStates)
         rate = np.zeros(tar.size, dtype=np.cdouble)
-        for state in range(excitedStates):
-            for stateRange in range(excitedStates):
-                if state!=stateRange:
-                    continue
-                cLeft = coefficients[state, :]
-                cRight = coefficients[stateRange, :]
-                f0 = np.zeros((Tar.size, tar.size), dtype=np.cdouble)
-                phase0 = np.zeros((Tar.size, tar.size), dtype=np.cdouble)
-                for i in prange(Tar.size):
-                    Ti=Ti_ar[i]
-                    for j in range(tar.size):
-                        tj=N+nmin+j*n
-                        tp=tj+Ti
-                        tm=tj-Ti
-                        if tp>=0 and tp<EF.size and tm>=0 and tm<EF.size:
-                            VPt = 0 # VP[tj]
-                            T= Ti*dT
-                            DelA = (intA[tp] - intA[tm])-2*VPt*T
-                            VP_p=VP[tp]-VPt
-                            VP_m=VP[tm]-VPt # to save computation time we can neglect cross terms!! just look at formula for <p|d|psi> there is i^l and because of the transition rules l has to be +-1 so if we sum over all states and one is complex conjugatet and we sum it up they will cancel out !!! but be carefull we only can use states that are allowed theoretically
-                            counter += 1
-                            #print("counter", counter)         #first state and normal SFA are exactly 4pi apart 
-                            f_t_1= np.conjugate(transitionElementtest(config[state], p, pz, VP_m, E_g))*transitionElementtest(config[stateRange], p, pz, VP_p, E_g)#for excitedState=1 use only phase of coefficients to see stark effect
-                            #f_t_1= (pz+VP_p)/(p**2+VP_p**2+2*pz*VP_p+2*E_g)**3*(pz+VP_m)/(p**2+VP_m**2+2*pz*VP_m+2*E_g)**3
-                            G1_T_p=np.trapz(f_t_1*np.exp(1j*pz*DelA)*np.sin(theta), Theta_grid)
-                            G1_T=np.trapz(G1_T_p*window*p_grid**2*np.exp(1j*p_grid**2*T), p_grid)
-                            DelA = DelA + 2 * VPt * T
-                            phase0[i, j]  = (intA2[tp] - intA2[tm])/2  + T*VPt**2-VPt*DelA + (eigenEnergy[state]*tm*0.25 - eigenEnergy[stateRange]*tp*0.25)*0 +2*E_g*T
-                            f0[i, j] = EF[tp]*EF[tm]*G1_T*np.conjugate(cLeft[tm])*cRight[tp]#(np.real(c[tp])*np.real(c[tm])+np.imag(c[tp])*np.imag(c[tm]))
-                print("state", state, "stateRange", stateRange)
-                print("config", config[state], "configRange", config[stateRange])
-                plt.plot(tar, 2*np.real(IOF(Tar, f0, (phase0)*1j)))
-                plt.show()
-                plt.close()
-                plt.plot(EF_grid, (np.real(cLeft)*np.real(cRight)+np.imag(cLeft)*np.imag(cRight)), label=f"cRight {state}")
-                plt.show()
-                plt.close()
-                rate += 2*np.real(IOF(Tar, f0, (phase0)*1j))    #*c[np.newaxis, :]
-                plt.plot(tar, rate)
-                plt.show()
-                plt.close()
+        csv_rows = []
+        plot_angle = []
+        for state_idx in range(1, excitedStates):
+            f0 = np.zeros((Tar.size, tar.size), dtype=np.cdouble)
+            phase0 = np.zeros((Tar.size, tar.size), dtype=np.cdouble)
+            cLeft = coefficients[state_idx, :]
+            cRight = coefficients[state_idx, :]
+            phaseleft = np.unwrap(np.angle(cLeft))
+            phaseright = np.unwrap(np.angle(cRight))
+            absleft = np.abs(cLeft)
+            absright = np.abs(cRight)
+            f0 = np.zeros((Tar.size, tar.size), dtype=np.cdouble)
+            phase0 = np.zeros((Tar.size, tar.size), dtype=np.cdouble)
+            for i in prange(Tar.size):
+                Ti=Ti_ar[i]
+                for j in range(tar.size):
+                    tj=N+nmin+j*n
+                    tp=tj+Ti
+                    tm=tj-Ti
+                    if tp>=0 and tp<EF.size and tm>=0 and tm<EF.size:
+                        VPt = 0 # VP[tj]
+                        T= Ti*dT
+                        DelA = (intA[tp] - intA[tm])-2*VPt*T
+                        VP_p=VP[tp]-VPt
+                        VP_m=VP[tm]-VPt # to save computation time we can neglect cross terms!! just look at formula for <p|d|psi> there is i^l and because of the transition rules l has to be +-1 so if we sum over all states and one is complex conjugatet and we sum it up they will cancel out !!! but be carefull we only can use states that are allowed theoretically
+                        counter += 1
+                        #print("counter", counter)         #first state and normal SFA are exactly 4pi apart
+                        f_t_1= np.conjugate(transitionElementtest(config[state_idx], p, pz, VP_m, E_g))*transitionElementtest(config[state_idx], p, pz, VP_p, E_g)#for excitedState=1 use only phase of coefficients to see stark effect
+                        #f_t_1= (pz+VP_p)/(p**2+VP_p**2+2*pz*VP_p+2*E_g)**3*(pz+VP_m)/(p**2+VP_m**2+2*pz*VP_m+2*E_g)**3
+                        G1_T_p=np.trapz(f_t_1*np.exp(1j*pz*DelA)*np.sin(theta), Theta_grid)
+                        G1_T=np.trapz(G1_T_p*window*p_grid**2*np.exp(1j*p_grid**2*T), p_grid)
+                        DelA = DelA + 2 * VPt * T
+                        phase0[i, j]  = (intA2[tp] - intA2[tm])/2  + T*VPt**2-VPt*DelA -2*eigenEnergy[state_idx]*T -phaseleft[tm]+phaseright[tp]
+                        f0[i, j] = EF[tp]*EF[tm]*G1_T*absleft[tm]*absright[tp]    #(np.real(cLeft[tp])*np.real(cRight[tm])+np.imag(cLeft[tp])*np.imag(cRight[tm]))
+            print("state", state_idx, "state", state_idx)
+            print("config", config[state_idx], "config", config[state_idx])
+            plt.plot(tar, 2*np.real(IOF(Tar, f0, (phase0)*1j)))
+            plt.show()
+            plt.close()
+            fig = go.Figure()
+            fig.add_trace(go.Scatter(x=Tar, y=np.real(phase0[:, 100]), mode='lines', name=f'State {state_idx}'))
+            fig.show() 
+            rate += 2*np.real(IOF(Tar, f0, (phase0)*1j))    #*c[np.newaxis, :]
+            plt.plot(tar, rate)
+            plt.show()
+            plt.close()
+        with open('conjugate_coeffs.csv', 'w', newline='') as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow(['i', 'j', 'tp', 'tm', 'value'])
+            writer.writerows(csv_rows)
         return rate
     else:
+        f0 = np.zeros((Tar.size, tar.size), dtype=np.cdouble)
+        phase0 = np.zeros((Tar.size, tar.size), dtype=np.cdouble)
         for i in prange(Tar.size):
             Ti=Ti_ar[i]
             for j in range(tar.size):
@@ -242,7 +253,7 @@ def Kernel_jit(t_grid, T_grid, laser_field, param_dict, kernel_type="GASFIR", ex
         params[key]=value
     if kernel_type=="exact_SFA":
         div_theta=param_dict["div_theta"] # also gives good results for *2
-        div_p=param_dict["div_p"]*2     # p is way harder to get a good convergence
+        div_p=param_dict["div_p"]     # p is way harder to get a good convergence
         p_grid, Theta_grid, window = get_momentum_grid(div_p, div_theta, laser_field, Ip=param_dict["E_g"])
         #print(p_grid.size, Theta_grid.size)
         p, theta = meshgrid(p_grid, Theta_grid)

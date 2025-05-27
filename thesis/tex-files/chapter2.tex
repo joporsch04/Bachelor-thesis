@@ -160,6 +160,48 @@ where $\hat{\vec{d}}=e\vec{\hat{x}}$ is the dipole operator and $\vec{E}(t)$ is 
 \newpage
 \section{Strong Field Approximation}
 %clear defintition of the strong field approximation, and the assumptions that are made.
+The difficulty with ionisation arises because we now have in some sense two Hilbert spaces, one for the states in the Hydrogen atom that deals with some distortion of the wavefunction because of the Laser field and one for the continuum states that are affected mainly by the Laser field but also by the binding potential.\\
+We will see SFA will take care about the second Hilbertspace and make it easier. 
+The main goal of this thesis is to see how much the Laser field has an effect on the wavefunction before ionisation happens. 
+Previous work neglects this part so there is just one hilbertspace for the eigenstates unaffectet by the laser field and one hilbertspace for the continuum states that are unaffectet by the binding potential.
+
+
+
+\subsection{Subspaces}
+First we project the full timedependent Hamiltonian $\hat{\Hs}(t)$ onto subspaces using projection operators defined by:
+\begin{equation*}
+    \hat{P} = \sum_{n}\ket{\Psi_n}\bra{\Psi_n}\quad\text{and}\quad\hat{Q}= \hat{1} - \hat{P}
+\end{equation*}
+With $\ket{\Psi_n}$ being the bound states of our atom. We can write:
+\begin{equation*}
+    \hat{\Hs}(t) = \underbrace{\hat{P}\hat{\Hs}(t)\hat{P}}_{\hat{\Hs}^{\mathrm{P}}(t)=\hat{\Hs}_{\mathrm{0}}(t)} + \underbrace{\hat{Q}\hat{\Hs}(t)\hat{Q} + \hat{P}\hat{\Hs}(t)\hat{Q} + \hat{Q}\hat{\Hs}(t)\hat{P}}_{\hat{\Hs}^{\mathrm{Q}}(t)+\hat{\Hs}^{\mathrm{PQ}}(t)+\hat{\Hs}^{\mathrm{QP}}(t)=\hat{\Hs}_{\mathrm{I}}(t)}
+\end{equation*}
+Lets think about what these terms mean. $\hat{\Hs}^{\mathrm{P}}(t)$ can be seen as just our quantum system but with a small distortion by our electric field. 
+This part causes effects like Stark shift both in the eigenstates and eigenenergies of our atom. 
+As long as the laser pulse is not too strong and no ionisation has happened, we can treat the pulse like a pertubation to the system.
+The distortion may be time dependent but the good thing is that we can easily determine the propagator with repsect to $\hat{\Hs}^{\mathrm{P}}(t)$ by using the interaction picture and solving a system of coupled differential equations.
+In other words this Hamiltonian determines the time evolution of the first hilbert space, as mentioned above. \\
+Lets think about the other terms. For that we need to establish a setting. Say our Atom sits in the ground state and gets ionised. 
+Based on this image we can say two from three parts are uneccessary. First $\hat{\Hs}^{\mathrm{Q}}(t)$ plays no role because we project the initial state into the continuum state, and since their can be no overlap between them this part will play no role.
+This term actually just describes the evolution of a continuum state that remains a continuum state after the interaction so the laser pulse has happened.
+Second $\hat{\Hs}^{\mathrm{PQ}}(t)$ plays no role either since we projct the initial (bound) state into the continuum. 
+This term would determine the time evolution of a continuum state that recombines with the atom after the interaction has happened.
+Obviously thats not what we want. 
+The only term that remains is $\hat{\Hs}^{\mathrm{QP}}(t)$ which describes the time evolution of a bound state that gets ionised in the continuum by the laser pulse.
+This is the perfect part to later start the strong field approximation with.\\
+
+
+\subsection{Dyson series}
+
+For determining the time evolution we need to be carefull since the whole Hamiltonian doesnt commutate with itself at different times so we need to be exact. 
+Since the full Dyson series \eqref{eq:dyson} can be cumbersome to deal with, we choose a different way. 
+What helps us is the fact that we can split the Hamiltonian by projecting it into subspaces in two parts of which one can be solved directly as mentioned above. 
+Lets first write our ansatz:
+\begin{equation}
+    \hat{\U}(t,t_0)=\hat{\U}_L
+\end{equation}
+
+\subsection{Strong Field Approximation}
 
 For making the strong field approximation we first have to obtain a point where is its good to use. 
 When we treat $\hat{V}_I(t)$ as the interaction term, we can write an exakt solution to \eqref{eq:schroedinger}:

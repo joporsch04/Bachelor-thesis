@@ -104,11 +104,11 @@ def extractField_0(file_path):
 
 def get_coeffNumerical(time, state):
     file_params = [
-        ("850nm_1e+14", 850, 1e13, 350, 1e10, 1, 0, -np.pi/2),
+        ("850nm_1e+14", 450, 1e14, 350, 1e10, 1, 0, 0),
     ]
 
 
-    df_verify=pd.read_csv("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0019/expec", sep='\s+', header=8)
+    df_verify=pd.read_csv("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0021/expec", sep='\s+', header=8)
     df_verify.columns = df_verify.columns[1:].tolist() + [""]
     df_verify = df_verify.iloc[:, :-1]
 

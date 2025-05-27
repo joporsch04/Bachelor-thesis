@@ -13,23 +13,22 @@ def get_eigenEnergy(excitedStates):
     return np.array([0.5*1/(n**2) for (n,l,m) in states])
 
 def get_coefficients(excitedStates, t_grid):
-    df=pd.read_csv("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0016/expec", sep='\s+', header=8)
-    #shift every column name by one and remove the first column
-    df.columns = df.columns[1:].tolist() + [""]
-    #remove last column
-    df = df.iloc[:, :-1]
+    # df=pd.read_csv("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0021/expec", sep='\s+', header=8)
+    # #shift every column name by one and remove the first column
+    # df.columns = df.columns[1:].tolist() + [""]
+    # #remove last column
+    # df = df.iloc[:, :-1]
 
-    time = np.array(df["Time"])
-    eigenEnergy = get_eigenEnergy(excitedStates)
+    # time = np.array(df["Time"])
     c_list = []
     for i in range(excitedStates):
-        #c = np.array(df[f"Re{{<H0:{i}|psi>}}"]) + np.array(df[f"Imag{{<H0:{i}|psi>}}"]) * 1j
-        c = get_coeffNumerical(time, i)
+        # c = np.array(df[f"Re{{<H0:{i}|psi>}}"]) + np.array(df[f"Imag{{<H0:{i}|psi>}}"]) * 1j
+        c = get_coeffNumerical(t_grid, i)
         if i == 1:
-            c = get_coeffNumerical(time, 2)
-        interp_real = interp1d(time, c.real, kind='cubic', fill_value="extrapolate")
-        interp_imag = interp1d(time, c.imag, kind='cubic', fill_value="extrapolate")
-        c_interp = (interp_real(t_grid) + 1j * interp_imag(t_grid))#*np.exp(-1j*eigenEnergy[i]*t_grid)
+            c = get_coeffNumerical(t_grid, 2)
+        interp_real = interp1d(t_grid, c.real, kind='cubic', fill_value="extrapolate")
+        interp_imag = interp1d(t_grid, c.imag, kind='cubic', fill_value="extrapolate")
+        c_interp = (interp_real(t_grid) + 1j * interp_imag(t_grid))        #*np.exp(+1j*eigenEnergy[i]*t_grid)
         c_list.append(c_interp)
     return np.vstack(c_list)
 
@@ -98,6 +97,9 @@ def transitionElement(n, l, m, p, pz, Az, Ip):
 
 def transitionElementtest(configState, p, pz, Az, Ip):      #first state and normal SFA are exactly 4pi apart
     n, l, m = configState
+    thetap = np.arccos(pz/(p+1e14))
+    if n == 2:
+        l += 1
     termsqrt = Az**2 + p**2 + 2*Az*pz + 1e-14
     if n == 2 and l == 0:
         numerator = 128 * 2**(1/4) * Ip**2 * (Ip - termsqrt) * (Az + pz)
@@ -107,12 +109,40 @@ def transitionElementtest(configState, p, pz, Az, Ip):      #first state and nor
         numerator = 16 * 2**(3/4) * Ip**2 * (Az + pz)
         denominator = (np.sqrt(Ip**(3/2)) *(2 * Ip + termsqrt)**3 * np.pi)
         return numerator / denominator
-    elif n==2 and l==1:
-        term1 = Az + p
-        term2 = Az + pz
-        numerator = 16j * 2**(3/4) * Ip * np.sqrt(Ip**(3/2)) * (Ip + 2 * (term1**2 - 6 * term2**2))
-        denominator = ((Ip + 2 * term1**2)**4) * np.pi
-        return numerator / denominator
+    elif n == 2 and l == 1:
+        # Implementing the Mathematica code
+        phi_p = 1  # or set to desired value
+        exp_minus_i_phi = np.exp(-1j * phi_p)
+        exp_i_phi = np.exp(1j * phi_p)
+        exp_2i_phi = np.exp(2j * phi_p)
+        cos_theta = np.cos(thetap)
+        sin_theta = np.sin(thetap)
+        numerator = (
+            32 * exp_minus_i_phi * (
+                -2 * exp_i_phi * (-1 + 20 * p**2) * cos_theta**2 +
+                np.sqrt(2) * ( -1 + exp_2i_phi ) * ( -1 + p + 4 * p**2 * (5 + p) ) * cos_theta * sin_theta +
+                2 * exp_i_phi * p * (1 + 4 * p**2) * sin_theta**2
+            )
+        )
+        denominator = (1 + 4 * p**2)**4 * np.pi
+        return 1/3*numerator / denominator
+    # elif n==2 and l==1:
+    #     term1 = Az + p
+    #     term2 = Az + pz
+    #     numerator = 16*1j * 2**(3/4) * Ip * np.sqrt(Ip**(3/2)) * (Ip + 2 * (termsqrt - 6 * term2**2))
+    #     denominator = ((Ip + 2 * termsqrt)**4) * np.pi
+    #     return numerator / denominator
+    # elif n == 2 and l == 1:
+    #     theta = np.pi / 4
+    #     exp1 = np.exp(-1j * theta)
+    #     exp2 = np.exp(2j * theta)
+    #     exp3 = np.exp(1j * theta)
+    #     term1 = -12 * np.sqrt(termsqrt) * (Az + pz) * np.sqrt(1 - (Az + pz)**2 / termsqrt)
+    #     term2 = 12 * exp2 * np.sqrt(termsqrt) * (Az + pz) * np.sqrt(1 - (Az + pz)**2 / termsqrt)
+    #     term3 = np.sqrt(2) * exp3 * (Ip + 2 * (termsqrt - 6 * (Az + pz)**2))
+    #     numerator = 16 * 2**(1/4) * exp1 * Ip * np.sqrt(Ip**(3/2)) * (term1 + term2 + term3)
+    #     denominator = ((Ip + 2 * termsqrt)**4) * np.pi
+    #     return numerator / denominator
     elif n==3 and l==0:
         term1 = Az + p
         term2 = Az + pz
