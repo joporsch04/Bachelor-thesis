@@ -4,7 +4,6 @@ from scipy.special import gamma, binom, hyp2f1, sph_harm, lpmv
 from scipy.interpolate import interp1d
 import plotly.graph_objects as go
 
-from coeffNumerical import get_coeffNumerical
 
 #print(get_coefficients(4)[1,:])
 
@@ -12,30 +11,31 @@ def get_eigenEnergy(excitedStates, get_p_states):
     states = get_hydrogen_states(excitedStates, get_p_states)
     return np.array([0.5*1/(n**2) for (n,l,m) in states])
 
-def get_coefficients(excitedStates, t_grid, get_p_states):
-    # df=pd.read_csv("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0021/expec", sep='\s+', header=8)
-    # #shift every column name by one and remove the first column
-    # df.columns = df.columns[1:].tolist() + [""]
-    # #remove last column
-    # df = df.iloc[:, :-1]
+def get_coefficientstRecX(excitedStates, t_grid, get_p_states):
+    df=pd.read_csv("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0029/expec", sep='\s+', header=13)
+    df.columns = df.columns[1:].tolist() + [""]
+    df = df.iloc[:, :-1]
 
-    # time = np.array(df["Time"])
+    time = np.array(df["Time"])
 
     c_list = []
-    # eigenEenergy = get_eigenEnergy(excitedStates, get_p_states)
+    eigenEnergy = get_eigenEnergy(excitedStates+5, get_p_states)
+
     for state_idx in range(excitedStates):
-        # if state_idx == 2:
-        #     state_idx = 4  # skip the 2p state
-        # c = np.array(df[f"Re{{<H0:{state_idx}|psi>}}"]) + np.array(df[f"Imag{{<H0:{state_idx}|psi>}}"]) * 1j
-        # unique_time, unique_indices = np.unique(time, return_index=True)
-        # c_unique = c[unique_indices]
-        c = get_coeffNumerical(t_grid, state_idx, get_p_states)
-        # interp_real = interp1d(unique_time, c_unique.real, kind='cubic', fill_value="extrapolate")
-        # interp_imag = interp1d(unique_time, c_unique.imag, kind='cubic', fill_value="extrapolate")
-        interp_real = interp1d(t_grid, c.real, kind='cubic', fill_value="extrapolate")
-        interp_imag = interp1d(t_grid, c.imag, kind='cubic', fill_value="extrapolate")
-        c_interp = (interp_real(t_grid) + 1j * interp_imag(t_grid))#*np.exp(-1j*eigenEenergy[state_idx]*t_grid)        #*np.exp(+1j*eigenEnergy[i]*t_grid)
+        if state_idx == 2:
+            state_idx = 4  # skip the 2p state
+
+        c = np.array(df[f"Re{{<H0:{state_idx}|psi>}}"]) + np.array(df[f"Imag{{<H0:{state_idx}|psi>}}"]) * 1j
+
+        unique_time, unique_indices = np.unique(time, return_index=True)
+        c_unique = c[unique_indices]
+
+        interp_real = interp1d(unique_time, c_unique.real, kind='cubic', fill_value="extrapolate")
+        interp_imag = interp1d(unique_time, c_unique.imag, kind='cubic', fill_value="extrapolate")
+
+        c_interp = (interp_real(t_grid) + 1j * interp_imag(t_grid))*np.exp(-1j*eigenEnergy[state_idx]*t_grid)        #*np.exp(+1j*eigenEnergy[i]*t_grid)
         c_list.append(c_interp)
+
     return np.vstack(c_list)
 
 def hydrogen_state_generator(n_max, get_p_states):

@@ -18,7 +18,7 @@ from numba import njit, typed, types, prange
 import json
 # from numba.core import types
 # from numba.typed import Dict
-from matrixElements import transitionElement, get_coefficients, get_eigenEnergy, get_hydrogen_states, transitionElementtest
+from matrixElements import transitionElement, get_coefficientstRecX, get_eigenEnergy, get_hydrogen_states, transitionElementtest
 import matplotlib.pyplot as plt
 import csv
 import plotly.graph_objects as go
@@ -128,8 +128,8 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
         fig = make_subplots(rows=excitedStates, cols=1, shared_xaxes=True, subplot_titles=[f"After state {i}" for i in range(excitedStates)])
 
         EF_grid=np.arange(-N, N+1, 1) * dT
-        #coefficients = get_coefficientstRecX(excitedStates, EF_grid, True)
-        coefficients = get_coefficientsNumerical(excitedStates, EF_grid, True)
+        coefficients = get_coefficientstRecX(excitedStates, EF_grid, True)
+        #coefficients = get_coefficientsNumerical(excitedStates, EF_grid, True)
         eigenEnergy = get_eigenEnergy(excitedStates, True)
         config = get_hydrogen_states(excitedStates, True)
         rate = np.zeros(tar.size, dtype=np.cdouble)
