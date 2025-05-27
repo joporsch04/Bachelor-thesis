@@ -8,11 +8,11 @@ from coeffNumerical import get_coeffNumerical
 
 #print(get_coefficients(4)[1,:])
 
-def get_eigenEnergy(excitedStates):
-    states = get_hydrogen_states(excitedStates)
+def get_eigenEnergy(excitedStates, get_p_states):
+    states = get_hydrogen_states(excitedStates, get_p_states)
     return np.array([0.5*1/(n**2) for (n,l,m) in states])
 
-def get_coefficients(excitedStates, t_grid):
+def get_coefficients(excitedStates, t_grid, get_p_states):
     # df=pd.read_csv("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0021/expec", sep='\s+', header=8)
     # #shift every column name by one and remove the first column
     # df.columns = df.columns[1:].tolist() + [""]
@@ -20,26 +20,33 @@ def get_coefficients(excitedStates, t_grid):
     # df = df.iloc[:, :-1]
 
     # time = np.array(df["Time"])
+
     c_list = []
-    for i in range(excitedStates):
-        # c = np.array(df[f"Re{{<H0:{i}|psi>}}"]) + np.array(df[f"Imag{{<H0:{i}|psi>}}"]) * 1j
-        c = get_coeffNumerical(t_grid, i)
-        if i == 1:
-            c = get_coeffNumerical(t_grid, 2)
+    # eigenEenergy = get_eigenEnergy(excitedStates, get_p_states)
+    for state_idx in range(excitedStates):
+        # if state_idx == 2:
+        #     state_idx = 4  # skip the 2p state
+        # c = np.array(df[f"Re{{<H0:{state_idx}|psi>}}"]) + np.array(df[f"Imag{{<H0:{state_idx}|psi>}}"]) * 1j
+        # unique_time, unique_indices = np.unique(time, return_index=True)
+        # c_unique = c[unique_indices]
+        c = get_coeffNumerical(t_grid, state_idx, get_p_states)
+        # interp_real = interp1d(unique_time, c_unique.real, kind='cubic', fill_value="extrapolate")
+        # interp_imag = interp1d(unique_time, c_unique.imag, kind='cubic', fill_value="extrapolate")
         interp_real = interp1d(t_grid, c.real, kind='cubic', fill_value="extrapolate")
         interp_imag = interp1d(t_grid, c.imag, kind='cubic', fill_value="extrapolate")
-        c_interp = (interp_real(t_grid) + 1j * interp_imag(t_grid))        #*np.exp(+1j*eigenEnergy[i]*t_grid)
+        c_interp = (interp_real(t_grid) + 1j * interp_imag(t_grid))#*np.exp(-1j*eigenEenergy[state_idx]*t_grid)        #*np.exp(+1j*eigenEnergy[i]*t_grid)
         c_list.append(c_interp)
     return np.vstack(c_list)
 
-def hydrogen_state_generator(n_max):
+def hydrogen_state_generator(n_max, get_p_states):
     for n in range(1, n_max + 1):
         for l in range(0, n):
-            for m in range(-l, l + 1):
-                yield (n, l, 0)
+            if get_p_states and l != 1 and n != 1:
+                continue
+            yield (n, l, 0)
 
-def get_hydrogen_states(maxStates):
-    gen = hydrogen_state_generator(maxStates)
+def get_hydrogen_states(maxStates, get_p_states):
+    gen = hydrogen_state_generator(maxStates, get_p_states)
     states = []
     for i, state in enumerate(gen):
         if i >= maxStates:
@@ -98,14 +105,8 @@ def transitionElement(n, l, m, p, pz, Az, Ip):
 def transitionElementtest(configState, p, pz, Az, Ip):      #first state and normal SFA are exactly 4pi apart
     n, l, m = configState
     thetap = np.arccos(pz/(p+1e14))
-    if n == 2:
-        l += 1
     termsqrt = Az**2 + p**2 + 2*Az*pz + 1e-14
-    if n == 2 and l == 0:
-        numerator = 128 * 2**(1/4) * Ip**2 * (Ip - termsqrt) * (Az + pz)
-        denominator = (np.sqrt(Ip**(3/2)) *(Ip + 2 * termsqrt)**4 *np.pi)
-        return numerator / denominator
-    elif n == 1 and l == 0:
+    if n == 1 and l == 0:
         numerator = 16 * 2**(3/4) * Ip**2 * (Az + pz)
         denominator = (np.sqrt(Ip**(3/2)) *(2 * Ip + termsqrt)**3 * np.pi)
         return numerator / denominator
@@ -126,36 +127,19 @@ def transitionElementtest(configState, p, pz, Az, Ip):      #first state and nor
         )
         denominator = (1 + 4 * p**2)**4 * np.pi
         return 1/3*numerator / denominator
-    # elif n==2 and l==1:
-    #     term1 = Az + p
-    #     term2 = Az + pz
-    #     numerator = 16*1j * 2**(3/4) * Ip * np.sqrt(Ip**(3/2)) * (Ip + 2 * (termsqrt - 6 * term2**2))
-    #     denominator = ((Ip + 2 * termsqrt)**4) * np.pi
-    #     return numerator / denominator
-    # elif n == 2 and l == 1:
-    #     theta = np.pi / 4
-    #     exp1 = np.exp(-1j * theta)
-    #     exp2 = np.exp(2j * theta)
-    #     exp3 = np.exp(1j * theta)
-    #     term1 = -12 * np.sqrt(termsqrt) * (Az + pz) * np.sqrt(1 - (Az + pz)**2 / termsqrt)
-    #     term2 = 12 * exp2 * np.sqrt(termsqrt) * (Az + pz) * np.sqrt(1 - (Az + pz)**2 / termsqrt)
-    #     term3 = np.sqrt(2) * exp3 * (Ip + 2 * (termsqrt - 6 * (Az + pz)**2))
-    #     numerator = 16 * 2**(1/4) * exp1 * Ip * np.sqrt(Ip**(3/2)) * (term1 + term2 + term3)
-    #     denominator = ((Ip + 2 * termsqrt)**4) * np.pi
-    #     return numerator / denominator
-    elif n==3 and l==0:
-        term1 = Az + p
-        term2 = Az + pz
-        numerator = -432 * 2**(3/4) * np.sqrt(3) * Ip**2 * (44 * Ip**2 - 324 * Ip * term1**2 + 243 * term1**4) * term2
-        denominator = (np.sqrt(Ip**(3/2)) * (2 * Ip + 9 * term1**2)**5 * np.pi)
-        return numerator / denominator
     elif n==3 and l==1:
-        term1 = Az + p
-        term2 = Az + pz
-        numerator = -864j * 2**(3/4) * Ip * np.sqrt(Ip**(3/2)) * (
-            4 * Ip**2
-            - 180 * Ip * term2**2
-            - 81 * (term1**4 - 6 * term1**2 * term2**2)
+        phi_p = 1  # or set to desired value
+        exp_minus_i_phi = np.exp(-1j * phi_p)
+        exp_i_phi = np.exp(1j * phi_p)
+        exp_2i_phi = np.exp(2j * phi_p)
+        cos_theta = np.cos(thetap)
+        sin_theta = np.sin(thetap)
+        numerator = (
+            216 * exp_minus_i_phi * (
+                -2 * exp_i_phi * (1 - 90 * p**2 + 405 * p**4) * cos_theta**2 +
+                np.sqrt(2) * ( -1 + exp_2i_phi ) * (1 + p * (-1 - 90 * p + 81 * p**3 * (5 + p))) * cos_theta * sin_theta +
+                2 * exp_i_phi * p * (-1 + 81 * p**4) * sin_theta**2
+            )
         )
-        denominator = (2 * Ip + 9 * term1**2)**5 * np.pi
+        denominator = (1 + 9 * p**2)**5 * np.pi
         return numerator / denominator

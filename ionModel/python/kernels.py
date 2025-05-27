@@ -22,7 +22,8 @@ from matrixElements import transitionElement, get_coefficients, get_eigenEnergy,
 import matplotlib.pyplot as plt
 import csv
 import plotly.graph_objects as go
-
+from plotly.subplots import make_subplots
+from coefficientsNumerical import get_coefficientsNumerical
 ########################
 
 
@@ -123,16 +124,17 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
     """
     E_g = params['E_g']
     pz=p*np.cos(theta)
-    counter = 0
     if (excitedStates!=0):
+        fig = make_subplots(rows=excitedStates, cols=1, shared_xaxes=True, subplot_titles=[f"After state {i}" for i in range(excitedStates)])
+
         EF_grid=np.arange(-N, N+1, 1) * dT
-        coefficients = get_coefficients(excitedStates, EF_grid)
-        eigenEnergy = get_eigenEnergy(excitedStates)
-        config = get_hydrogen_states(excitedStates)
+        #coefficients = get_coefficientstRecX(excitedStates, EF_grid, True)
+        coefficients = get_coefficientsNumerical(excitedStates, EF_grid, True)
+        eigenEnergy = get_eigenEnergy(excitedStates, True)
+        config = get_hydrogen_states(excitedStates, True)
         rate = np.zeros(tar.size, dtype=np.cdouble)
-        csv_rows = []
-        plot_angle = []
-        for state_idx in range(1, excitedStates):
+
+        for state_idx in range(excitedStates):
             f0 = np.zeros((Tar.size, tar.size), dtype=np.cdouble)
             phase0 = np.zeros((Tar.size, tar.size), dtype=np.cdouble)
             cLeft = coefficients[state_idx, :]
@@ -141,8 +143,7 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
             phaseright = np.unwrap(np.angle(cRight))
             absleft = np.abs(cLeft)
             absright = np.abs(cRight)
-            f0 = np.zeros((Tar.size, tar.size), dtype=np.cdouble)
-            phase0 = np.zeros((Tar.size, tar.size), dtype=np.cdouble)
+            
             for i in prange(Tar.size):
                 Ti=Ti_ar[i]
                 for j in range(tar.size):
@@ -154,32 +155,39 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                         T= Ti*dT
                         DelA = (intA[tp] - intA[tm])-2*VPt*T
                         VP_p=VP[tp]-VPt
-                        VP_m=VP[tm]-VPt # to save computation time we can neglect cross terms!! just look at formula for <p|d|psi> there is i^l and because of the transition rules l has to be +-1 so if we sum over all states and one is complex conjugatet and we sum it up they will cancel out !!! but be carefull we only can use states that are allowed theoretically
-                        counter += 1
-                        #print("counter", counter)         #first state and normal SFA are exactly 4pi apart
+                        VP_m=VP[tm]-VPt 
                         f_t_1= np.conjugate(transitionElementtest(config[state_idx], p, pz, VP_m, E_g))*transitionElementtest(config[state_idx], p, pz, VP_p, E_g)#for excitedState=1 use only phase of coefficients to see stark effect
-                        #f_t_1= (pz+VP_p)/(p**2+VP_p**2+2*pz*VP_p+2*E_g)**3*(pz+VP_m)/(p**2+VP_m**2+2*pz*VP_m+2*E_g)**3
                         G1_T_p=np.trapz(f_t_1*np.exp(1j*pz*DelA)*np.sin(theta), Theta_grid)
                         G1_T=np.trapz(G1_T_p*window*p_grid**2*np.exp(1j*p_grid**2*T), p_grid)
                         DelA = DelA + 2 * VPt * T
-                        phase0[i, j]  = (intA2[tp] - intA2[tm])/2  + T*VPt**2-VPt*DelA -2*eigenEnergy[state_idx]*T -phaseleft[tm]+phaseright[tp]
-                        f0[i, j] = EF[tp]*EF[tm]*G1_T*absleft[tm]*absright[tp]    #(np.real(cLeft[tp])*np.real(cRight[tm])+np.imag(cLeft[tp])*np.imag(cRight[tm]))
-            print("state", state_idx, "state", state_idx)
-            print("config", config[state_idx], "config", config[state_idx])
-            plt.plot(tar, 2*np.real(IOF(Tar, f0, (phase0)*1j)))
-            plt.show()
-            plt.close()
-            fig = go.Figure()
-            fig.add_trace(go.Scatter(x=Tar, y=np.real(phase0[:, 100]), mode='lines', name=f'State {state_idx}'))
-            fig.show() 
-            rate += 2*np.real(IOF(Tar, f0, (phase0)*1j))    #*c[np.newaxis, :]
-            plt.plot(tar, rate)
-            plt.show()
-            plt.close()
-        with open('conjugate_coeffs.csv', 'w', newline='') as csvfile:
-            writer = csv.writer(csvfile)
-            writer.writerow(['i', 'j', 'tp', 'tm', 'value'])
-            writer.writerows(csv_rows)
+                        phase0[i, j]  = (intA2[tp] - intA2[tm])/2  + T*VPt**2-VPt*DelA +2*eigenEnergy[state_idx]*T -phaseleft[tm]+phaseright[tp]
+                        f0[i, j] = EF[tp]*EF[tm]*G1_T*absleft[tm]*absright[tp]
+            rate += 2*np.real(IOF(Tar, f0, (phase0)*1j))
+            
+            config_str = f"n={config[state_idx][0]}, l={config[state_idx][1]}, m={config[state_idx][2]}"
+            subplot_titles = (f"Rate (state {state_idx}, {config_str})", f"Coeff (state {state_idx}, {config_str})")
+            fig = make_subplots(
+                rows=1, cols=2, shared_xaxes=False, 
+                subplot_titles=subplot_titles,
+                horizontal_spacing=0.15
+            )
+            fig.add_trace(
+                go.Scatter(x=tar, y=np.real(rate), mode='lines', name=f'Rate'),
+                row=1, col=1
+            )
+            fig.add_trace(
+                go.Scatter(x=EF_grid, y=np.abs(cLeft)**2, mode='lines', name='|coeff|**2'), row=1, col=2
+            )
+            fig.update_layout(
+                width=1200, height=400,
+                title_text=f"State {state_idx} ({config_str})"
+            )
+            fig.update_xaxes(title_text="Time (a.u.)", row=1, col=1)
+            fig.update_xaxes(title_text="Time (a.u.)", row=1, col=2)
+            fig.update_yaxes(title_text="Rate", row=1, col=1)
+            fig.update_yaxes(title_text="Coefficient", row=1, col=2)
+            fig.show()
+
         return rate
     else:
         f0 = np.zeros((Tar.size, tar.size), dtype=np.cdouble)
@@ -196,13 +204,9 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                     DelA = (intA[tp] - intA[tm])-2*VPt*T
                     VP_p=VP[tp]-VPt
                     VP_m=VP[tm]-VPt
-                    counter += 1
-                    #print("counter", counter)
                     f_t_1= (pz+VP_p)/(p**2+VP_p**2+2*pz*VP_p+2*E_g)**3*(pz+VP_m)/(p**2+VP_m**2+2*pz*VP_m+2*E_g)**3
                     G1_T_p=np.trapz(f_t_1*np.exp(1j*pz*DelA)*np.sin(theta), Theta_grid)
                     G1_T=np.trapz(G1_T_p*window*p_grid**2*np.exp(1j*p_grid**2*T), p_grid)
-                    # G1_T_p = IOF(p_grid,f_t_1,phase_t)
-                    # G1_T=IOF(p_grid,G1_T_p*window*p_grid**2,p_grid**2*T)
                     DelA = DelA + 2 * VPt * T
                     phase0[i, j]  = (intA2[tp] - intA2[tm])/2 +2*E_g*T + T*VPt**2-VPt*DelA
                     f0[i, j] = EF[tp]*EF[tm]*2**9 *(2*E_g)**2.5/np.pi*G1_T #should be 7 instead of 9?
