@@ -16,12 +16,13 @@ class AtomicUnits:
 class HydrogenSolver:
     """Compact hydrogen atom TDSE solver"""
     
-    def __init__(self, max_n=5):
+    def __init__(self, max_n, laser_params):
         self.max_n = max_n
         self._radial_cache = {}
         self.states = self._build_basis()
         self.energies = np.array([-0.5/n**2 for n, l, m in self.states])
         self.z_matrix = self._compute_z_matrix()
+        self.laser_params = laser_params
     
     def _build_basis(self):
         """Build basis states (n,l,m) with m=0 for simplicity"""
@@ -111,9 +112,9 @@ class HydrogenSolver:
         
         return dc_dt
     
-    def solve(self, laser_params, gauge='both'):
+    def solve(self, gauge='both'):
         """Solve TDSE with given laser parameters"""
-        lam0, intensity, cep = laser_params[:3]
+        lam0, intensity, cep = self.laser_params[:3]
         self.laser = LaserField(cache_results=True)
         self.laser.add_pulse(lam0, intensity, cep, 
                            lam0 / AtomicUnits.nm / AtomicUnits.speed_of_light)
@@ -168,9 +169,7 @@ class HydrogenSolver:
             title="Hydrogen Atom State Populations",
             xaxis_title="Time (atomic units)",
             yaxis_title="Population |c<sub>k</sub>(t)|²",
-            xaxis=dict(range=[-100, 100]),
-            width=1400,
-            height=800
+            xaxis=dict(range=[-100, 100])
         )
         
         return fig
