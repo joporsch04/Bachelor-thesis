@@ -1,10 +1,7 @@
 import numpy as np
 import pandas as pd
 import os
-
 import plotly.graph_objects as go
-
-from field_functions import LaserField
 
 class tRecXdata:
     def __init__(self, folder_path):
@@ -87,7 +84,7 @@ class tRecXdata:
                 if col_name in self.coefficients.columns:
                     fig.add_trace(go.Scatter(x=self.coefficients["Time"], y=self.coefficients[col_name], mode='lines', name=col_name))
         
-        elif plot_type == "magnitude":
+        elif plot_type == "mag":
             for idx in state_indices:
                 real_col = f"Re{{<H0:{idx}|psi>}}"
                 imag_col = f"Imag{{<H0:{idx}|psi>}}"
@@ -96,16 +93,40 @@ class tRecXdata:
                     fig.add_trace(go.Scatter(x=self.coefficients["Time"], y=magnitude, mode='lines', name=f"|<H0:{idx}|psi>|²"))
         
         else:
-            raise ValueError("plot_type must be one of: 'occupation', 'real', 'imag', 'magnitude'")
+            raise ValueError("plot_type must be one of: 'occupation', 'real', 'imag', 'mag'")
+        
+        laser_text = "<br>".join([
+            "<b>Laser Parameters:</b>",
+            f"Shape: {self.laser_params.get('shape', 'N/A')}",
+            f"Intensity: {self.laser_params.get('intensity_W_cm2', 'N/A')} W/cm²",
+            f"FWHM: {self.laser_params.get('FWHM', 'N/A')}",
+            f"Wavelength: {self.laser_params.get('wavelength_nm', 'N/A')} nm",
+            f"CEP: {self.laser_params.get('CEP', 'N/A')}"
+        ])
         
         fig.update_layout(
             xaxis_title="Time",
             yaxis_title=f"{plot_type.capitalize()} coefficients",
             legend_title="States",
-            xaxis=dict(range=[-100, 100])
+            xaxis=dict(range=[-100, 100]),
+            annotations=[
+                dict(
+                    x=0.02,
+                    y=0.98,
+                    xref="paper",
+                    yref="paper",
+                    text=laser_text,
+                    showarrow=False,
+                    font=dict(size=10),
+                    bgcolor="rgba(255,255,255,0.8)",
+                    bordercolor="gray",
+                    borderwidth=1,
+                    align="left",
+                    valign="top"
+                )
+            ]
         )
         fig.show()
-
 
     def extractLaserParams(self):
         """Extract laser parameters from inpc file"""
@@ -148,11 +169,8 @@ class tRecXdata:
             raise ValueError("Could not find laser parameters in inpc file")
         
         return laser_params
-    
 
 if __name__ == "__main__":
-    data = tRecXdata("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0029")
+    data = tRecXdata("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0040")
 
-    data.plotCoefficients([1, 2, 3, 4, 5, 6, 7, 8], "occ")
-    params = data.laser_params
-    print(params)
+    data.plotCoefficients([1], "real")

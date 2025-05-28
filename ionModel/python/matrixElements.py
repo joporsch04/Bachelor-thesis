@@ -4,19 +4,16 @@ from scipy.special import gamma, binom, hyp2f1, sph_harm, lpmv
 from scipy.interpolate import interp1d
 import plotly.graph_objects as go
 
-
-#print(get_coefficients(4)[1,:])
+from tRecXdata import tRecXdata
 
 def get_eigenEnergy(excitedStates, get_p_states):
     states = get_hydrogen_states(excitedStates, get_p_states)
     return np.array([0.5*1/(n**2) for (n,l,m) in states])
 
 def get_coefficientstRecX(excitedStates, t_grid, get_p_states):
-    df=pd.read_csv("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0029/expec", sep='\s+', header=13)
-    df.columns = df.columns[1:].tolist() + [""]
-    df = df.iloc[:, :-1]
+    data = tRecXdata("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0040")
 
-    time = np.array(df["Time"])
+    time = data.coefficients['Time']
 
     c_list = []
     eigenEnergy = get_eigenEnergy(excitedStates+5, get_p_states)
@@ -24,9 +21,9 @@ def get_coefficientstRecX(excitedStates, t_grid, get_p_states):
     for state_idx in range(excitedStates):
         if state_idx == 2:
             state_idx = 4  # skip the 2p state
-
-        c = np.array(df[f"Re{{<H0:{state_idx}|psi>}}"]) + np.array(df[f"Imag{{<H0:{state_idx}|psi>}}"]) * 1j
-
+        #print(data.coefficients[f"Re{{<H0:{state_idx}|psi>}}"].head())
+        c = np.array(data.coefficients[f"Re{{<H0:{state_idx}|psi>}}"]) + np.array(data.coefficients[f"Imag{{<H0:{state_idx}|psi>}}"]) * 1j
+        
         unique_time, unique_indices = np.unique(time, return_index=True)
         c_unique = c[unique_indices]
 
@@ -142,4 +139,4 @@ def transitionElementtest(configState, p, pz, Az, Ip):      #first state and nor
             )
         )
         denominator = (1 + 9 * p**2)**5 * np.pi
-        return numerator / denominator
+        return 1/3*numerator / denominator

@@ -141,46 +141,95 @@ class HydrogenSolver:
         
         return results
     
-    def plot_populations(self, solutions):
-        """Plot state populations using Plotly"""
+    def plot_populations(self, solutions, state_indices=None, plot_type="occ"):
         fig = go.Figure()
+        
+        if state_indices is None:
+            state_indices = list(range(1, len(self.states)))
         
         gauges = list(solutions.keys())
         
         for gauge_idx, gauge in enumerate(gauges):
             solution = solutions[gauge]
             
-            for i in range(1, len(self.states)):
+            for i in state_indices:
+                if i >= len(self.states):
+                    print(f"Warning: State index {i} is out of range. Max index is {len(self.states)-1}")
+                    continue
+                    
                 n, l, m = self.states[i]
                 
-                if gauge == 'velocity':
-                    population = np.abs(solution.y[i, :])**2
+                if plot_type == "occ":
+                    y_data = np.abs(solution.y[i, :])**2
+                    trace_name = f'|{n},{l},{m}⟩² ({gauge})'
+                    y_title = "Population |c<sub>k</sub>(t)|²"
+                elif plot_type == "real":
+                    y_data = solution.y[i, :].real
+                    trace_name = f'Re{{c<sub>{n},{l},{m}</sub>}} ({gauge})'
+                    y_title = "Real part of coefficients"
+                elif plot_type == "imag":
+                    y_data = solution.y[i, :].imag
+                    trace_name = f'Im{{c<sub>{n},{l},{m}</sub>}} ({gauge})'
+                    y_title = "Imaginary part of coefficients"
+                elif plot_type == "mag":
+                    y_data = solution.y[i, :].real**2 + solution.y[i, :].imag**2
+                    trace_name = f'|c<sub>{n},{l},{m}</sub>| ({gauge})'
+                    y_title = "Magnitude of coefficients"
                 else:
-                    population = np.abs(solution.y[i, :])**2
+                    raise ValueError("plot_type must be one of: 'occ', 'real', 'imag', 'mag'")
                 
                 fig.add_trace(go.Scatter(
                     x=solution.t, 
-                    y=population,
+                    y=y_data,
                     mode='lines',
-                    name=f'|{n},{l},{m}⟩ ({gauge})'
+                    name=trace_name
                 ))
         
-        fig.update_layout(
-            title="Hydrogen Atom State Populations",
-            xaxis_title="Time (atomic units)",
-            yaxis_title="Population |c<sub>k</sub>(t)|²",
-            xaxis=dict(range=[-100, 100])
-        )
+        laser_text = "<br>".join([
+            "<b>Laser Parameters:</b>",
+            f"Wavelength: {self.laser_params[0]} nm",
+            f"Intensity: {self.laser_params[1]:.0e} W/cm²",
+            f"CEP: {self.laser_params[2]}"
+        ])
         
-        return fig
+        title_map = {
+            "occ": "Hydrogen Atom State Populations",
+            "real": "Real Part of Hydrogen Atom Coefficients", 
+            "imag": "Imaginary Part of Hydrogen Atom Coefficients",
+            "mag": "Magnitude of Hydrogen Atom Coefficients"
+        }
+        
+        fig.update_layout(
+            title=title_map.get(plot_type, "Hydrogen Atom Coefficients"),
+            xaxis_title="Time (atomic units)",
+            yaxis_title=y_title,
+            xaxis=dict(range=[-100, 100]),
+            annotations=[
+                dict(
+                    x=0.02,
+                    y=0.98,
+                    xref="paper",
+                    yref="paper",
+                    text=laser_text,
+                    showarrow=False,
+                    font=dict(size=10),
+                    bgcolor="rgba(255,255,255,0.8)",
+                    bordercolor="gray",
+                    borderwidth=1,
+                    align="left",
+                    valign="top"
+                )
+            ]
+        )
+        fig.show()
 
 def get_coefficientsNumerical(excitedStates, t_grid, get_only_p_states):
-    laser_params = (450, 1e14, 0)
+    laser_params = (850, 1e14, 0)
     
-    solver = HydrogenSolver(max_n=3)
+    solver = HydrogenSolver(max_n=3, laser_params=laser_params)
     print(f"Basis states ({len(solver.states)}): {solver.states}")
     
-    solutions = solver.solve(laser_params, gauge='velocity')
+    solutions = solver.solve(gauge='length')
 
     gauges = list(solutions.keys())
         
@@ -200,17 +249,16 @@ def get_coefficientsNumerical(excitedStates, t_grid, get_only_p_states):
                 c = solution.y[state_idx, :]
             interp_real = interp1d(solution.t, c.real, kind='cubic', fill_value="extrapolate")
             interp_imag = interp1d(solution.t, c.imag, kind='cubic', fill_value="extrapolate")
-            c_interp = (interp_real(t_grid) + 1j * interp_imag(t_grid))
+            c_interp = (-interp_real(t_grid) + 1j * interp_imag(t_grid))
             c_list.append(c_interp)
         return np.vstack(c_list)
 
 if __name__ == "__main__":
-    laser_params = (450, 1e14, 0)
+    laser_params = (850, 1e14, 0)
     
-    solver = HydrogenSolver(max_n=3)
+    solver = HydrogenSolver(max_n=3, laser_params=laser_params)
     print(f"Basis states ({len(solver.states)}): {solver.states}")
     
-    solutions = solver.solve(laser_params, gauge='velocity')
+    solutions = solver.solve(gauge='length')
     
-    fig = solver.plot_populations(solutions)
-    fig.show()
+    fig = solver.plot_populations(solutions, [2], plot_type="real")

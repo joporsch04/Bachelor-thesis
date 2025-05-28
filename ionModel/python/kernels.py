@@ -104,7 +104,7 @@ def Kernel_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, nmin
     return f0, phase0
 
 
-def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, nmin, Ti_ar, p_grid, Theta_grid, window, p, theta, excitedStates):
+def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, nmin, Ti_ar, p_grid, Theta_grid, window, p, theta, excitedStates, coeffType):
     """ return the kernel(t_grid,T_grid) for a given laser field computed with provided parameters using a jit optimized implementation
     Args:
         tar (np.ndarray): the grid of moment of ionization
@@ -128,11 +128,14 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
         fig = make_subplots(rows=excitedStates, cols=1, shared_xaxes=True, subplot_titles=[f"After state {i}" for i in range(excitedStates)])
 
         EF_grid=np.arange(-N, N+1, 1) * dT
-        coefficients = get_coefficientstRecX(excitedStates, EF_grid, True)
-        #coefficients = get_coefficientsNumerical(excitedStates, EF_grid, True)
+        if coeffType == "trecx":
+            coefficients = get_coefficientstRecX(excitedStates, EF_grid, True)
+        elif coeffType == "numerical":
+            coefficients = get_coefficientsNumerical(excitedStates, EF_grid, True)   
         eigenEnergy = get_eigenEnergy(excitedStates, True)
         config = get_hydrogen_states(excitedStates, True)
         rate = np.zeros(tar.size, dtype=np.cdouble)
+        rates_by_state = []
 
         for state_idx in range(excitedStates):
             f0 = np.zeros((Tar.size, tar.size), dtype=np.cdouble)
@@ -162,7 +165,10 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                         DelA = DelA + 2 * VPt * T
                         phase0[i, j]  = (intA2[tp] - intA2[tm])/2  + T*VPt**2-VPt*DelA +2*eigenEnergy[state_idx]*T -phaseleft[tm]+phaseright[tp]
                         f0[i, j] = EF[tp]*EF[tm]*G1_T*absleft[tm]*absright[tp]
-            rate += 2*np.real(IOF(Tar, f0, (phase0)*1j))
+            
+            current_state_rate = 2*np.real(IOF(Tar, f0, (phase0)*1j))*4*np.pi
+            rate += current_state_rate
+            rates_by_state.append(rate.copy())
             
             config_str = f"n={config[state_idx][0]}, l={config[state_idx][1]}, m={config[state_idx][2]}"
             subplot_titles = (f"Rate (state {state_idx}, {config_str})", f"Coeff (state {state_idx}, {config_str})")
@@ -171,15 +177,18 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                 subplot_titles=subplot_titles,
                 horizontal_spacing=0.15
             )
-            fig.add_trace(
-                go.Scatter(x=tar, y=np.real(rate), mode='lines', name=f'Rate'),
-                row=1, col=1
-            )
+            
+            for i in range(state_idx + 1):
+                config_i = config[i]
+                config_str_i = f"n={config_i[0]}, l={config_i[1]}, m={config_i[2]}"
+                fig.add_trace(
+                    go.Scatter(x=tar, y=np.real(rates_by_state[i]), mode='lines', name=f'Rate up to state {i} ({config_str_i})'), row=1, col=1)
+            
             fig.add_trace(
                 go.Scatter(x=EF_grid, y=np.abs(cLeft)**2, mode='lines', name='|coeff|**2'), row=1, col=2
             )
             fig.update_layout(
-                width=1200, height=400,
+                width=1200, height=400, xaxis=dict(range=[-50, 50]),
                 title_text=f"State {state_idx} ({config_str})"
             )
             fig.update_xaxes(title_text="Time (a.u.)", row=1, col=1)
@@ -212,7 +221,7 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                     f0[i, j] = EF[tp]*EF[tm]*2**9 *(2*E_g)**2.5/np.pi*G1_T #should be 7 instead of 9?
         return f0, phase0*1j
 
-def Kernel_jit(t_grid, T_grid, laser_field, param_dict, kernel_type="GASFIR", excitedStates=0):
+def Kernel_jit(t_grid, T_grid, laser_field, param_dict, kernel_type="GASFIR", excitedStates=0, coeffType="trecx"):
     """ return the kernel(t_grid,T_grid) for a given laser field computed with provided parameters using a jit optimized implementation
     Args:
         t_grid (np.ndarray): the grid of moment of ionization   
@@ -262,16 +271,16 @@ def Kernel_jit(t_grid, T_grid, laser_field, param_dict, kernel_type="GASFIR", ex
         #print(p_grid.size, Theta_grid.size)
         p, theta = meshgrid(p_grid, Theta_grid)
         if (excitedStates!=0):
-            return exact_SFA_jit_helper(t, T, params, EF, EF2, VP, intA, intA2, dT, N, n, nmin, Ti_ar, p_grid, Theta_grid, window, p, theta, excitedStates=excitedStates)
+            return exact_SFA_jit_helper(t, T, params, EF, EF2, VP, intA, intA2, dT, N, n, nmin, Ti_ar, p_grid, Theta_grid, window, p, theta, excitedStates=excitedStates, coeffType=coeffType)
         else:
-            f0, phase0 = exact_SFA_jit_helper(t, T, params, EF, EF2, VP, intA, intA2, dT, N, n, nmin, Ti_ar, p_grid, Theta_grid, window, p, theta, excitedStates=excitedStates)
+            f0, phase0 = exact_SFA_jit_helper(t, T, params, EF, EF2, VP, intA, intA2, dT, N, n, nmin, Ti_ar, p_grid, Theta_grid, window, p, theta, excitedStates=excitedStates, coeffType=coeffType)
     elif kernel_type=="GASFIR":
         f0, phase0= Kernel_jit_helper(t, T, params, EF, EF2, VP, intA, intA2, dT, N, n, nmin, Ti_ar)
     else:
         return None, None
     return f0, phase0
 
-def IonRate(t_grid, laser_field, param_dict, dT, kernel_type="GASFIR", excitedStates=0):
+def IonRate(t_grid, laser_field, param_dict, dT, kernel_type="GASFIR", excitedStates=0, coeffType="trecx"):
     """ return the ionization rate for a define pulse computed with provided parameters 
     Args:
         t_grid (np.ndarray): the grid of moment of ionization   
@@ -288,9 +297,9 @@ def IonRate(t_grid, laser_field, param_dict, dT, kernel_type="GASFIR", excitedSt
     tau_injection=max(abs(t_min), abs(t_max))
     T_grid=np.arange(0, tau_injection+dT, dT, dtype=np.float64)
     if (excitedStates!=0):
-        rate=Kernel_jit(t_grid, T_grid, laser_field, param_dict, kernel_type=kernel_type, excitedStates=excitedStates)
+        rate=Kernel_jit(t_grid, T_grid, laser_field, param_dict, kernel_type=kernel_type, excitedStates=excitedStates, coeffType=coeffType)
     else:
-        f, phase=Kernel_jit(t_grid, T_grid, laser_field, param_dict, kernel_type=kernel_type, excitedStates=excitedStates)
+        f, phase=Kernel_jit(t_grid, T_grid, laser_field, param_dict, kernel_type=kernel_type, excitedStates=excitedStates, coeffType=coeffType)
         rate=2*np.real(IOF(T_grid, f, phase))
 
     #rate=2*np.real(np.trapz(f*np.exp(phase), x=T_grid, axis=0))
