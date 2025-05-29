@@ -11,7 +11,6 @@ class tRecXdata:
         self.coefficients = self.extractCoefficients()
         self.laser_params = self.extractLaserParams()
 
-
     def extractTime0(self):
         file_path = os.path.join(self.folder_path, "Laser")
         if not os.path.exists(file_path):
@@ -171,6 +170,10 @@ class tRecXdata:
         return laser_params
 
 if __name__ == "__main__":
-    data = tRecXdata("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0040")
+    datamixed = tRecXdata("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0040")
+    datalength = tRecXdata("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0042")
+    datavelocity = tRecXdata("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0044")
 
-    data.plotCoefficients([1], "real")
+    #datamixed.plotCoefficients([1,3], "occ")
+    datalength.plotCoefficients([1], "real")
+    #datavelocity.plotCoefficients([1,3], "occ")

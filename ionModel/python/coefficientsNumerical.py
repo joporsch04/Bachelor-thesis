@@ -22,6 +22,7 @@ class HydrogenSolver:
         self.states = self._build_basis()
         self.energies = np.array([-0.5/n**2 for n, l, m in self.states])
         self.z_matrix = self._compute_z_matrix()
+        #self.p_matrix = self._compute_p_matrix()
         self.laser_params = laser_params
     
     def _build_basis(self):
@@ -30,9 +31,6 @@ class HydrogenSolver:
     
     def _radial_wavefunction(self, r, n, l):
         """Hydrogen radial wavefunction R_nl(r)"""
-        if l >= n:
-            return np.zeros_like(r)
-        
         coeff = np.sqrt((2/n)**3 * factorial(n-l-1) / (2*n*factorial(n+l)))
         laguerre = genlaguerre(n-l-1, 2*l+1)
         return coeff * np.exp(-r/n) * (2*r/n)**l * laguerre(2*r/n)
@@ -54,7 +52,7 @@ class HydrogenSolver:
         
         self._radial_cache[key] = result
         return result
-    
+      
     def _angular_integral(self, l1, m1, l2, m2):
         """Angular part of z matrix element"""
         if m1 != m2 or abs(l1 - l2) != 1:
@@ -73,42 +71,37 @@ class HydrogenSolver:
         
         for i, (n1, l1, m1) in enumerate(self.states):
             for j, (n2, l2, m2) in enumerate(self.states):
-                if i <= j:
-                    radial = self._radial_integral(n1, l1, n2, l2)
-                    angular = self._angular_integral(l1, m1, l2, m2)
-                    z_matrix[i, j] = z_matrix[j, i] = radial * angular
-        
+                radial = self._radial_integral(n1, l1, n2, l2)
+                angular = self._angular_integral(l1, m1, l2, m2)
+                z_matrix[i, j] = radial * angular
         return z_matrix
     
-    def _tdse_rhs_velocity(self, t, y):
-        """TDSE right-hand side for velocity gauge"""
-        c = y[:-1]
-        A_z = y[-1].real
-        dc_dt = np.zeros_like(c, dtype=complex)
+    # def _tdse_rhs_velocity(self, t, y):
+    #     """Velocity gauge TDSE using simplified dipole approximation"""
+    #     c = y
+    #     dc_dt = np.zeros_like(c, dtype=complex)
         
-        E_field = self.laser.Electric_Field(t)
+    #     A_z = self.laser.Vector_potential(t)
         
-        for k in range(len(self.states)):
-            for n in range(len(self.states)):
-                if k != n and self.z_matrix[k, n] != 0:
-                    phase = np.exp(1j * (self.energies[k] - self.energies[n]) * t)
-                    dc_dt[k] += (c[n] * (self.energies[k] - self.energies[n]) * 
-                               self.z_matrix[k, n] * phase * A_z)
+    #     for k in range(len(self.states)):
+    #         for n in range (len(self.states)):
+    #             omega_kn = self.energies[k] - self.energies[n]
+    #             V_kn = -1j*self.p_matrix[k, n] * A_z
+    #             dc_dt[k] += -1j*np.exp(1j*omega_kn)*V_kn*c[n]
         
-        return np.append(dc_dt, -E_field)
+    #     return dc_dt
     
     def _tdse_rhs_length(self, t, y):
-        """TDSE right-hand side for length gauge"""
+        """TDSE right-hand side for length gauge: i*dc/dt = H_0*c + (z*E)*c"""
         c = y
         dc_dt = np.zeros_like(c, dtype=complex)
         
         E_field = self.laser.Electric_Field(t)
         
         for k in range(len(self.states)):
-            dc_dt[k] = -1j * self.energies[k] * c[k]
             for n in range(len(self.states)):
-                if k != n and self.z_matrix[k, n] != 0:
-                    dc_dt[k] += -1j * self.z_matrix[k, n] * E_field * c[n]
+                omega_kn = self.energies[k] - self.energies[n]
+                dc_dt[k] += -1j *np.exp(1j*omega_kn*t)* self.z_matrix[k, n] * E_field * c[n]
         
         return dc_dt
     
@@ -124,20 +117,18 @@ class HydrogenSolver:
         
         results = {}
         
-        if gauge in ['velocity', 'both']:
-            c_init = np.zeros(len(self.states), dtype=complex)
-            c_init[0] = 1.0
-            y_init_vel = np.append(c_init, 0.0)
-            
-            results['velocity'] = solve_ivp(self._tdse_rhs_velocity, [t_start, t_end], y_init_vel, 
-                                          t_eval=t_eval, method='DOP853', rtol=1e-10, atol=1e-10)
+        # Initial condition: ground state
+        c_init = np.zeros(len(self.states), dtype=complex)
+        c_init[0] = 1.0
         
         if gauge in ['length', 'both']:
-            c_init = np.zeros(len(self.states), dtype=complex)
-            c_init[0] = 1.0
-            
             results['length'] = solve_ivp(self._tdse_rhs_length, [t_start, t_end], c_init, 
-                                        t_eval=t_eval, method='DOP853', rtol=1e-10, atol=1e-10)
+                                        t_eval=t_eval, method='DOP853', rtol=1e-8, atol=1e-8)
+        
+        # if gauge in ['velocity', 'both']:
+            
+        #     results['velocity'] = solve_ivp(self._tdse_rhs_velocity, [t_start, t_end], c_init, 
+        #                                   t_eval=t_eval, method='DOP853', rtol=1e-8, atol=1e-8)
         
         return results
     
@@ -172,7 +163,7 @@ class HydrogenSolver:
                     trace_name = f'Im{{c<sub>{n},{l},{m}</sub>}} ({gauge})'
                     y_title = "Imaginary part of coefficients"
                 elif plot_type == "mag":
-                    y_data = solution.y[i, :].real**2 + solution.y[i, :].imag**2
+                    y_data = np.abs(solution.y[i, :])
                     trace_name = f'|c<sub>{n},{l},{m}</sub>| ({gauge})'
                     y_title = "Magnitude of coefficients"
                 else:
@@ -222,43 +213,16 @@ class HydrogenSolver:
             ]
         )
         fig.show()
-
-def get_coefficientsNumerical(excitedStates, t_grid, get_only_p_states):
-    laser_params = (850, 1e14, 0)
-    
-    solver = HydrogenSolver(max_n=3, laser_params=laser_params)
-    print(f"Basis states ({len(solver.states)}): {solver.states}")
-    
-    solutions = solver.solve(gauge='length')
-
-    gauges = list(solutions.keys())
-        
-    for gauge_idx, gauge in enumerate(gauges):
-        solution = solutions[gauge]
-
-        c_list = []
-        for state_idx in range(excitedStates):
-            if get_only_p_states:
-                if state_idx == 0:
-                    c = solution.y[0, :]    #1s state
-                if state_idx == 1:
-                    c = solution.y[2, :]    #2p state
-                if state_idx == 2:
-                    c = solution.y[4, :]    #3p state
-            else:
-                c = solution.y[state_idx, :]
-            interp_real = interp1d(solution.t, c.real, kind='cubic', fill_value="extrapolate")
-            interp_imag = interp1d(solution.t, c.imag, kind='cubic', fill_value="extrapolate")
-            c_interp = (-interp_real(t_grid) + 1j * interp_imag(t_grid))
-            c_list.append(c_interp)
-        return np.vstack(c_list)
+        return fig
 
 if __name__ == "__main__":
     laser_params = (850, 1e14, 0)
     
-    solver = HydrogenSolver(max_n=3, laser_params=laser_params)
+    solver = HydrogenSolver(max_n=6, laser_params=laser_params)
     print(f"Basis states ({len(solver.states)}): {solver.states}")
     
+    # Test both gauges
     solutions = solver.solve(gauge='length')
     
-    fig = solver.plot_populations(solutions, [2], plot_type="real")
+    # Plot populations for excited states
+    fig = solver.plot_populations(solutions, [4], plot_type="imag")

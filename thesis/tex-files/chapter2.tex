@@ -118,7 +118,18 @@ As long as the Wavelength is big enough this approximation is valid. It follows:
 \end{equation*}
 Even tough we will later choose another gauge, the physics in our system remains the same. The dipole Approximation is not gauge dependent, so in another gauge $\vec{B}$ remains approximately zero.
 Choosing the lorentz gauge here is just a matter of convenience, because just expanding the vector potential to the linear term is very intuitive. \\
-This was the essence of the dipole approximation but we also want a intuitive expression for our Laser Fild in the Hamiltonian.
+This was the essence of the dipole approximation but we also want a intuitive expression for our Laser Fild in the Hamiltonian. 
+For that we need to think more about the gauge of our system.
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%
+\subsection{Gauges}
+What makes calculating ionisation rates in strong field physiccs so difficult is the gauge, ie deciding which one you want to choose and when. \\
+First, I will derive two basic expressions for the Hamiltonian in the so called velocity gauge and length gauge using the dipole approximation.
 It will be helpfull to look at the semi classical Hamilton function of a free electron in an electric field\footnote{Because its interesting it will be derived in \ref{sec:semiclassichamilton}}: % what is with V(x), and the mass of the proton. is it in \vec{p}?
 \begin{equation} %what are the arguments in H, is it even x? -> classical hamilton with H(P, x, t) but now quantum without because P is now nabla operator
     \hat{\Hs}(\uvec{x}, t) = \frac{1}{2m}(\vec{\hat{P}} - e \vec{A}(\uvec{x}, t))^2 + e \varphi(\uvec{x}, t)  \label{eq:semiClassicalHamilton}    %+ V(x)
@@ -131,14 +142,14 @@ Note that we could set $\varphi$ to zero because the source of the em wave are o
 We will however set $\varphi$ to zero later. 
 Another general assumption one made when working with semi classical Hamiltonians is that only the vectorpotential causes the electron to change its state but not vice versa (Bosßmann). 
 This is reasonable approximation because in our case the intensity of the Laser is sufficiently high, so we dont have to worry about that(is it really??).
-Now we perform another gauge transformation to the so called length gauge via 
+Now we perform our desired gauge transformation, called length gauge via:
 \begin{equation*}
     \chi = -\vec{A}(t)\cdot \uvec{x} %r=(x/3, y/3, z/3)
 \end{equation*}
 This gauge sets $\vec{A}$ to zero, and $\varphi$ will have the following form:
 \begin{equation*}
     \nabla \varphi \to \nabla \cdot (\varphi + \vec{x} \cdot \frac{\partial \vec{A}}{\partial t}) = \nabla \varphi + \frac{\partial \vec{A}}{\partial t} = - \vec{E}
-\end{equation*}
+\end{equation*}%i think E is still dependent on x so i cant just integrate it :( becasue phi is still dependent on x but i think i can solve it by just setting phi to zero
 Integrating this equation from the origin to $\vec{x}$ gives us the electric potential in the length gauge. Furthermore, $\vec{r}$ is now quantized and our Hamilton therefore reads:
 \begin{equation*}
     \hat{\Hs}(\uvec{x}, t) = \frac{\hat{\vec{P}}^2}{2m} - e \hat{\vec{x}} \cdot \vec{E} %+ V(x)
@@ -147,7 +158,9 @@ We can rewirte the time dependent part $\hat{V}$ of our quantum mechanical Hamil
 \begin{equation}
     \hat{V}_I(t) = -\hat{\vec{d}} \cdot \vec{E}(t) \label{eq:dipoleApprox}
 \end{equation}
-where $\hat{\vec{d}}=e\vec{\hat{x}}$ is the dipole operator and $\vec{E}(t)$ is the electric field.
+where $\hat{\vec{d}}=e\vec{\hat{x}}$ is the dipole operator and $\vec{E}(t)$ is the electric field.\\
+This is a common way to write the interaction Hamiltonian. 
+However if we choose another gauge transformation, the equations will have a different form. look bossmann!!!
 
 %breakdown of dipole approx-> for fast electrons also not only for small wavelengths!!!
 
@@ -167,62 +180,64 @@ Previous work neglects this part so there is just one hilbertspace for the eigen
 
 
 
+
+
+
+%%%%%%%%%%%%%%%%%%%%%
 \subsection{Subspaces}
 First we project the full timedependent Hamiltonian $\hat{\Hs}(t)$ onto subspaces using projection operators defined by:
 \begin{equation*}
-    \hat{P} = \sum_{n}\ket{\Psi_n}\bra{\Psi_n}\quad\text{and}\quad\hat{Q}= \hat{1} - \hat{P}
+    \hat{X} = \sum_{n}\ket{\Psi_n}\bra{\Psi_n}\quad\text{and}\quad\hat{Y}= \hat{1} - \hat{X}
 \end{equation*}
 With $\ket{\Psi_n}$ being the bound states of our atom. We can write:
 \begin{equation*}
-    \hat{\Hs}(t) = \underbrace{\hat{P}\hat{\Hs}(t)\hat{P}}_{\hat{\Hs}^{\mathrm{P}}(t)=\hat{\Hs}_{\mathrm{0}}(t)} + \underbrace{\hat{Q}\hat{\Hs}(t)\hat{Q} + \hat{P}\hat{\Hs}(t)\hat{Q} + \hat{Q}\hat{\Hs}(t)\hat{P}}_{\hat{\Hs}^{\mathrm{Q}}(t)+\hat{\Hs}^{\mathrm{PQ}}(t)+\hat{\Hs}^{\mathrm{QP}}(t)=\hat{\Hs}_{\mathrm{I}}(t)}
+    \hat{\Hs}(t) = \underbrace{\hat{X}\hat{\Hs}(t)\hat{X}}_{\hat{\Hs}^{\mathrm{X}}(t)=\hat{\Hs}_{\mathrm{0}}(t)} + \underbrace{\hat{Y}\hat{\Hs}(t)\hat{Y} + \hat{X}\hat{\Hs}(t)\hat{Y} + \hat{Y}\hat{\Hs}(t)\hat{X}}_{\hat{\Hs}^{\mathrm{Y}}(t)+\hat{\Hs}^{\mathrm{XY}}(t)+\hat{\Hs}^{\mathrm{YX}}(t)=\hat{\Hs}_{\mathrm{I}}(t)}
 \end{equation*}
-Lets think about what these terms mean. $\hat{\Hs}^{\mathrm{P}}(t)$ can be seen as just our quantum system but with a small distortion by our electric field. 
+Lets think about what these terms mean. $\hat{\Hs}^{\mathrm{X}}(t)$ can be seen as just our quantum system but with a small distortion by our electric field. 
 This part causes effects like Stark shift both in the eigenstates and eigenenergies of our atom. 
 As long as the laser pulse is not too strong and no ionisation has happened, we can treat the pulse like a pertubation to the system.
-The distortion may be time dependent but the good thing is that we can easily determine the propagator with repsect to $\hat{\Hs}^{\mathrm{P}}(t)$ by using the interaction picture and solving a system of coupled differential equations.
+The distortion may be time dependent but the good thing is that we can easily determine the propagator with repsect to $\hat{\Hs}^{\mathrm{X}}(t)$ by using the interaction picture and solving a system of coupled differential equations.
 In other words this Hamiltonian determines the time evolution of the first hilbert space, as mentioned above. \\
 Lets think about the other terms. For that we need to establish a setting. Say our Atom sits in the ground state and gets ionised. 
-Based on this image we can say two from three parts are uneccessary. First $\hat{\Hs}^{\mathrm{Q}}(t)$ plays no role because we project the initial state into the continuum state, and since their can be no overlap between them this part will play no role.
+Based on this image we can say two from three parts are uneccessary. First $\hat{\Hs}^{\mathrm{Y}}(t)$ plays no role because we project the initial state into the continuum state, and since their can be no overlap between them this part will play no role.
 This term actually just describes the evolution of a continuum state that remains a continuum state after the interaction so the laser pulse has happened.
-Second $\hat{\Hs}^{\mathrm{PQ}}(t)$ plays no role either since we projct the initial (bound) state into the continuum. 
+Second $\hat{\Hs}^{\mathrm{XY}}(t)$ plays no role either since we projct the initial (bound) state into the continuum. 
 This term would determine the time evolution of a continuum state that recombines with the atom after the interaction has happened.
 Obviously thats not what we want. 
-The only term that remains is $\hat{\Hs}^{\mathrm{QP}}(t)$ which describes the time evolution of a bound state that gets ionised in the continuum by the laser pulse.
+The only term that remains is $\hat{\Hs}^{\mathrm{YX}}(t)$ which describes the time evolution of a bound state that gets ionised in the continuum by the laser pulse.
 This is the perfect part to later start the strong field approximation with.\\
 
 
-\subsection{Dyson series}
 
+
+
+\subsection{Avoiding Dyson series}
 For determining the time evolution we need to be carefull since the whole Hamiltonian doesnt commutate with itself at different times so we need to be exact. 
 Since the full Dyson series \eqref{eq:dyson} can be cumbersome to deal with, we choose a different way. 
 What helps us is the fact that we can split the Hamiltonian by projecting it into subspaces in two parts of which one can be solved directly as mentioned above. 
 Lets first write our ansatz:
 \begin{equation}
-    \hat{\U}(t,t_0)=\hat{\U}_L
+    \hat{\U}(t,t_0)=\hat{\U}_0(t,t_0)-i\int_{t_0}^{t} \hat{\U}(t,t')\hat{\Hs}_{\mathrm{I}}(t')\hat{\U}_0(t',t_0) \dd t'       \label{eq:dysonAnsatz}
 \end{equation}
+It is very easy to show that \eqref{eq:dysonAnsatz} is a solution to \eqref{eq:schroedinger}.\\
+In our setting we start with the ground state of the atom so the time evolution is given by $\ket{\Psi_n(t)}=\hat{\U}(t,t_0)\ket{\Psi_n(t_0)}$.
+To make things even simpler, we project this state into a continuum state $\ket{\Pi(t_{\mathrm{c}})}$ at time $t_{\mathrm{c}}$ with $t_{\mathrm{c}}$ being sufficiently big enough for the electron to be in the continuum ($t_{\mathrm{c}} >> t'$).\\
+Of course, there is no overlap between $\ket{\Pi(t_{\mathrm{c}})}$ and $\hat{\U}_0(t,t_0)\ket{\Psi_n(t_0)}$ since the electron did not get ionisaed yet. 
+Furthermore, if we expand $\hat{\Hs}_{\mathrm{I}}(t')$ and remind ourself about the orthogonality of the bound states and the continuum states, we see that most of the terms of $\hat{\Hs}_{\mathrm{I}}(t')$ vanish.
+We are being left with:
+\begin{equation}
+    \braket{\Pi(t_{\mathrm{c}})|\Psi_n(t)} = -i \int_{t_0}^{t} \bra{\Pi(t_{\mathrm{c}})}\hat{\U}(t,t')\hat{Y}\hat{\Hs}(t')\hat{X}\hat{\U}_0(t',t_0)\ket{\Psi_n(t_0)} \dd t' \label{eq:smatrixlike}
+\end{equation}
+
+
+
 
 \subsection{Strong Field Approximation}
-
-For making the strong field approximation we first have to obtain a point where is its good to use. 
-When we treat $\hat{V}_I(t)$ as the interaction term, we can write an exakt solution to \eqref{eq:schroedinger}:
-\begin{equation}
-    \ket{\Psi(t)} = -i \int_{t_0}^{t} \dd t' e^{-i \int_{t'}^{t} \hat{\Hs}(t'') \dd t''} \hat{V}_I(t') e^{-i \int_{t_0}^{t'} \hat{\Hs_0}(t'') \dd t''} \sum_{n}c_n(t')\ket{\Psi_n} + e^{-i \int_{t_0}^{t} \hat{\Hs_0}(t') \dd t'} \sum_{n}c_n(t')\ket{\Psi_n}\label{eq:schroedingerSolPart}
-\end{equation}
-as can be checked by inserting the solution into the Schrödinger equation.\\
-The key difference in this formula compared to other literature is the fact that instead of choosing the ground state as the initial state, we use a timdependent superposition of all states $\sum_{n}c_n(t')\ket{\Psi_n}$.
-Why this solution even works and for more details, see \ref{sec:tdsesolution}.\\
-To make this expression more appealing we can project it into an eigenstate in the continuum ie a electron state characterized by its velocity.
-As can be seen in the following, the last term in \eqref{eq:schroedingerSolPart} is now gone because there can be no overlap between a continuum state and the initial state.
-\begin{equation}
-    \braket{\Pi(t_c)|\Psi(t)} = -i \int_{t_0}^{t} \dd t' \bra{\Pi(t=t_c)} e^{-i \int_{t'}^{t} \hat{\Hs}(t'') \dd t''}\hat{V}_I(t') e^{-i \int_{t_0}^{t'} \hat{\Hs_0} \dd t''} \sum_{n}c_n(t')\ket{\Psi_n}
-\end{equation}
-With $\ket{\Pi(t_c)}$ being a continuum state with momentum $\uvec{p}$ at time $t_c$ with $t_c$ being sufficiently big enough for the electron to be in the continuum ($t_c >> t'$).\\
-Equation \eqref{eq:schroedingerSolPart} is known as the strong field S-matrix amplitude. 
-It is best to read this equation from right to left, starting with the initial state of our system and the field free time propagation of the system. 
-At moment $t'$ the Laser starts to interact with the system and it transisions into a virtual state instantaniously. 
+Before maing the strong field approximation, lets think about \eqref{eq:smatrixlike} again.
+It is best to read this equation from right to left, starting with the initial state of our system and the propagation of the system in presence of a weak electric field before ionisation. 
+At moment $t'$ the Laser starts to interact with the system and it transisions into a virtual state. 
 From time $t'$ to the observed time $t$ the system is described by the full Hamiltonian including both Laser Field and the binding potential.\\
-Now we have a good place to start with the strong field approximation. 
-In principle, SFA is the neglecting of the Coulomb potential once the electron is in the continuum because the Laser Field is now the dominant force acting on the electron.
+In principle, SFA is the neglecting of exactly this binding potential once the electron is in the continuum because the Laser Field is now the dominant force acting on the electron.
 We can therefore write the term with the full Hamiltonian as
 \begin{equation*}
     \begin{aligned}

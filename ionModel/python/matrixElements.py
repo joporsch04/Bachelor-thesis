@@ -4,11 +4,42 @@ from scipy.special import gamma, binom, hyp2f1, sph_harm, lpmv
 from scipy.interpolate import interp1d
 import plotly.graph_objects as go
 
+from coefficientsNumerical import HydrogenSolver
 from tRecXdata import tRecXdata
 
 def get_eigenEnergy(excitedStates, get_p_states):
     states = get_hydrogen_states(excitedStates, get_p_states)
     return np.array([0.5*1/(n**2) for (n,l,m) in states])
+
+def get_coefficientsNumerical(excitedStates, t_grid, get_only_p_states, Gauge):
+    laser_params = (850, 1e14, 0)
+    
+    solver = HydrogenSolver(max_n=3, laser_params=laser_params)
+    print(f"Basis states ({len(solver.states)}): {solver.states}")
+    
+    solutions = solver.solve(gauge=Gauge)
+
+    gauges = list(solutions.keys())
+        
+    for gauge_idx, gauge in enumerate(gauges):
+        solution = solutions[gauge]
+
+        c_list = []
+        for state_idx in range(excitedStates):
+            if get_only_p_states:
+                if state_idx == 0:
+                    c = solution.y[0, :]    #1s state
+                if state_idx == 1:
+                    c = solution.y[2, :]    #2p state
+                if state_idx == 2:
+                    c = solution.y[4, :]    #3p state
+            else:
+                c = solution.y[state_idx, :]
+            interp_real = interp1d(solution.t, c.real, kind='cubic', fill_value="extrapolate")
+            interp_imag = interp1d(solution.t, c.imag, kind='cubic', fill_value="extrapolate")
+            c_interp = (interp_real(t_grid) + 1j * interp_imag(t_grid))
+            c_list.append(c_interp)
+        return np.vstack(c_list)
 
 def get_coefficientstRecX(excitedStates, t_grid, get_p_states):
     data = tRecXdata("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0040")

@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[     58558,       1534]
-NotebookOptionsPosition[     56463,       1492]
-NotebookOutlinePosition[     56858,       1508]
-CellTagsIndexPosition[     56815,       1505]
+NotebookDataLength[     61232,       1610]
+NotebookOptionsPosition[     58909,       1564]
+NotebookOutlinePosition[     59304,       1580]
+CellTagsIndexPosition[     59261,       1577]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -1488,6 +1488,78 @@ Cell[BoxData[
  CellChangeTimes->{3.956302425384323*^9, 3.95630248136195*^9, 
   3.956302620033287*^9},
  CellLabel->"Out[6]=",ExpressionUUID->"8907085d-9274-41c5-9415-a6f39d12410a"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Integrate", "[", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"Conjugate", "[", 
+     RowBox[{"SphericalHarmonicY", "[", 
+      RowBox[{"l", ",", "m", ",", "\[Theta]", ",", "\[CurlyPhi]"}], "]"}], 
+     "]"}], "*", 
+    RowBox[{"Cos", "[", "\[Theta]", "]"}], "*", 
+    RowBox[{"SphericalHarmonicY", "[", 
+     RowBox[{"lp", ",", "mp", ",", "\[Theta]", ",", "\[CurlyPhi]"}], "]"}], 
+    "*", 
+    RowBox[{"Sin", "[", "\[Theta]", "]"}]}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\[Theta]", ",", "0", ",", "Pi"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\[CurlyPhi]", ",", "0", ",", 
+     RowBox[{"2", " ", "Pi"}]}], "}"}], ",", 
+   RowBox[{"Assumptions", "->", 
+    RowBox[{
+     RowBox[{"Element", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"l", ",", "lp"}], "}"}], ",", "Integers"}], "]"}], "&&", 
+     RowBox[{"l", ">=", "0"}], "&&", 
+     RowBox[{"Element", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"m", ",", "mp"}], "}"}], ",", "Integers"}], "]"}]}]}]}], 
+  "]"}]], "Input",
+ CellChangeTimes->{{3.957512349250842*^9, 3.957512362174408*^9}, 
+   3.957512451125407*^9},
+ CellLabel->"In[3]:=",ExpressionUUID->"99339db6-7ca1-4de2-8926-65715f4fcdd0"],
+
+Cell[BoxData[
+ RowBox[{"Integrate", "[", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"Conjugate", "[", 
+     RowBox[{"SphericalHarmonicY", "[", 
+      RowBox[{"l", ",", "m", ",", "\[Theta]", ",", "\[CurlyPhi]"}], "]"}], 
+     "]"}], " ", 
+    RowBox[{"Cos", "[", "\[Theta]", "]"}], " ", 
+    RowBox[{"Sin", "[", "\[Theta]", "]"}], " ", 
+    RowBox[{"SphericalHarmonicY", "[", 
+     RowBox[{"lp", ",", "mp", ",", "\[Theta]", ",", "\[CurlyPhi]"}], "]"}]}], 
+   ",", 
+   RowBox[{"{", 
+    RowBox[{"\[Theta]", ",", "0", ",", "\[Pi]"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\[CurlyPhi]", ",", "0", ",", 
+     RowBox[{"2", " ", "\[Pi]"}]}], "}"}], ",", 
+   RowBox[{"Assumptions", "\[Rule]", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{"l", "|", "lp"}], ")"}], "\[Element]", 
+      TemplateBox[{},
+       "Integers"]}], "&&", 
+     RowBox[{"l", "\[GreaterEqual]", "0"}], "&&", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{"m", "|", "mp"}], ")"}], "\[Element]", 
+      TemplateBox[{},
+       "Integers"]}]}]}]}], "]"}]], "Output",
+ CellChangeTimes->{3.957512364928656*^9, 3.9575124477444143`*^9, 
+  3.957512592316145*^9},
+ CellLabel->"Out[3]=",ExpressionUUID->"046ed502-1f5a-48a0-8351-ea010b3d0c75"]
 }, Open  ]]
 },
 WindowSize->{1387.5, 762},
@@ -1535,6 +1607,10 @@ Cell[53372, 1399, 243, 6, 52, "Output",ExpressionUUID->"3b99821e-0fd1-4496-a981-
 Cell[CellGroupData[{
 Cell[53652, 1410, 1536, 42, 60, "Input",ExpressionUUID->"ad3f44a7-64a8-4827-bdc1-8d46b3de89e0"],
 Cell[55191, 1454, 1256, 35, 66, "Output",ExpressionUUID->"8907085d-9274-41c5-9415-a6f39d12410a"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[56484, 1494, 1193, 32, 54, "Input",ExpressionUUID->"99339db6-7ca1-4de2-8926-65715f4fcdd0"],
+Cell[57680, 1528, 1213, 33, 35, "Output",ExpressionUUID->"046ed502-1f5a-48a0-8351-ea010b3d0c75"]
 }, Open  ]]
 }
 ]

@@ -1,0 +1,55 @@
+\section{Decomposing a N-dimensional Unitary}
+Mathematically, both the Reck and the Clements scheme decompose the U(N) matrix using U(2) matrices acting on a 2-dimensional subspace of the Hilbert space \cite{Reck1994}. These U(2) matrices can be implemented in the optical setup by using two 50:50 beam splitters and three phase shifters acting on wires $n,m$ that can be represented by the following matrix:
+\begin{align}
+    T_{n,m}(\theta,\phi) = \begin{pmatrix}
+1 &   0     & \cdots       &        &        &        &     & 0\\
+0  & 1 &        &        &        &  & & \vdots    \\
+\vdots &  &  \ddots      &        &        &   &    \\
+  &    & & e^{i\phi}\cos\theta & -\sin\theta & & \\
+  &    & & e^{i\phi}\sin\theta & \cos\theta \\
+  &        &        &        &        & \ddots \\
+    &        &        &        &        & &1 &0\\
+0 &   \cdots &      &        &        &  &   0   &      1\\
+\end{pmatrix}_{N\times N}
+\label{Tmn}
+\end{align}
+The matrix $T_{n,m}(\theta,\phi)$ resembles a Givens rotation. A Givens rotation is a rotation in a plane and, if applied from the right, mixes two columns in the same row. It is often used to null specific elements of a matrix in numerical methods. Both schemes follow the QR decomposition algorithm, with which one can find a decomposition of U into an upper triangular matrix (R) and a number of Givens rotations (Q):
+\begin{align}
+    U(N) = Q*R
+\end{align}
+Since U is unitary, R is not only an upper diagonal matrix but has to be a diagonal matrix with modulus 1 and complex entries which we will call D in the following. This is because Q is by design unitary and the since U is unitary, the product is unitary. The only unitary upper triangular matrix is a diagonal matrix.\\
+To decompose U into Q and R, one has to multiply givens rotations from both left and right. The order in which the Givens rotations are applied is not arbitrary. One starts from the bottom-left corner and moves to the nearest subdiagonal, moving from top to bottom \cite{cilluffo2024}. This is also illustrated in figure \ref{fig:clementsdecompstructure}. 
+
+\begin{figure}
+    \centering
+    \caption[Clements decomposition scheme]{The Clements decomposition starts by nulling the bottom left matrix entry by multiplying a givens rotation from the right. Then, one nulls the adjacent subdiagonal by multiplying givens rotations from the left. One continues in this snake-like pattern until all elements below the diagonal are 0. By finding a matrix D' and reordering the givens decomposition we find the desired structure of eq \ref{Clementsdecomp}.}
+    \label{fig:clementsdecompstructure}
+\end{figure}
+The decomposition of an arbitrary Unitary of dimension N in a diagonal matrix and Givens Rotations is therefore:
+\begin{align}
+    U(N) \;=\; D\;\!\Bigl(\,\prod_{(m,n)\in S} T_{m,n}\Bigr) \;\; ; \;\; n,m \;\epsilon \;[0, N-1]
+    \label{Clementsdecomp}
+\end{align}
+where S is the specific ordered sequence of givens decompositions \cite{Clements:16}.\\
+To implement the decomposition of a unitary $U(N)$ into Givens decompositions in PennyLane, the \textit{givens\_decomposition} function from the PennyLane Python library, v.0.40.0, can be used to create the decomposition of an arbitrary input unitary into the form of equation \ref{Clementsdecomp}. Since in interferometry beam splitters and phase shifters are used to create the Givens rotations, which can be seen as $\widehat{X}(\pi/2)$ and $\widehat{Z}(\theta)$ gates, respectively, we can further decompose any of the $2\times2$ Givens rotations into three $\widehat{Z}$ and two $\widehat{X}(\pi/2)$ gates as described in eq \ref{Z3X2}. Figure \ref{fig:Heatmap} (a) and (b) illustrate the two steps in this decomposition. The code for the decomposition of the single Givens rotations into Z3X2 can be seen in Appendix \ref{one_qubit_Decomp}. \\
+It is important to note, that all calculations are in the non-interacting case. Therefore, we can limit ourselves to the N-dimensional non-interacting subspace of the $2^N \times 2^N$ total Hilbert space.
+
+\begin{figure}[t]
+    \centering
+    \caption[Clements Scheme Example Circuit with angles and Rotation decomposition into Z3X2]{(a) The Clements Scheme creates a brick layer structure which allows for optimal circuit depth of N - in this example N=8. The phase matrix at the end is not necessary since we are measuring right after but is still shown for the sake of completeness. (b) We can further decompose each rotation block into $\widehat{X}$ and $\widehat{Z}$ gates which correspond to real tunneling and chemical potential, respectively, when implementing on a lattice. (c) The angles for a discrete Fourier Transformation do not differ in the first layer of the $\widehat{Z}$ gates (so $\beta$ is constant. This would even allow to implement all first $\widehat{Z}$ gates globally, which would improve the overall fidelity.}
+    \label{fig:Heatmap}
+\end{figure}
+
+\section{Use Cases}
+By being able to realise any unitary matrix through local gates opens up numerous opportunities for quantum simulation where one is often hamstringed by the limited gates and therefore operations possible on the lattice. \\
+In this thesis, the focus is on two very important use cases, the first being atom rearrangement and the second a discrete Fourier Transformation. \\
+\subsection{Rearrangement}
+Atom rearrangement is of great importance in quantum simulation for different reasons. \\
+Firstly, while preparing the lattice for simulations, it needs to be loaded with atoms. Errors can occur and lattice sites might be empty. To ensure that every lattice site contains an atom, one can implement a permutation matrix through the algorithm, which switches atoms from auxiliary lattice sites into the actual simulator. \\
+Secondly, while performing simulations it is necessary to entangle atoms over the whole lattice. Therefore, when simulating, one needs all-to-all connectivity which can be provided with this algorithm. One can again apply whatever permutation matrix is desired to move atoms through all lattice sites. Of course, for this to work in this framework, the interactions U have to be turned off, but turning interactions off and on again is possible, therefore one could move an atom from the bottom left to the top right, turn interaction on and entangle it with its neighbor, turn interaction back off, and move it back.
+
+\subsection{Discrete (Fractional) Fourier Transformation}
+The Fourier Transformation and by extension the Fractional Fourier Transformation (which is the more general case) are a necessary tool when simulating on quantum devices. It is necessary for measuring entanglement entropy \cite{pichler2013thermal}, quantum phase transitions \cite{greiner2002quantum} and observables like the static structure factor or excitation spectra \cite{baez2020dynamical}. Additionally, kinetic energy terms become diagonal in the momentum space which makes it easier to measure \cite{halimeh2024universal}.\\
+An example of where one needs to implement a fractional Fourier Transformation (FrFT) are Bell inequality tests. These require to measure between complementary bases (like momentum and position basis). A FrFT can be utilized to measure in both bases \cite{tasca2006violation}.\\
+To measure momentum space, a standard method is to switch the optical lattice and harmonic trapping potential off and perform a time-of-flight imaging. This method, though, has a number of limitations. The measuring quality is affected by the inhomogeneity of the trapping potential and the accuracy of the absolute number of atoms is around $\pm 10\%$ \cite{Esslinger_2010}. With the above described algorithm, we are able to implement a discrete Fourier Transformation on the lattice. This allows to measure momentum space directly without workarounds and would only be limited by the gate fidelities. Figure \ref{fig:Heatmap} shows the example decomposition for a 8 dimensional discrete Fourier transformation including the angles for the $\widehat{Z}$ gates.
+\newpage

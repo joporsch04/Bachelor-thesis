@@ -1,0 +1,42 @@
+Up until this point, we only considered a one dimensional array of atoms. To allow for the general case of applying a matrix (e.g. a two dimensional Fourier Transformation), we need to find a generalisation for two dimensions.
+
+\section{General Unitary Matrices}
+Of course one could easily expand the 2 dimensional $N\times N$ lattice structure into a $N^2$ array. This means that the rank 4 tensor is expanded into a $N^2\times N^2$ matrix \cite{tensorunfold}. This works for every rank 4 tensor. The problem with this approach is, though, that the depth is of $\mathcal{O}(N^2)$ which makes it difficult to go to large system sizes as one can see in the Chapter \ref{chap:error}. As a short proof one can look at the Clements decomposition which uses $N^2$ gates for a $N\times N$ matrix. Therefore, to account for the added information, now $N^4$ gates are required. Since one can only apply $N^2/2$ gates simultaneously on the lattice, the shortest circuit (and therefore optical depth) is 
+\[\mathcal{O}(N^4)/\mathcal{O}(N^2)=\mathcal{O}(N^2).\]
+Depending on the system size and error tolerance, this might be a suitable method after all and there is no further thinking required. It is, though, possible to get below $\mathcal{O}(N^2)$ depth by applying different schemes or using underlying symmetries in the tensors. For both cases that this thesis looks at, this is in fact the case.
+
+\section{Permutation Matrix}
+To implement a permutation matrix on an \(N\times N\) lattice, the overall rearrangement must be broken into three sequential passes — row‐permute, column‐permute, then row‐permute again — so that the core algorithm is applied three times in total. This three‐step decomposition is necessary because each step can only manipulate entire rows or entire columns at once.  In case one can target individual double wells arbitrarily, a runtime proportional to the maximal Manhattan distance could be achieved, namely \(\mathcal{O}(2N)\). The Manhattan distance between two points $(x_1,y_1)$ and $(x_2,y_2)$ is
+\[|x_1 - x_2| + |y_1 - y_2|,\]
+and on an $N\times N$ grid the maximum such distance (between opposite corners) is $2(N - 1)$. \\
+Since this is not possible in the FermiQP experiment, the HVH scheme is required. The idea is that in the first row-permute, atoms are moved to an auxiliary lattice. In this lattice, atoms are moved to the target row in the column-permute and in the final row-permute back into the main lattice to the target site. This is shown in figure \ref{fig:HVH} (c). The auxiliary lattice, as well as the three steps, are needed to resolve conflicts as shown in figure \ref{fig:HVH} (a). To make sure that all conflicts are resolved, the auxilliary lattice needs to be of size $NxN$. Therefore the row-permutes can be implemented with $\mathcal{O}(2N)$ and the column-permute can be implemented with $\mathcal{O}(N)$. Since both are of order of N and the circuit depth is additive, the final circuit depth is also of $\mathcal{O}(N)$.
+
+
+\begin{figure}[t]
+  \centering
+  \caption[HVH Scheme]{When rearranging in a lattice, conflicts can occur. (a) we see such a conflict. The atoms at sites (2,1) and (3,1) are supposed to move to (0,4) and ((0,3), respectively. If we first do operations on all rows, we run into a conflict in row 3 since there is an atom occupying site (3,3). If we operate first on all columns we run into the conflict that both moving atoms have to move to the row 0. (b) To resolve these conflict we introduce auxiliary lattice sites in light blue. (c) We can only operate on all rows or columns but not a mix. Therefore, we propose that the atoms move first horizontally to the auxiliary sites, then move to the target rows and finally move with a horizontal permutation to the desired target state. In total, we always need maximum of N auxiliary columns which results in a maximum circuit depth of $\mathcal{O}(5N)$.}
+  \label{fig:HVH}
+\end{figure}
+
+\section{Discrete Fourier Transformation}
+For implementing a DFT there is a much simpler and more straight forward solution to reach a circuit depth of $\mathcal{O}(N)$. The idea is to use the separability of the (discrete) Fourier transform, meaning that the 2 dimensional DFT can simply be written as 
+\[
+    DFT_{N\times N}= DFT_{N,columns}(DFT_{N,rows}).
+\]
+This can be easily seen:
+\begin{theorem}[Separability Theorem]
+Let \(f\) be a function on the discrete grid \(\{0,1,\dots,N-1\}\times\{0,1,\dots,M-1\}\).
+Then its two-dimensional discrete Fourier transform
+\[
+DFT(u,v)
+=\frac{1}{\sqrt{N}}\frac{1}{\sqrt{M}}\sum_{x=0}^{N-1}\sum_{y=0}^{M-1}f(x,y)\,e^{-j2\pi\bigl(\tfrac{u x}{N}+\tfrac{v y}{M}\bigr)}
+\]
+can be written as:
+\[
+DFT(u,v)
+=\frac{1}{\sqrt{N}}\sum_{x=0}^{N-1}\Bigl(\frac{1}{\sqrt{M}}\sum_{y=0}^{M-1}f(x,y)\,e^{-j2\pi vy/M}\Bigr)\,e^{-j2\pi ux/N}
+\;=\;DFT_x(DFT_y(f(x,y))) \tag*{\(\square\).}
+\]
+\end{theorem}
+
+Therefore, the total circuit depth is a composed out of one dimensional DFTs on all rows and after that one dimensional DFTs on all columns, both of $\mathcal{O}(N)$ which means that the total circuit depth is still of $\mathcal{O}(N)$.
