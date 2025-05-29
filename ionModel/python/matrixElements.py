@@ -12,9 +12,9 @@ def get_eigenEnergy(excitedStates, get_p_states):
     return np.array([0.5*1/(n**2) for (n,l,m) in states])
 
 def get_coefficientsNumerical(excitedStates, t_grid, get_only_p_states, Gauge):
-    laser_params = (850, 1e14, 0)
+    laser_params = (450, 1e14, 0)
     
-    solver = HydrogenSolver(max_n=3, laser_params=laser_params)
+    solver = HydrogenSolver(max_n=4, laser_params=laser_params)
     print(f"Basis states ({len(solver.states)}): {solver.states}")
     
     solutions = solver.solve(gauge=Gauge)
@@ -42,7 +42,7 @@ def get_coefficientsNumerical(excitedStates, t_grid, get_only_p_states, Gauge):
         return np.vstack(c_list)
 
 def get_coefficientstRecX(excitedStates, t_grid, get_p_states):
-    data = tRecXdata("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0040")
+    data = tRecXdata("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0042")
 
     time = data.coefficients['Time']
 

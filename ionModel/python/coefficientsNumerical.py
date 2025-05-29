@@ -109,8 +109,7 @@ class HydrogenSolver:
         """Solve TDSE with given laser parameters"""
         lam0, intensity, cep = self.laser_params[:3]
         self.laser = LaserField(cache_results=True)
-        self.laser.add_pulse(lam0, intensity, cep, 
-                           lam0 / AtomicUnits.nm / AtomicUnits.speed_of_light)
+        self.laser.add_pulse(lam0, intensity, cep, lam0/ AtomicUnits.nm / AtomicUnits.speed_of_light)
         
         t_start, t_end = self.laser.get_time_interval()
         t_eval = np.linspace(t_start, t_end, 16000)
@@ -123,7 +122,7 @@ class HydrogenSolver:
         
         if gauge in ['length', 'both']:
             results['length'] = solve_ivp(self._tdse_rhs_length, [t_start, t_end], c_init, 
-                                        t_eval=t_eval, method='DOP853', rtol=1e-8, atol=1e-8)
+                                        t_eval=t_eval, method='DOP853', rtol=1e-10, atol=1e-10)
         
         # if gauge in ['velocity', 'both']:
             
@@ -218,7 +217,7 @@ class HydrogenSolver:
 if __name__ == "__main__":
     laser_params = (850, 1e14, 0)
     
-    solver = HydrogenSolver(max_n=6, laser_params=laser_params)
+    solver = HydrogenSolver(max_n=4, laser_params=laser_params)
     print(f"Basis states ({len(solver.states)}): {solver.states}")
     
     # Test both gauges

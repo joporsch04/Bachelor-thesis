@@ -173,7 +173,10 @@ if __name__ == "__main__":
     datamixed = tRecXdata("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0040")
     datalength = tRecXdata("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0042")
     datavelocity = tRecXdata("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0044")
+    data = tRecXdata("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0034")
 
     #datamixed.plotCoefficients([1,3], "occ")
-    datalength.plotCoefficients([1], "real")
+    #datalength.plotCoefficients([3], "imag")
     #datavelocity.plotCoefficients([1,3], "occ")
+    #datalength.plotCoefficients([1,3], "occ")
+    print(datalength.laser_params)

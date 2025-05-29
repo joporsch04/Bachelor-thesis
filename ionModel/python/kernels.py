@@ -145,6 +145,8 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
             phaseright = np.unwrap(np.angle(cRight))
             absleft = np.abs(cLeft)
             absright = np.abs(cRight)
+            if state_idx == 0:
+                phaseleft, phaseright, absleft, absright = phaseleft*0+1, phaseright*0+1, absleft*0+1, absright*0+1
             
             for i in prange(Tar.size):
                 Ti=Ti_ar[i]
