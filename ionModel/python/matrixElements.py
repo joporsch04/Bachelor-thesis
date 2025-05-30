@@ -54,8 +54,8 @@ def get_coefficientstRecX(excitedStates, t_grid, get_p_states, params):
     eigenEnergy = get_eigenEnergy(excitedStates+5, get_p_states)
 
     for state_idx in range(excitedStates):
-        if state_idx == 2:
-            state_idx = 4  # skip the 2p state
+        # if state_idx == 2:
+        #     state_idx = 4  # skip the 2p state
         #print(data.coefficients[f"Re{{<H0:{state_idx}|psi>}}"].head())
         c = np.array(data.coefficients[f"Re{{<H0:{state_idx}|psi>}}"]) + np.array(data.coefficients[f"Imag{{<H0:{state_idx}|psi>}}"]) * 1j
         
@@ -137,14 +137,21 @@ def transitionElement(n, l, m, p, pz, Az, Ip):
 def transitionElementtest(configState, p, pz, Az, Ip):      #first state and normal SFA are exactly 4pi apart
     n, l, m = configState
     thetap = np.arccos(pz/(p+1e14))
-    termsqrt = Az**2 + p**2 + 2*Az*pz + 1e-14
+    termsqrt = Az**2 + p**2 + 2*Az*pz + 1e-14       #(Az+p)^2
     if n == 1 and l == 0:
         numerator = 16 * 2**(3/4) * Ip**2 * (Az + pz)
         denominator = (np.sqrt(Ip**(3/2)) *(2 * Ip + termsqrt)**3 * np.pi)
         return numerator / denominator
+    elif n == 2 and l == 0:
+        numerator = 128 * 2**(1/4) * Ip**2 * (Ip - termsqrt) * (Az + pz)
+        denominator = (np.sqrt(Ip**(3/2)) * (Ip + 2 * termsqrt)**4 * np.pi)
+        return numerator / denominator
+    elif n == 3 and l == 0:
+        numerator = -432 * 2**(3/4) * np.sqrt(3) * Ip**2 * (44 * Ip**2 - 324 * Ip * (Az + p)**2 + 243 * (Az + p)**4) * (Az + pz)
+        denominator = (np.sqrt(Ip**(3/2)) * (2 * Ip + 9 * termsqrt)**5 * np.pi)
+        return numerator / denominator
     elif n == 2 and l == 1:
-        # Implementing the Mathematica code
-        phi_p = 1  # or set to desired value
+        phi_p = 1
         exp_minus_i_phi = np.exp(-1j * phi_p)
         exp_i_phi = np.exp(1j * phi_p)
         exp_2i_phi = np.exp(2j * phi_p)
@@ -160,7 +167,7 @@ def transitionElementtest(configState, p, pz, Az, Ip):      #first state and nor
         denominator = (1 + 4 * p**2)**4 * np.pi
         return 1/3*numerator / denominator
     elif n==3 and l==1:
-        phi_p = 1  # or set to desired value
+        phi_p = 1
         exp_minus_i_phi = np.exp(-1j * phi_p)
         exp_i_phi = np.exp(1j * phi_p)
         exp_2i_phi = np.exp(2j * phi_p)

@@ -125,81 +125,81 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
     pz=p*np.cos(theta)
     if (excitedStates!=0):
         fig = make_subplots(rows=excitedStates, cols=1, shared_xaxes=True, subplot_titles=[f"After state {i}" for i in range(excitedStates)])
-
+        get_p_only = False
         EF_grid=np.arange(-N, N+1, 1) * dT
         if coeffType == "trecx":
-            coefficients = get_coefficientstRecX(excitedStates, EF_grid, True, params)
+            coefficients = get_coefficientstRecX(excitedStates, EF_grid, get_p_only, params)
         elif coeffType == "numerical":
-            coefficients = get_coefficientsNumerical(excitedStates, EF_grid, True, gauge, params)   
+            coefficients = get_coefficientsNumerical(excitedStates, EF_grid, get_p_only, gauge, params)   
         else:
             raise ValueError("coeffType must be either 'trecx' or 'numerical'")
-        eigenEnergy = get_eigenEnergy(excitedStates, True)
-        config = get_hydrogen_states(excitedStates, True)
+        eigenEnergy = get_eigenEnergy(excitedStates, get_p_only)
+        config = get_hydrogen_states(excitedStates, get_p_only)
         rate = np.zeros(tar.size, dtype=np.cdouble)
         rates_by_state = []
 
         for state_idx in range(excitedStates):
-            #state_idx = 1
-            f0 = np.zeros((Tar.size, tar.size), dtype=np.cdouble)
-            phase0 = np.zeros((Tar.size, tar.size), dtype=np.cdouble)
-            cLeft = coefficients[state_idx, :]
-            cRight = coefficients[state_idx, :]
-            phaseleft = np.unwrap(np.angle(cLeft))
-            phaseright = np.unwrap(np.angle(cRight))
-            absleft = np.abs(cLeft)
-            absright = np.abs(cRight)
-            # if state_idx == 0:
-            #     phaseleft, phaseright, absleft, absright = phaseleft*0+1, phaseright*0+1, absleft*0+1, absright*0+1
-            
-            for i in prange(Tar.size):
-                Ti=Ti_ar[i]
-                for j in range(tar.size):
-                    tj=N+nmin+j*n
-                    tp=tj+Ti
-                    tm=tj-Ti
-                    if tp>=0 and tp<EF.size and tm>=0 and tm<EF.size:
-                        VPt = 0 # VP[tj]
-                        T= Ti*dT
-                        DelA = (intA[tp] - intA[tm])-2*VPt*T
-                        VP_p=VP[tp]-VPt
-                        VP_m=VP[tm]-VPt 
-                        f_t_1= np.conjugate(transitionElementtest(config[state_idx], p, pz, VP_m, E_g))*transitionElementtest(config[state_idx], p, pz, VP_p, E_g)#for excitedState=1 use only phase of coefficients to see stark effect
-                        G1_T_p=np.trapz(f_t_1*np.exp(1j*pz*DelA)*np.sin(theta), Theta_grid)
-                        G1_T=np.trapz(G1_T_p*window*p_grid**2*np.exp(1j*p_grid**2*T), p_grid)
-                        DelA = DelA + 2 * VPt * T
-                        phase0[i, j]  = (intA2[tp] - intA2[tm])/2  + T*VPt**2-VPt*DelA +2*eigenEnergy[state_idx]*T -phaseleft[tm]+phaseright[tp]
-                        f0[i, j] = EF[tp]*EF[tm]*G1_T*absleft[tm]*absright[tp]
-            
-            current_state_rate = 2*np.real(IOF(Tar, f0, (phase0)*1j))*4*np.pi
-            rate += current_state_rate
-            rates_by_state.append(rate.copy())
-            
-            config_str = f"n={config[state_idx][0]}, l={config[state_idx][1]}, m={config[state_idx][2]}"
-            subplot_titles = (f"Rate (state {state_idx}, {config_str})", f"Coeff (state {state_idx}, {config_str})")
-            fig = make_subplots(
-                rows=1, cols=2, shared_xaxes=False, 
-                subplot_titles=subplot_titles,
-                horizontal_spacing=0.15
-            )
-            
-            for i in range(state_idx + 1):
-                config_i = config[i]
-                config_str_i = f"n={config_i[0]}, l={config_i[1]}, m={config_i[2]}"
+            for state_range_idx in range(excitedStates):
+                f0 = np.zeros((Tar.size, tar.size), dtype=np.cdouble)
+                phase0 = np.zeros((Tar.size, tar.size), dtype=np.cdouble)
+                cLeft = coefficients[state_idx, :]
+                cRight = coefficients[state_range_idx, :]
+                phaseleft = np.unwrap(np.angle(cLeft))
+                phaseright = np.unwrap(np.angle(cRight))
+                absleft = np.abs(cLeft)
+                absright = np.abs(cRight)
+                # if state_idx == 0:
+                #     phaseleft, phaseright, absleft, absright = phaseleft*0+1, phaseright*0+1, absleft*0+1, absright*0+1
+                
+                for i in prange(Tar.size):
+                    Ti=Ti_ar[i]
+                    for j in range(tar.size):
+                        tj=N+nmin+j*n
+                        tp=tj+Ti
+                        tm=tj-Ti
+                        if tp>=0 and tp<EF.size and tm>=0 and tm<EF.size:
+                            VPt = 0 # VP[tj]
+                            T= Ti*dT
+                            DelA = (intA[tp] - intA[tm])-2*VPt*T
+                            VP_p=VP[tp]-VPt
+                            VP_m=VP[tm]-VPt 
+                            f_t_1= np.conjugate(transitionElementtest(config[state_idx], p, pz, VP_m, E_g))*transitionElementtest(config[state_range_idx], p, pz, VP_p, E_g)#for excitedState=1 use only phase of coefficients to see stark effect
+                            G1_T_p=np.trapz(f_t_1*np.exp(1j*pz*DelA)*np.sin(theta), Theta_grid)
+                            G1_T=np.trapz(G1_T_p*window*p_grid**2*np.exp(1j*p_grid**2*T), p_grid)
+                            DelA = DelA + 2 * VPt * T
+                            phase0[i, j]  = (intA2[tp] - intA2[tm])/2  + T*VPt**2-VPt*DelA +eigenEnergy[state_idx]*(T-tar[j])-eigenEnergy[state_range_idx]*(T+tar[j]) -phaseleft[tm]+phaseright[tp]
+                            f0[i, j] = EF[tp]*EF[tm]*G1_T*absleft[tm]*absright[tp]
+                
+                current_state_rate = 2*np.real(IOF(Tar, f0, (phase0)*1j))*4*np.pi
+                rate += current_state_rate
+                rates_by_state.append(rate.copy())
+                
+                config_str = f"n={config[state_idx][0]}, l={config[state_idx][1]}, m={config[state_idx][2]}"
+                subplot_titles = (f"Rate (state {state_idx}, {config_str})", f"Coeff (state {state_idx}, {config_str})")
+                fig = make_subplots(
+                    rows=1, cols=2, shared_xaxes=False, 
+                    subplot_titles=subplot_titles,
+                    horizontal_spacing=0.15
+                )
+                
+                for i in range(state_idx + 1):
+                    config_i = config[i]
+                    config_str_i = f"n={config_i[0]}, l={config_i[1]}, m={config_i[2]}"
+                    fig.add_trace(
+                        go.Scatter(x=tar, y=np.real(rates_by_state[i]), mode='lines', name=f'Rate up to state {i} ({config_str_i})'), row=1, col=1)
+                
                 fig.add_trace(
-                    go.Scatter(x=tar, y=np.real(rates_by_state[i]), mode='lines', name=f'Rate up to state {i} ({config_str_i})'), row=1, col=1)
-            
-            fig.add_trace(
-                go.Scatter(x=EF_grid, y=np.real(cLeft), mode='lines', name='|coeff|**2'), row=1, col=2
-            )
-            fig.update_layout(
-                width=1200, height=400, xaxis=dict(range=[-50, 50]),
-                title_text=f"State {state_idx} ({config_str})"
-            )
-            fig.update_xaxes(title_text="Time (a.u.)", row=1, col=1)
-            fig.update_xaxes(title_text="Time (a.u.)", row=1, col=2)
-            fig.update_yaxes(title_text="Rate", row=1, col=1)
-            fig.update_yaxes(title_text="Coefficient", row=1, col=2)
-            fig.show()
+                    go.Scatter(x=EF_grid, y=np.real(cLeft), mode='lines', name='|coeff|**2'), row=1, col=2
+                )
+                fig.update_layout(
+                    width=1200, height=400, xaxis=dict(range=[-50, 50]),
+                    title_text=f"State {state_idx} ({config_str})"
+                )
+                fig.update_xaxes(title_text="Time (a.u.)", row=1, col=1)
+                fig.update_xaxes(title_text="Time (a.u.)", row=1, col=2)
+                fig.update_yaxes(title_text="Rate", row=1, col=1)
+                fig.update_yaxes(title_text="Coefficient", row=1, col=2)
+                fig.show()
 
         return rate
     else:
