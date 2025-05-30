@@ -128,9 +128,11 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
 
         EF_grid=np.arange(-N, N+1, 1) * dT
         if coeffType == "trecx":
-            coefficients = get_coefficientstRecX(excitedStates, EF_grid, True)
-        if coeffType == "numerical":
-            coefficients = get_coefficientsNumerical(excitedStates, EF_grid, True, gauge)   
+            coefficients = get_coefficientstRecX(excitedStates, EF_grid, True, params)
+        elif coeffType == "numerical":
+            coefficients = get_coefficientsNumerical(excitedStates, EF_grid, True, gauge, params)   
+        else:
+            raise ValueError("coeffType must be either 'trecx' or 'numerical'")
         eigenEnergy = get_eigenEnergy(excitedStates, True)
         config = get_hydrogen_states(excitedStates, True)
         rate = np.zeros(tar.size, dtype=np.cdouble)
@@ -145,8 +147,8 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
             phaseright = np.unwrap(np.angle(cRight))
             absleft = np.abs(cLeft)
             absright = np.abs(cRight)
-            if state_idx == 0:
-                phaseleft, phaseright, absleft, absright = phaseleft*0+1, phaseright*0+1, absleft*0+1, absright*0+1
+            # if state_idx == 0:
+            #     phaseleft, phaseright, absleft, absright = phaseleft*0+1, phaseright*0+1, absleft*0+1, absright*0+1
             
             for i in prange(Tar.size):
                 Ti=Ti_ar[i]
@@ -186,7 +188,7 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                     go.Scatter(x=tar, y=np.real(rates_by_state[i]), mode='lines', name=f'Rate up to state {i} ({config_str_i})'), row=1, col=1)
             
             fig.add_trace(
-                go.Scatter(x=EF_grid, y=np.imag(cLeft), mode='lines', name='|coeff|**2'), row=1, col=2
+                go.Scatter(x=EF_grid, y=np.abs(cLeft)**2, mode='lines', name='|coeff|**2'), row=1, col=2
             )
             fig.update_layout(
                 width=1200, height=400, xaxis=dict(range=[-50, 50]),
@@ -247,7 +249,6 @@ def Kernel_jit(t_grid, T_grid, laser_field, param_dict, kernel_type="GASFIR", ex
     dT=min(np.diff(T))#/2
     t_min, t_max = laser_field.get_time_interval()
     tau_injection=max(abs(t_min), abs(t_max))
-    # print(dt, dT)
     assert dt%dT==0
     n=int(dt//dT)
     N=int(tau_injection//dT)+1
@@ -266,8 +267,8 @@ def Kernel_jit(t_grid, T_grid, laser_field, param_dict, kernel_type="GASFIR", ex
     for key, value in param_dict.items():
         params[key]=value
     if kernel_type=="exact_SFA":
-        div_theta=param_dict["div_theta"] # also gives good results for *2
-        div_p=param_dict["div_p"]     # p is way harder to get a good convergence
+        div_theta=param_dict["div_theta"]
+        div_p=param_dict["div_p"]
         p_grid, Theta_grid, window = get_momentum_grid(div_p, div_theta, laser_field, Ip=param_dict["E_g"])
         #print(p_grid.size, Theta_grid.size)
         p, theta = meshgrid(p_grid, Theta_grid)

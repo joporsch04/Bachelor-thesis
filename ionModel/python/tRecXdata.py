@@ -154,9 +154,9 @@ class tRecXdata:
                             
                             laser_params = {
                                 'shape': values[0].rstrip(','),
-                                'intensity_W_cm2': f"{float(values[1].rstrip(',')):.0e}",
+                                'intensity': f"{float(values[1].rstrip(',')):.2e}",
                                 'FWHM': fwhm_full,
-                                'wavelength_nm': float(values[wavelength_idx].rstrip(',')),
+                                'lam0': float(values[wavelength_idx].rstrip(',')),
                                 'polar_angle': float(values[wavelength_idx + 1].rstrip(',')),
                                 'azimuth_angle': float(values[wavelength_idx + 2].rstrip(',')),
                                 'CEP': float(values[wavelength_idx + 3].rstrip(',')),
@@ -179,4 +179,4 @@ if __name__ == "__main__":
     #datalength.plotCoefficients([3], "imag")
     #datavelocity.plotCoefficients([1,3], "occ")
     #datalength.plotCoefficients([1,3], "occ")
-    print(datalength.laser_params)
+    print(data.laser_params)

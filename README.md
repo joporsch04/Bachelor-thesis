@@ -1,10 +1,13 @@
 # Bachelor Thesis
 
+## ⚠️Thesis in progress
+This Bachelor's thesis is still in progress, expected to be completed by July 2025.
+
 ## Author
 Johannes Porsch (Jo.Porsch@campus.lmu.de, joporsch04@gmail.com)
 
 ## Abstract
-Multiphoton ionization of atoms in strong laser fields is a fundamental process in attosecond physics. In this work, we extend the strong-field approximation (SFA) by incorporating the influence of excited atomic states on ionization rates. Standard SFA formulations neglect these excited states, assuming that the laser field has no effect on the atom before ionization. However, in intense few-cycle laser pulses, the Stark shift and transient population of excited states can significantly modify ionization dynamics. We numerically solve the time-dependent Schrödinger equation (TDSE) using the tRecX code to extract time-dependent probability amplitudes for hydrogen’s ground and excited states. These amplitudes are then integrated into the SFA formalism to evaluate their impact on ionization rates. 
+Multiphoton ionization of atoms in strong laser fields is a fundamental process in attosecond physics. In this work, I extend the strong-field approximation (SFA) by incorporating the influence of excited atomic states on ionization rates. Standard SFA formulations neglect these excited states, assuming that the laser field has no effect on the atom before ionization. However, in intense few-cycle laser pulses, the Stark shift and transient population of excited states can significantly modify ionization dynamics. I numerically solve the time-dependent Schrödinger equation (TDSE) using the tRecX code to extract time-dependent probability amplitudes for hydrogen’s ground and excited states. These amplitudes are then integrated into the SFA formalism to evaluate their impact on ionization rates. 
 
 ## Key Publications
 - [Anatomy of strong field ionization](https://doi.org/10.1080/0950034042000275360)

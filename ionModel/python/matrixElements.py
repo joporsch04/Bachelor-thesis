@@ -11,8 +11,8 @@ def get_eigenEnergy(excitedStates, get_p_states):
     states = get_hydrogen_states(excitedStates, get_p_states)
     return np.array([0.5*1/(n**2) for (n,l,m) in states])
 
-def get_coefficientsNumerical(excitedStates, t_grid, get_only_p_states, Gauge):
-    laser_params = (450, 1e14, 0)
+def get_coefficientsNumerical(excitedStates, t_grid, get_only_p_states, Gauge, params):
+    laser_params = (params['lam0'], params['intensity'], params['cep'])
     
     solver = HydrogenSolver(max_n=4, laser_params=laser_params)
     print(f"Basis states ({len(solver.states)}): {solver.states}")
@@ -41,9 +41,12 @@ def get_coefficientsNumerical(excitedStates, t_grid, get_only_p_states, Gauge):
             c_list.append(c_interp)
         return np.vstack(c_list)
 
-def get_coefficientstRecX(excitedStates, t_grid, get_p_states):
+def get_coefficientstRecX(excitedStates, t_grid, get_p_states, params):
     data = tRecXdata("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0042")
 
+    if float(data.laser_params['lam0']) != float(np.real(params['lam0'])) or float(data.laser_params['intensity']) != float(np.real(params['intensity'])):
+        raise ValueError("Laser parameters do not match the expected values.")
+    
     time = data.coefficients['Time']
 
     c_list = []
