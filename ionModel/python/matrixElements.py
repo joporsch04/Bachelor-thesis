@@ -12,7 +12,7 @@ def get_eigenEnergy(excitedStates, get_p_states):
     return np.array([0.5*1/(n**2) for (n,l,m) in states])
 
 def get_coefficientsNumerical(excitedStates, t_grid, get_only_p_states, Gauge, params):
-    laser_params = (params['lam0'], params['intensity'], params['cep'])
+    laser_params = (np.real(params['lam0']), np.real(params['intensity']), np.real(params['cep']))
     
     solver = HydrogenSolver(max_n=4, laser_params=laser_params)
     print(f"Basis states ({len(solver.states)}): {solver.states}")
@@ -20,6 +20,7 @@ def get_coefficientsNumerical(excitedStates, t_grid, get_only_p_states, Gauge, p
     solutions = solver.solve(gauge=Gauge)
 
     gauges = list(solutions.keys())
+    eigenEnergy = get_eigenEnergy(excitedStates+5, get_only_p_states)
         
     for gauge_idx, gauge in enumerate(gauges):
         solution = solutions[gauge]

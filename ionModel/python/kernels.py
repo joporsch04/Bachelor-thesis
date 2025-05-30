@@ -139,6 +139,7 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
         rates_by_state = []
 
         for state_idx in range(excitedStates):
+            #state_idx = 1
             f0 = np.zeros((Tar.size, tar.size), dtype=np.cdouble)
             phase0 = np.zeros((Tar.size, tar.size), dtype=np.cdouble)
             cLeft = coefficients[state_idx, :]
@@ -188,7 +189,7 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                     go.Scatter(x=tar, y=np.real(rates_by_state[i]), mode='lines', name=f'Rate up to state {i} ({config_str_i})'), row=1, col=1)
             
             fig.add_trace(
-                go.Scatter(x=EF_grid, y=np.abs(cLeft)**2, mode='lines', name='|coeff|**2'), row=1, col=2
+                go.Scatter(x=EF_grid, y=np.real(cLeft), mode='lines', name='|coeff|**2'), row=1, col=2
             )
             fig.update_layout(
                 width=1200, height=400, xaxis=dict(range=[-50, 50]),

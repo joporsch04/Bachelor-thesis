@@ -1,5 +1,4 @@
 import numpy as np
-import pandas as pd
 import plotly.graph_objects as go
 from scipy.integrate import solve_ivp, quad
 from scipy.special import genlaguerre, factorial
@@ -47,9 +46,16 @@ class HydrogenSolver:
         integrand = lambda r: (self._radial_wavefunction(r, n1, l1) * r * 
                               self._radial_wavefunction(r, n2, l2) * r**2)
         
-        r_max = 2.5 * max(n1, n2)**2 + 40
-        result, _ = quad(integrand, 0, r_max, limit=200, epsabs=1e-9)
+        r_max = 10 * max(n1, n2)**2 + 200
+
+        # result, _ = quad(integrand, 0, r_max, limit=200, epsabs=1e-9)
         
+        # self._radial_cache[key] = result
+        # return result
+    
+        result, err_est = quad(integrand, 0, r_max, limit=200, epsabs=1e-9)
+        # if err_est > 1e-7: # Or some threshold you're uncomfortable with
+        #     print(f"Warning: Large error estimate ({err_est:.2e}) for radial integral with n1={n1}, l1={l1}, n2={n2}, l2={l2}")
         self._radial_cache[key] = result
         return result
       
@@ -101,7 +107,7 @@ class HydrogenSolver:
         for k in range(len(self.states)):
             for n in range(len(self.states)):
                 omega_kn = self.energies[k] - self.energies[n]
-                dc_dt[k] += -1j *np.exp(1j*omega_kn*t)* self.z_matrix[k, n] * E_field * c[n]
+                dc_dt[k] += -1j *np.exp(1j*omega_kn*t) * self.z_matrix[k, n] * E_field * c[n]
         
         return dc_dt
     
@@ -112,7 +118,7 @@ class HydrogenSolver:
         self.laser.add_pulse(lam0, intensity, cep, lam0/ AtomicUnits.nm / AtomicUnits.speed_of_light)
         
         t_start, t_end = self.laser.get_time_interval()
-        t_eval = np.linspace(t_start, t_end, 16000)
+        t_eval = np.linspace(t_start, t_end, 16000)     #64000
         
         results = {}
         
@@ -122,7 +128,7 @@ class HydrogenSolver:
         
         if gauge in ['length', 'both']:
             results['length'] = solve_ivp(self._tdse_rhs_length, [t_start, t_end], c_init, 
-                                        t_eval=t_eval, method='DOP853', rtol=1e-10, atol=1e-10)
+                                        t_eval=t_eval, method='BDF', rtol=1e-12, atol=1e-12)
         
         # if gauge in ['velocity', 'both']:
             
@@ -215,13 +221,19 @@ class HydrogenSolver:
         return fig
 
 if __name__ == "__main__":
-    laser_params = (850, 1e14, 0)
+    laser_params = (450, 1e14, 0)
     
-    solver = HydrogenSolver(max_n=4, laser_params=laser_params)
-    print(f"Basis states ({len(solver.states)}): {solver.states}")
+    solver3 = HydrogenSolver(max_n=3, laser_params=laser_params)
+    solver4 = HydrogenSolver(max_n=4, laser_params=laser_params)
+
+    print(f"Basis states ({len(solver3.states)}): {solver3.states}")
+    print(f"Basis states ({len(solver4.states)}): {solver4.states}")
     
-    # Test both gauges
-    solutions = solver.solve(gauge='length')
+    solutions3 = solver3.solve(gauge='length')
+    solutions4 = solver4.solve(gauge='length')
     
-    # Plot populations for excited states
-    fig = solver.plot_populations(solutions, [4], plot_type="imag")
+    fig = solver3.plot_populations(solutions3, [4], plot_type="real")
+    fig = solver3.plot_populations(solutions3, [4], plot_type="imag")
+
+    fig = solver4.plot_populations(solutions4, [4], plot_type="real")
+    fig = solver4.plot_populations(solutions4, [4], plot_type="imag")
