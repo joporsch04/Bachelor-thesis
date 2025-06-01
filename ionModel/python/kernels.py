@@ -125,12 +125,12 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
     pz=p*np.cos(theta)
     if (excitedStates!=0):
         fig = make_subplots(rows=excitedStates, cols=1, shared_xaxes=True, subplot_titles=[f"After state {i}" for i in range(excitedStates)])
-        get_p_only = False
+        get_p_only = True
         EF_grid=np.arange(-N, N+1, 1) * dT
         if coeffType == "trecx":
             coefficients = get_coefficientstRecX(excitedStates, EF_grid, get_p_only, params)
         elif coeffType == "numerical":
-            coefficients = get_coefficientsNumerical(excitedStates, EF_grid, get_p_only, gauge, params)   
+            coefficients = get_coefficientsNumerical(excitedStates, EF_grid, get_p_only, gauge, params)
         else:
             raise ValueError("coeffType must be either 'trecx' or 'numerical'")
         eigenEnergy = get_eigenEnergy(excitedStates, get_p_only)
@@ -140,6 +140,10 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
 
         for state_idx in range(excitedStates):
             for state_range_idx in range(excitedStates):
+                if get_p_only:
+                    if state_idx != state_range_idx:
+                        continue
+                print(state_idx, state_range_idx)
                 f0 = np.zeros((Tar.size, tar.size), dtype=np.cdouble)
                 phase0 = np.zeros((Tar.size, tar.size), dtype=np.cdouble)
                 cLeft = coefficients[state_idx, :]
@@ -167,7 +171,7 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                             G1_T_p=np.trapz(f_t_1*np.exp(1j*pz*DelA)*np.sin(theta), Theta_grid)
                             G1_T=np.trapz(G1_T_p*window*p_grid**2*np.exp(1j*p_grid**2*T), p_grid)
                             DelA = DelA + 2 * VPt * T
-                            phase0[i, j]  = (intA2[tp] - intA2[tm])/2  + T*VPt**2-VPt*DelA +eigenEnergy[state_idx]*(T-tar[j])-eigenEnergy[state_range_idx]*(T+tar[j]) -phaseleft[tm]+phaseright[tp]
+                            phase0[i, j]  = (intA2[tp] - intA2[tm])/2  + T*VPt**2-VPt*DelA +2*eigenEnergy[state_idx]*T -phaseleft[tm]+phaseright[tp]    #eigenEnergy[state_idx]*(T-tar[j])-eigenEnergy[state_range_idx]*(T+tar[j])
                             f0[i, j] = EF[tp]*EF[tm]*G1_T*absleft[tm]*absright[tp]
                 
                 current_state_rate = 2*np.real(IOF(Tar, f0, (phase0)*1j))*4*np.pi

@@ -24,8 +24,8 @@ The strucutre in this chapter mainly follows \cite{Ivanov20012005} with some mod
 \section{Basic Formalism}
 Our goal is to come up with a expression were we can use the strong field approximation effectively.
 We want the time evolution of a quantum system in the presence of an external time dependent field in order to describe the strong field ionization later on.
-For that we first need to solve the schroedinger equation for a given Hamiltonian.
-
+For that we first need to solve the schroedinger equation for a given Hamiltonian.\\
+We will come across some difficulties like gauge dependence.
 
 \subsection{Schrödinger Equation}
 The time evolution of a quantum system is given by the time dependent Schrödinger equation and a general hamiltonian
@@ -231,35 +231,38 @@ We are being left with:
 
 
 
-
+%%%%%%%%%%%%%%%%%%
 \subsection{Strong Field Approximation}
 Before maing the strong field approximation, lets think about \eqref{eq:smatrixlike} again.
 It is best to read this equation from right to left, starting with the initial state of our system and the propagation of the system in presence of a weak electric field before ionisation. 
 At moment $t'$ the Laser starts to interact with the system and it transisions into a virtual state. 
 From time $t'$ to the observed time $t$ the system is described by the full Hamiltonian including both Laser Field and the binding potential.\\
 In principle, SFA is the neglecting of exactly this binding potential once the electron is in the continuum because the Laser Field is now the dominant force acting on the electron.
-We can therefore write the term with the full Hamiltonian as
+We can therefore write time evolution operator after ionisation as:
 \begin{equation*}
-    \begin{aligned}
-        %\hat{\Hs}(t) &= \hat{\Hs}_0 + \hat{V}_I(t) = \hat{\Hs}_p + \hat{V}_C + \hat{V}_I(t) 
-        e^{-i \int_{t'}^{t} \hat{\Hs}(t'') \dd t''} &\approx e^{-i \int_{t'}^{t} \hat{\Hs}_{SFA}(t'') \dd t''} \quad \text{with} \quad \hat{\Hs}_{SFA}(t) &= \hat{\Hs}(t) - \hat{V}_C
-    \end{aligned}
+    %\hat{\Hs}(t) &= \hat{\Hs}_0 + \hat{V}_I(t) = \hat{\Hs}_p + \hat{V}_C + \hat{V}_I(t) 
+    %e^{-i \int_{t'}^{t} \hat{\Hs}(t'') \dd t''} &\approx e^{-i \int_{t'}^{t} \hat{\Hs}_{SFA}(t'') \dd t''} \quad \text{with} \quad \hat{\Hs}_{SFA}(t) &= \hat{\Hs}(t) - \hat{V}_C
+    \hat{\U}(t,t') \approx \hat{\U}_{\mathrm{SFA}}(t,t')=e^{-i \int_{t'}^{t} \hat{\Hs}_{SFA}(t'') \dd t''} \quad \text{and} \quad \Hs_{\mathrm{SFA}}(t') = \hat{\Hs}(t) - \hat{V}_{\mathrm{C}}      \label{eq:sfa_formula}
 \end{equation*}
-This is very usefull because for $\hat{\Hs}_{SFA}$ we know an exact analytical solution. For that lets take another look at the semi classical Hamilton \eqref{eq:semiClassicalHamilton}. 
+This is very usefull because for the eigenstates of $\hat{\Hs}_{SFA}$ we know an exact analytical solution; the Volkov states.
+Note that we can explicitely write $\hat{\U}_{\mathrm{SFA}}(t,t')$ in \eqref{eq:sfa_formula} since after ionisation the hamiltonian commutes with itself at different times.
+For that lets take another look at the semi classical Hamilton \eqref{eq:semiClassicalHamilton}. 
 Classically, the physics driven by the momentum operator $\hat{\vec{P}}$ is known as the canonical momentum and given by:
-\begin{equation*}
-    \frac{\partial \Ls}{\partial \dot{\uvec{x}}} = \uvec{P} = m\uvec{\dot{x}} + \frac{e}{c}\vec{A} \stackrel{\mathrm{a.u.}}{=} \vec{p} + \vec{A}
-\end{equation*}
+\begin{equation}
+    \frac{\partial \Ls}{\partial \dot{\uvec{x}}} = \uvec{P} = m\uvec{\dot{x}} + \frac{e}{c}\vec{A} \stackrel{\mathrm{a.u.}}{=} \vec{p} + \vec{A}    \label{eq:canonicalMomentum}
+\end{equation}
+With $\Ls$ being the Lagrangian of the system.
 In our case the canonical momentum is conserved. To see this, lets finally set $\varphi=0$ so we have $\vec{E} = -\frac{\partial \vec{A}}{\partial t}$ as justified above and recall the equation of motion for a charged particle in an electromagnetic field \cite{LandauLifschitzBand2}:
 \begin{equation*}
-    \frac{\dd\vec{p}}{\dd t} = \vec{E} + \left[\uvec{\dot{x}}\times\vec{B}\right] \approx -\frac{\partial \vec{A}}{\partial t} = -\frac{\dd \vec{A}}{\dd t}   %why would i use uvec isntead of vec? doesnt make sense => with x its necessary because its natural variable of lagrandian
+    \frac{\dd\vec{p}}{\dd t} = \vec{E} + \left(\uvec{\dot{x}}\times\vec{B}\right) \approx -\frac{\partial \vec{A}}{\partial t} = -\frac{\dd \vec{A}}{\dd t}   %why would i use uvec isntead of vec? doesnt make sense => with x its necessary because its natural variable of lagrandian
 \end{equation*}
+so $\frac{\dd}{\dd t}\uvec{P}=0$.
 And also the energy of the system is clear:
-\begin{equation*}
-    E(t) = \dot{\uvec{x}}\frac{\partial \Ls}{\partial \dot{\uvec{x}}}-\Ls = \frac{\vec{p}^2}{2}
-\end{equation*}
+\begin{equation}
+    E(t) = \dot{\uvec{x}}\frac{\partial \Ls}{\partial \dot{\uvec{x}}}-\Ls = \frac{\vec{p}^2}{2}     \label{eq:energy}
+\end{equation}
 Note that the energy is not conserved because the argument we made bevor does not hold for the kinetic momentum only for the canonical momentum.
-Now comes the interesting part. Clearly $\ket{\Pi(t_c)}$ is a solution of $e^{-i \int_{t'}^{t} \hat{\Hs}_{SFA}(t'') \dd t''}$ so that gives us:
+Now comes the interesting part. Clearly $\ket{\Pi(t_{\mathrm{c}})}$ (not $\ket{\vec{p}(t_{\mathrm{c}})}$!) is a solution of $e^{-i \int_{t'}^{t} \hat{\Hs}_{SFA}(t'') \dd t''}$ so combining \eqref{eq:canonicalMomentum} and \eqref{eq:energy} gives us:
 \begin{equation*}
     e^{-i \int_{t'}^{t} \hat{\Hs}_{SFA}(t'') \dd t''}\ket{\Pi(t_c)} = e^{-i \int_{t'}^{t} (\uvec{P} - \vec{A}(t''))^2 \dd t''}\ket{\Pi(t_c)}
 \end{equation*}
@@ -271,8 +274,21 @@ In particular we are interested in times where the laser field is long gone:
 \end{equation*}
 Furthermore (how??)
 \begin{equation*}
-    \ket{\Pi} = \ket{p+A}
+    \ket{\Pi} = \ket{\uvec{P}} = \ket{\vec{p}+\vec{A}}
 \end{equation*}
+Combining all these equations give us the following exprression:
+\begin{equation*}
+    \braket{\Pi(t_{\mathrm{c}})|\Psi_n(t)} = -i \int_{t_0}^{t} e^{-i \int_{t'}^{t} (\uvec{P} - \vec{A}(t''))^2 \dd t''}\hat{\U}_0(t',t_0)\bra{\vec{p}+\vec{A}}\hat{Y}\hat{\Hs}(t')\hat{X}\ket{\Psi_n(t_0)} \dd t' \label{eq:smatrixlike}
+\end{equation*}
+In this equation, $\bra{\vec{p}+\vec{A}}\hat{Y}\hat{\Hs}(t')\hat{X}\ket{\Psi_n(t_0)}$ with some simplification is just the tranition dipole matrix element $\vec{d}_{\mathrm{n}}(\vec{p})$ between the bound state and the continuum state, generated by the laser pulse (ionisation).
+Furthermore we make an ansatz for $\hat{\U}_0(t',t_0)\ket{\Psi_n(t_0)}=\ket{\Psi_n(t)}$ using the interaction picture.
+In contrast to other literature (\cite{Theory_NPS}, \cite{Ivanov20012005}) I am not neglecting transitions between different bound states before the ionisation. 
+For instance it can happen that the laserpulse excites the electron but doesnt ionise it quite yet.
+Our expression then reads:
+\begin{equation*}
+    \braket{\Pi(t_{\mathrm{c}})|\Psi_n(t)} = -\frac{i}{2}\int_{t_0}^{t} e^{-i \int_{t'}^{t} (\uvec{P} - \vec{A}(t''))^2 \dd t''}E_z(t')\sum_{n}c_n(t)e^{-iE_nt'}\bra{p_z+A_z}\hat{d}_z\ket{\Psi_n} \dd t'
+\end{equation*}
+Where we used the fact that the electric field is polarized along the z axis.
 \begin{equation}
     \braket{\Pi(t_c)|\Psi(t)} = -i \int_{t_0}^{t} \dd t' e^{-\frac{i}{2}\int_{t'}^{\infty}(\vec{p}+\vec{A}(t''))^2\dd t''}e^{-i \hat{\Hs_0} (t')} \sum_{n}c_n(t')\braket{\vec{p}+\vec{A}(t')|\vec{\hat{d}}\cdot\vec{E}(t')|\Psi_n}
 \end{equation}

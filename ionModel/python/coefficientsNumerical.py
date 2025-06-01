@@ -46,14 +46,15 @@ class HydrogenSolver:
         integrand = lambda r: (self._radial_wavefunction(r, n1, l1) * r * 
                               self._radial_wavefunction(r, n2, l2) * r**2)
         
-        r_max = 10 * max(n1, n2)**2 + 200
+        r_max = 20 * max(n1, n2)**2 + 200
 
         # result, _ = quad(integrand, 0, r_max, limit=200, epsabs=1e-9)
         
         # self._radial_cache[key] = result
         # return result
     
-        result, err_est = quad(integrand, 0, r_max, limit=200, epsabs=1e-9)
+        #result, err_est = quad(integrand, 0, r_max, limit=200, epsabs=1e-9)
+        result = np.trapz(integrand(np.linspace(0, r_max, 10000)), np.linspace(0, r_max, 10000))
         # if err_est > 1e-7: # Or some threshold you're uncomfortable with
         #     print(f"Warning: Large error estimate ({err_est:.2e}) for radial integral with n1={n1}, l1={l1}, n2={n2}, l2={l2}")
         self._radial_cache[key] = result
