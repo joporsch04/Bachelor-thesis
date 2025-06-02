@@ -14,7 +14,7 @@ def get_eigenEnergy(excitedStates, get_p_states):
 def get_coefficientsNumerical(excitedStates, t_grid, get_only_p_states, Gauge, params):
     laser_params = (np.real(params['lam0']), np.real(params['intensity']), np.real(params['cep']))
     
-    solver = HydrogenSolver(max_n=4, laser_params=laser_params)
+    solver = HydrogenSolver(max_n=3, laser_params=laser_params)
     print(f"Basis states ({len(solver.states)}): {solver.states}")
     
     solutions = solver.solve(gauge=Gauge)
@@ -54,8 +54,9 @@ def get_coefficientstRecX(excitedStates, t_grid, get_p_states, params):
     eigenEnergy = get_eigenEnergy(excitedStates+5, get_p_states)
 
     for state_idx in range(excitedStates):
-        # if state_idx == 2:
-        #     state_idx = 4  # skip the 2p state
+        if get_p_states:
+            if state_idx == 2:
+                state_idx = 4  # skip the 2p state
         #print(data.coefficients[f"Re{{<H0:{state_idx}|psi>}}"].head())
         c = np.array(data.coefficients[f"Re{{<H0:{state_idx}|psi>}}"]) + np.array(data.coefficients[f"Imag{{<H0:{state_idx}|psi>}}"]) * 1j
         

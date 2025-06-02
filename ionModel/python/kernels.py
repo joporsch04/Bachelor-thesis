@@ -126,6 +126,7 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
     if (excitedStates!=0):
         fig = make_subplots(rows=excitedStates, cols=1, shared_xaxes=True, subplot_titles=[f"After state {i}" for i in range(excitedStates)])
         get_p_only = True
+        only_c0_is_1 = True
         EF_grid=np.arange(-N, N+1, 1) * dT
         if coeffType == "trecx":
             coefficients = get_coefficientstRecX(excitedStates, EF_grid, get_p_only, params)
@@ -143,7 +144,6 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                 if get_p_only:
                     if state_idx != state_range_idx:
                         continue
-                print(state_idx, state_range_idx)
                 f0 = np.zeros((Tar.size, tar.size), dtype=np.cdouble)
                 phase0 = np.zeros((Tar.size, tar.size), dtype=np.cdouble)
                 cLeft = coefficients[state_idx, :]
@@ -152,8 +152,8 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                 phaseright = np.unwrap(np.angle(cRight))
                 absleft = np.abs(cLeft)
                 absright = np.abs(cRight)
-                # if state_idx == 0:
-                #     phaseleft, phaseright, absleft, absright = phaseleft*0+1, phaseright*0+1, absleft*0+1, absright*0+1
+                if only_c0_is_1 and state_idx == 0:
+                    phaseleft, phaseright, absleft, absright = phaseleft*0+1, phaseright*0+1, absleft*0+1, absright*0+1
                 
                 for i in prange(Tar.size):
                     Ti=Ti_ar[i]

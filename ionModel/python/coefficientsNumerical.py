@@ -1,9 +1,10 @@
 import numpy as np
 import plotly.graph_objects as go
-from scipy.integrate import solve_ivp, quad
+from scipy.integrate import solve_ivp
 from scipy.special import genlaguerre, factorial
 from field_functions import LaserField
-from scipy.interpolate import interp1d
+from line_profiler import profile
+
 
 class AtomicUnits:
     """Atomic units constants"""
@@ -34,6 +35,7 @@ class HydrogenSolver:
         laguerre = genlaguerre(n-l-1, 2*l+1)
         return coeff * np.exp(-r/n) * (2*r/n)**l * laguerre(2*r/n)
     
+    @profile
     def _radial_integral(self, n1, l1, n2, l2):
         """Compute radial integral <R_n1l1|z|R_n2l2>"""
         key = tuple(sorted([(n1, l1), (n2, l2)]))
@@ -59,7 +61,7 @@ class HydrogenSolver:
         #     print(f"Warning: Large error estimate ({err_est:.2e}) for radial integral with n1={n1}, l1={l1}, n2={n2}, l2={l2}")
         self._radial_cache[key] = result
         return result
-      
+    
     def _angular_integral(self, l1, m1, l2, m2):
         """Angular part of z matrix element"""
         if m1 != m2 or abs(l1 - l2) != 1:
@@ -78,8 +80,11 @@ class HydrogenSolver:
         
         for i, (n1, l1, m1) in enumerate(self.states):
             for j, (n2, l2, m2) in enumerate(self.states):
-                radial = self._radial_integral(n1, l1, n2, l2)
                 angular = self._angular_integral(l1, m1, l2, m2)
+                if angular == 0:
+                    radial = 0.0
+                else:
+                    radial = self._radial_integral(n1, l1, n2, l2)
                 z_matrix[i, j] = radial * angular
         return z_matrix
     
@@ -112,11 +117,12 @@ class HydrogenSolver:
         
         return dc_dt
     
+    @profile
     def solve(self, gauge='both'):
         """Solve TDSE with given laser parameters"""
         lam0, intensity, cep = self.laser_params[:3]
         self.laser = LaserField(cache_results=True)
-        self.laser.add_pulse(lam0, intensity, cep, lam0/ AtomicUnits.nm / AtomicUnits.speed_of_light)
+        self.laser.add_pulse(lam0, intensity, cep, lam0/ AtomicUnits.nm / AtomicUnits.speed_of_light) #make complex 128, float 64
         
         t_start, t_end = self.laser.get_time_interval()
         t_eval = np.linspace(t_start, t_end, 16000)     #64000
@@ -129,7 +135,7 @@ class HydrogenSolver:
         
         if gauge in ['length', 'both']:
             results['length'] = solve_ivp(self._tdse_rhs_length, [t_start, t_end], c_init, 
-                                        t_eval=t_eval, method='BDF', rtol=1e-12, atol=1e-12)
+                                        t_eval=t_eval, method='RK45', rtol=1e-12, atol=1e-12)
         
         # if gauge in ['velocity', 'both']:
             
@@ -222,10 +228,10 @@ class HydrogenSolver:
         return fig
 
 if __name__ == "__main__":
-    laser_params = (450, 1e14, 0)
+    laser_params = (850, 1e14, 0)
     
     solver3 = HydrogenSolver(max_n=3, laser_params=laser_params)
-    solver4 = HydrogenSolver(max_n=4, laser_params=laser_params)
+    solver4 = HydrogenSolver(max_n=5, laser_params=laser_params)
 
     print(f"Basis states ({len(solver3.states)}): {solver3.states}")
     print(f"Basis states ({len(solver4.states)}): {solver4.states}")

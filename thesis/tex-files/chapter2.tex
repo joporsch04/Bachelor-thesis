@@ -286,42 +286,34 @@ In contrast to other literature (\cite{Theory_NPS}, \cite{Ivanov20012005}) I am 
 For instance it can happen that the laserpulse excites the electron but doesnt ionise it quite yet.
 Our expression then reads:
 \begin{equation*}
-    \braket{\Pi(t_{\mathrm{c}})|\Psi_n(t)} = -\frac{i}{2}\int_{t_0}^{t} e^{-i \int_{t'}^{t} (\uvec{P} - \vec{A}(t''))^2 \dd t''}E_z(t')\sum_{n}c_n(t)e^{-iE_nt'}\bra{p_z+A_z}\hat{d}_z\ket{\Psi_n} \dd t'
+    \braket{\Pi(t_{\mathrm{c}})|\Psi_n(t)} = -\frac{i}{2}\int_{t_0}^{t} e^{-i \int_{t'}^{t} (\uvec{P} - A_z(t''))^2 \dd t''}E_z(t')\sum_{n}c_n(t)e^{-iE_nt'}\bra{\vec{p}+A_z}\hat{d}_z\ket{\Psi_n} \dd t'       \label{eq:smatrix}
 \end{equation*}
 Where we used the fact that the electric field is polarized along the z axis.
-\begin{equation}
-    \braket{\Pi(t_c)|\Psi(t)} = -i \int_{t_0}^{t} \dd t' e^{-\frac{i}{2}\int_{t'}^{\infty}(\vec{p}+\vec{A}(t''))^2\dd t''}e^{-i \hat{\Hs_0} (t')} \sum_{n}c_n(t')\braket{\vec{p}+\vec{A}(t')|\vec{\hat{d}}\cdot\vec{E}(t')|\Psi_n}
-\end{equation}
-\begin{equation*}
-    = -i \int_{0}^{t} \dd t' e^{-\frac{i}{2}\int_{t'}^{\infty}(\vec{p}+\vec{A}(t''))^2\dd t''} \sum_{n}e^{-iE_n(t')}c_n(t')\vec{E}(t')\cdot\vec{d}_n(\vec{p}+\vec{A}(t'))
-\end{equation*}
-With $\vec{d}_n(\vec{p}) = \braket{\vec{p}|\vec{\hat{d}}|\Psi_n}$
-This is the equation where most papers start with \cite{Theory_NPS}.\\\\
+This is the equation where most papers start with \cite{Theory_NPS} known as Strong field s matrix.\\\\
 Note that SFA is not about strong laser pulses since here we are also dealing with small ionisation proabilities (<0.01) so SFA states that when ionisation does happen (regardless if its unlikely) the laser pulse will then be the dominant force.
 
 
-I need to derive in paper from manoram 2023 the same thing as app A just instead of $\hat{p}$ i use $\hat{1}$ and use instead of $\ket{\Psi}_0$ i use the expansion in eigenstates from my project plan
+
+
 
 
 %%%%%%%%%%%%%%%%%%%%
 \newpage
 \section{Derivation of SFA Rate}
 This mainly follows \cite{Theory_NPS} with some modification.\\
-The ground state is now a superosition $\sum_{n}c_n(t)\ket{\Psi_n}$.\\
-We can write the SFA rate as:
+The ionization rate integrated over the time domain should yield the total ionization propability.
+Therefore we can write the SFA rate \eqref{eq:smatrix} as:
 \begin{align*}
-    \braket{\Psi(t)|\Psi(t)} = &\int_{-\infty}^{\infty} \Gamma(t) \dd t\\ 
-    = &\int \dd^3 p \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} \dd t_1  \dd t_2 \, e^{\frac{i}{2}\int_{t_1}^{t_2}(\vec{p}+\vec{A}(t''))^2\dd t''} \vec{E}(t_1)\cdot\vec{E}(t_2)\\
-    &\times\left(\sum_{n}e^{iE_nt_1}c_n^*(t_1)\vec{d}_n^*(\vec{p}+\vec{A}(t_1))\right)\cdot\left(\sum_{n}e^{-iE_nt_2}c_n(t_2)\vec{d}_n(\vec{p}+\vec{A}(t_2))\right)
+    \lim_{t\to\infty}\braket{\Psi(t)|\Psi(t)} = &\int_{-\infty}^{\infty} \Gamma_{\mathrm{SFA}}(t) \dd t = \int_{\R^3}\dd^3p \braket{\Psi_n(t)|\Pi(t_{\mathrm{c}})}\braket{\Pi(t_{\mathrm{c}})|\Psi_n(t)}\\ 
+    = &\int \dd^3 p \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} \dd t_1  \dd t_2 \, e^{\frac{i}{2}\int_{t_1}^{t_2}(\uvec{p}+A_z(t''))^2\dd t''} E_z(t_1)E_z(t_2)\\
+    &\times\left(\sum_{n}e^{iE_nt_1}c_n^*(t_1)d_{z,n}^*(\uvec{p}+A_z(t_1))\right)\left(\sum_{n}e^{-iE_nt_2}c_n(t_2)d_{z,n}(\uvec{p}+A_z(t_2))\right)
 \end{align*}
 Changing variables to $t=\frac{t_2+t_1}{2}$ and $T=\frac{t_2-t_1}{2}$ and using the fact that our Laser pulse is polarized along the z Axis gives us:
 \begin{align*}
-    \Gamma(t) &= \int \dd^3 p \int_{-\infty}^{\infty} \dd T \, e^{2iIpT+\frac{i}{2}\int_{t-T}^{t+T}(\vec{p}+\vec{A}(t''))^2\dd t''} E_z(t-T)\cdot E_z(t+T)\\
-    &\times\left(\sum_{n}e^{iE_n(t-T)}c_n^*(t-T)d_{z,n}^*(\vec{p}+\vec{A}(t-T))\right)\cdot\left(\sum_{n}e^{-iE_n(t+T)}c_n(t+T)d_{z,n}(\vec{p}+\vec{A}(t+T))\right)
-\end{align*}
-\begin{align*}
-    \Gamma(t) &= \sum_{n_1}\sum_{n_2}\int \dd^3 p \int_{-\infty}^{\infty} \dd T \, e^{\frac{i}{2}\int_{t-T}^{t+T}(\vec{p}+\vec{A}(t''))^2\dd t''} e^{iE_{n_1}(t-T)-iE_{n_1}(t+T)}\\
-    &\times E_z(t-T) E_z(t+T)c_{n_1}^*(t-T)c_{n_2}(t+T) d_{z,n_1}^*(\vec{p}+\vec{A}(t-T))d_{z,n_2}(\vec{p}+\vec{A}(t+T))
+    \Gamma_{\mathrm{SFA}}(t) &= \int \dd^3 p \int_{-\infty}^{\infty} \dd T \, e^{\frac{i}{2}\int_{t-T}^{t+T}(\uvec{p}+A_z(t''))^2\dd t''} E_z(t-T) E_z(t+T)\\
+    &\times\left(\sum_{n}e^{i(t-T)E_n}c_n^*(t-T)d_{z,n}^*(\uvec{p}+A_z(t-T))\right)\left(\sum_{n}e^{-i(t+T)E_n}c_n(t+T)d_{z,n}(\uvec{p}+A_z(t+T))\right)\\
+    &= \sum_{n_1}\sum_{n_2} \int_{-\infty}^{\infty} \dd p\,p^2\int_0^{\pi} \dd\theta\,\sin\theta \int_0^{2\pi}\dd \phi\int_{-\infty}^{\infty} \dd T \, e^{\frac{i}{2}\int_{t-T}^{t+T}(\uvec{p}+A_z(t''))^2\dd t''} e^{i(t-T)E_{n_1}-i(t+T)E_{n_2}}\\
+    &\times E_z(t-T) E_z(t+T)c_{n_1}^*(t-T)c_{n_2}(t+T) d_{z,n_1}^*(\uvec{p}+A_z(t-T))d_{z,n_2}(\uvec{p}+A_z(t+T))
 \end{align*}
 
 

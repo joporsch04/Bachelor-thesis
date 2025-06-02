@@ -1,5 +1,20 @@
-Solving TDSE for Hydrogen atom because it will be important later. also note the structure of wavefunction:
+We will derive Volkov states in different gauges, starting with velocity gauge since its the most natural for an electron in a laser field to be described that way.
+\subsection*{Velocity gauge}
+Lets write the Schroedinger equation without the Coulomb interaction part with the interaction with the laser in velocity gauge ?? using atomic units:
 \begin{equation*}
-    \psi_{nlm}(\uvec{x}) = \psi_{nlm}(r,\theta,\phi) = R_{nl}(r)Y_{lm}(\theta, \phi)
+    i \frac{\partial}{\partial t} \ket{\Psi(t)} = \left( \frac{\vec{\hat{p}}^2}{2} + \hat{\vec{p}} \cdot \vec{A}(t) + \frac{\vec{A}^2}{2} \right) \ket{\Psi(t)}
 \end{equation*}
-$E_n=\frac{Z^2}{2n^2}$
+Lets use the momentum basis for the representation of the wavefunction: %because we changed the basis or representation, now our "natural" basis is p so we write \uvec{p} instead of \vec{p}
+\begin{equation*}
+    i \frac{\partial}{\partial t} \phi(\uvec{p},t) = \left( \frac{\uvec{p}^2}{2} + \uvec{p} \cdot \vec{A}(t) + \frac{\vec{A}^2}{2} \right) \phi(\uvec{p},t)
+\end{equation*}
+This equation can be solved easily by maing the ansatz:
+\begin{equation*}
+    \phi(\uvec{p},t) = e^{-\frac{i}{2} \int_{t_0}^{t} \left(\uvec{p} + \vec{A}(t')\right)^2\dd t' }
+\end{equation*}
+In coordinate space this will result in:
+\begin{equation}
+    \psi(\uvec{x}, t) = \F^{-1}\{\phi(\uvec{p}, t)\} = \left(2\pi\right)^{-3/2}e^{\uvec{x}\cdot\uvec{p}-\frac{i}{2} \int_{t_0}^{t} \left(\uvec{p} + \vec{A}(t')\right)^2\dd t' }
+\end{equation}
+
+\subsection*{Length gauge}
