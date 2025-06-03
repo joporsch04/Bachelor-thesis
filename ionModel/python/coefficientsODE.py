@@ -5,17 +5,13 @@ from scipy.special import genlaguerre, factorial
 from field_functions import LaserField
 from line_profiler import profile
 
-
 class AtomicUnits:
-    """Atomic units constants"""
     nm = 5.2917721e-2
     fs = 2.418884328e-2
     eV = 27.21138383
     speed_of_light = 137.035999
 
 class HydrogenSolver:
-    """Compact hydrogen atom TDSE solver"""
-    
     def __init__(self, max_n, laser_params):
         self.max_n = max_n
         self._radial_cache = {}
@@ -26,18 +22,15 @@ class HydrogenSolver:
         self.laser_params = laser_params
     
     def _build_basis(self):
-        """Build basis states (n,l,m) with m=0 for simplicity"""
         return [(n, l, 0) for n in range(1, self.max_n + 1) for l in range(n)]
     
     def _radial_wavefunction(self, r, n, l):
-        """Hydrogen radial wavefunction R_nl(r)"""
         coeff = np.sqrt((2/n)**3 * factorial(n-l-1) / (2*n*factorial(n+l)))
         laguerre = genlaguerre(n-l-1, 2*l+1)
         return coeff * np.exp(-r/n) * (2*r/n)**l * laguerre(2*r/n)
     
-    @profile
+    #@profile
     def _radial_integral(self, n1, l1, n2, l2):
-        """Compute radial integral <R_n1l1|z|R_n2l2>"""
         key = tuple(sorted([(n1, l1), (n2, l2)]))
         if key in self._radial_cache:
             return self._radial_cache[key]
@@ -63,7 +56,6 @@ class HydrogenSolver:
         return result
     
     def _angular_integral(self, l1, m1, l2, m2):
-        """Angular part of z matrix element"""
         if m1 != m2 or abs(l1 - l2) != 1:
             return 0.0
         
@@ -74,7 +66,6 @@ class HydrogenSolver:
         return 0.0
     
     def _compute_z_matrix(self):
-        """Compute z matrix elements"""
         n_states = len(self.states)
         z_matrix = np.zeros((n_states, n_states))
         
@@ -89,7 +80,6 @@ class HydrogenSolver:
         return z_matrix
     
     # def _tdse_rhs_velocity(self, t, y):
-    #     """Velocity gauge TDSE using simplified dipole approximation"""
     #     c = y
     #     dc_dt = np.zeros_like(c, dtype=complex)
         
@@ -104,7 +94,6 @@ class HydrogenSolver:
     #     return dc_dt
     
     def _tdse_rhs_length(self, t, y):
-        """TDSE right-hand side for length gauge: i*dc/dt = H_0*c + (z*E)*c"""
         c = y
         dc_dt = np.zeros_like(c, dtype=complex)
         
@@ -117,9 +106,8 @@ class HydrogenSolver:
         
         return dc_dt
     
-    @profile
+    #@profile
     def solve(self, gauge='both'):
-        """Solve TDSE with given laser parameters"""
         lam0, intensity, cep = self.laser_params[:3]
         self.laser = LaserField(cache_results=True)
         self.laser.add_pulse(lam0, intensity, cep, lam0/ AtomicUnits.nm / AtomicUnits.speed_of_light) #make complex 128, float 64

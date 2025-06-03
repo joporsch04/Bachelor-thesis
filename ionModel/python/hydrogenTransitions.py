@@ -1,16 +1,17 @@
 import numpy as np
-import pandas as pd
 from scipy.special import gamma, binom, hyp2f1, sph_harm, lpmv
 from scipy.interpolate import interp1d
-import plotly.graph_objects as go
+from line_profiler import profile
+from numba import njit
 
-from coefficientsNumerical import HydrogenSolver
+from coefficientsODE import HydrogenSolver
 from tRecXdata import tRecXdata
 
 def get_eigenEnergy(excitedStates, get_p_states):
     states = get_hydrogen_states(excitedStates, get_p_states)
     return np.array([0.5*1/(n**2) for (n,l,m) in states])
 
+#@profile
 def get_coefficientsNumerical(excitedStates, t_grid, get_only_p_states, Gauge, params):
     laser_params = (np.real(params['lam0']), np.real(params['intensity']), np.real(params['cep']))
     
@@ -135,23 +136,27 @@ def transitionElement(n, l, m, p, pz, Az, Ip):
         result += prefactor * (term1 + term2)
     return result
 
+
+@njit(cache=True, fastmath=True)        #
+#@profile
 def transitionElementtest(configState, p, pz, Az, Ip):      #first state and normal SFA are exactly 4pi apart
     n, l, m = configState
-    thetap = np.arccos(pz/(p+1e14))
     termsqrt = Az**2 + p**2 + 2*Az*pz + 1e-14       #(Az+p)^2
+    termsqrtdenom = np.sqrt(Ip**(3/2))
     if n == 1 and l == 0:
         numerator = 16 * 2**(3/4) * Ip**2 * (Az + pz)
-        denominator = (np.sqrt(Ip**(3/2)) *(2 * Ip + termsqrt)**3 * np.pi)
+        denominator = (termsqrtdenom *(2 * Ip + termsqrt)**3 * np.pi)
         return numerator / denominator
     elif n == 2 and l == 0:
         numerator = 128 * 2**(1/4) * Ip**2 * (Ip - termsqrt) * (Az + pz)
-        denominator = (np.sqrt(Ip**(3/2)) * (Ip + 2 * termsqrt)**4 * np.pi)
+        denominator = (termsqrtdenom * (Ip + 2 * termsqrt)**4 * np.pi)
         return numerator / denominator
     elif n == 3 and l == 0:
         numerator = -432 * 2**(3/4) * np.sqrt(3) * Ip**2 * (44 * Ip**2 - 324 * Ip * (Az + p)**2 + 243 * (Az + p)**4) * (Az + pz)
-        denominator = (np.sqrt(Ip**(3/2)) * (2 * Ip + 9 * termsqrt)**5 * np.pi)
+        denominator = (termsqrtdenom * (2 * Ip + 9 * termsqrt)**5 * np.pi)
         return numerator / denominator
     elif n == 2 and l == 1:
+        thetap = np.arccos(pz/(p+1e14))
         phi_p = 1
         exp_minus_i_phi = np.exp(-1j * phi_p)
         exp_i_phi = np.exp(1j * phi_p)
@@ -168,6 +173,7 @@ def transitionElementtest(configState, p, pz, Az, Ip):      #first state and nor
         denominator = (1 + 4 * p**2)**4 * np.pi
         return 1/3*numerator / denominator
     elif n==3 and l==1:
+        thetap = np.arccos(pz/(p+1e14))
         phi_p = 1
         exp_minus_i_phi = np.exp(-1j * phi_p)
         exp_i_phi = np.exp(1j * phi_p)

@@ -1,5 +1,6 @@
 import numpy as np
 import csv
+import pandas as pd
 import matplotlib.pyplot as plt
 from IPython.display import display, HTML
 import plotly.graph_objects as go
@@ -7,9 +8,6 @@ from plotly.subplots import make_subplots
 from matplotlib.backends.backend_pdf import PdfPages
 
 from __init__ import FourierTransform
-
-
-
 
 class AU:
     meter = 5.2917720859e-11 # atomic unit of length in meters
@@ -25,11 +23,10 @@ class AU:
     PW_per_cm2_au = 0.02849451308 # PW/cm^2 in atomic units
 AtomicUnits=AU
 
-
-
 class TIPTOEplotter:
 
-    def __init__(self, ion_QS, ion_na_GASFIR, ion_na_SFA, ion_na_reconstructed_GASFIR, ion_na_reconstructed_SFA, delay, field_probe_fourier_time, time, AU, lam0_pump, I_pump, lam0_probe, I_probe, FWHM_probe):
+    def __init__(self, ion_tRecX, ion_QS, ion_na_GASFIR, ion_na_SFA, ion_na_reconstructed_GASFIR, ion_na_reconstructed_SFA, delay, field_probe_fourier_time, time, AU, lam0_pump, I_pump, lam0_probe, I_probe, FWHM_probe):
+        self.ion_tRecX = ion_tRecX
         self.ion_QS = ion_QS
         self.ion_na_GASFIR = ion_na_GASFIR
         self.ion_na_SFA = ion_na_SFA
@@ -53,6 +50,7 @@ class TIPTOEplotter:
         phase_add = 0
 
 
+        ax1.plot(self.delay*self.AU.fs, self.ion_tRecX, label='tRecX')
         ax1.plot(self.delay*self.AU.fs, self.ion_QS, label=rf'$\mathrm{{P}}_\mathrm{{QS}}$')
         ax1.plot(self.delay*self.AU.fs, self.ion_na_GASFIR, label=rf'$\mathrm{{P}}_\mathrm{{nonAdiabaticGASFIR}}$')
         ax1.plot(self.delay*self.AU.fs, self.ion_na_SFA, label=rf'$\mathrm{{P}}_\mathrm{{nonAdiabaticSFA}}$')
@@ -66,6 +64,7 @@ class TIPTOEplotter:
         ax1.legend(loc='center left')
         ax1.annotate(f'$\lambda_\mathrm{{Pump}}={self.lam0_pump}\mathrm{{nm}}$\n$\lambda_\mathrm{{Probe}}={self.lam0_probe}\mathrm{{nm}}$\n$\mathrm{{I}}_\mathrm{{pump}}={self.I_pump:.2e}$\n$\mathrm{{I}}_\mathrm{{probe}}={self.I_probe:.2e}$\n$\mathrm{{FWHM}}_\mathrm{{probe}}={self.FWHM_probe}\mathrm{{fs}}$', xy=(0.72, 0.4), xycoords='axes fraction', fontsize=9, ha='left', va='center')
         
+        ion_na_tRecX=self.ion_tRecX-self.ion_tRecX[-1]
         ion_na_GASFIR=self.ion_na_GASFIR-self.ion_na_GASFIR[-1]
         ion_QS=self.ion_QS-self.ion_QS[-1] 
         ion_na_reconstructed_GASFIR=self.ion_na_reconstructed_GASFIR-self.ion_na_reconstructed_GASFIR[-1]
@@ -79,6 +78,7 @@ class TIPTOEplotter:
 
         # ax2.plot(self.delay*self.AU.fs, ion_QS/max(abs(ion_QS))*max(abs(ion_y)), label=rf'$\mathrm{{P}}_\mathrm{{QS}}\cdot${max(abs(ion_y))/max(abs(ion_QS)):.2f}')
         # ax2.plot(self.delay*self.AU.fs, ion_na_GASFIR/max(abs(ion_na_GASFIR))*max(abs(ion_y)), label=rf'$\mathrm{{P}}_\mathrm{{nonAdiabaticGASFIR}}\cdot${max(abs(ion_y))/max(abs(ion_na_GASFIR)):.2f}')
+        ax2.plot(self.delay*self.AU.fs, ion_na_tRecX, label='tRecX')
         ax2.plot(self.delay*self.AU.fs, ion_QS, label=rf'$\mathrm{{P}}_\mathrm{{QS}}$')
         ax2.plot(self.delay*self.AU.fs, ion_na_GASFIR, label=rf'$\mathrm{{P}}_\mathrm{{nonAdiabaticGASFIR}}$')
         ax2.plot(self.delay*self.AU.fs, ion_na_reconstructed_GASFIR, label=rf'$\mathrm{{P}}_\mathrm{{nonAdReconGASFIR}}$')
@@ -198,6 +198,7 @@ class TIPTOEplotter:
     def plotly4(self):
         x_lim_ion_yield = 5
 
+        ion_na_tRecX = self.ion_tRecX - self.ion_tRecX[-1]
         ion_na_GASFIR = self.ion_na_GASFIR - self.ion_na_GASFIR[-1]
         ion_QS = self.ion_QS - self.ion_QS[-1]
         ion_na_reconstructed_GASFIR = self.ion_na_reconstructed_GASFIR - self.ion_na_reconstructed_GASFIR[-1]
@@ -241,6 +242,7 @@ class TIPTOEplotter:
             )
         )
 
+        fig.add_trace(go.Scatter(x=self.delay*self.AU.fs, y=self.ion_tRecX, name='tRecX'), row=1, col=1)
         fig.add_trace(go.Scatter(x=self.delay*self.AU.fs, y=self.ion_QS, name=names["QS"]), row=1, col=1)
         fig.add_trace(go.Scatter(x=self.delay*self.AU.fs, y=self.ion_na_GASFIR, name=names["GASFIR"]), row=1, col=1)
         fig.add_trace(go.Scatter(x=self.delay*self.AU.fs, y=self.ion_na_SFA, name=names["SFA"]), row=1, col=1)
@@ -249,6 +251,7 @@ class TIPTOEplotter:
         fig.update_xaxes(title_text="Delay (fs)", row=1, col=1, range=[-x_lim_ion_yield, x_lim_ion_yield])
         fig.update_yaxes(title_text="Ionization Yield", row=1, col=1)
 
+        fig.add_trace(go.Scatter(x=self.delay*self.AU.fs, y=ion_na_tRecX, name='tRecX'), row=1, col=2)
         fig.add_trace(go.Scatter(x=self.delay*self.AU.fs, y=ion_QS, name=names["QS"]), row=1, col=2)
         fig.add_trace(go.Scatter(x=self.delay*self.AU.fs, y=ion_na_GASFIR, name=names["GASFIR"]), row=1, col=2)
         fig.add_trace(go.Scatter(x=self.delay*self.AU.fs, y=ion_na_reconstructed_GASFIR, name=names["ReconGASFIR"]), row=1, col=2)
@@ -301,10 +304,17 @@ class TIPTOEplotter:
 
 
 
-def writecsv_prob(filename, delay, ion_QS, ion_NA_GASFIR, ion_NA_SFA, ion_NA_reconstructed_GASFIR, ion_NA_reconstructed_SFA):
+def writecsv_prob(filename, delay, ion_tRecX, ion_QS, ion_NA_GASFIR, ion_NA_SFA, ion_NA_reconstructed_GASFIR, ion_NA_reconstructed_SFA):
     """Writes delay and ionization probabilities"""
     with open(filename, 'w') as f:
         writer = csv.writer(f)
-        writer.writerow(['delay', 'ion_QS', 'ion_NA_GASFIR', 'ion_NA_SFA', 'ion_NA_reconstructed_GASFIR', 'ion_NA_reconstructed_SFA'])
+        writer.writerow(['delay', 'ion_tRecX', 'ion_QS', 'ion_NA_GASFIR', 'ion_NA_SFA', 'ion_NA_reconstructed_GASFIR', 'ion_NA_reconstructed_SFA'])
         for i in range(len(delay)):
-            writer.writerow([delay[i], ion_QS[i], ion_NA_GASFIR[i], ion_NA_SFA[i], ion_NA_reconstructed_GASFIR[i], ion_NA_reconstructed_SFA[i]])
+            writer.writerow([delay[i], ion_tRecX[i], ion_QS[i], ion_NA_GASFIR[i], ion_NA_SFA[i], ion_NA_reconstructed_GASFIR[i], ion_NA_reconstructed_SFA[i]])
+
+def readtRecX_ion(file_path):
+    """Reads delay and tRecX ionization probability"""
+    data = pd.read_csv(file_path, header=None)
+    delay = pd.to_numeric(data.iloc[2].iloc[2:].values)[:-1]
+    ion_y = pd.to_numeric(data.iloc[1].iloc[2:].values)[:-1]
+    return ion_y
