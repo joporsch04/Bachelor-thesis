@@ -304,7 +304,7 @@ This mainly follows \cite{Theory_NPS} with some modification.\\
 The ionization rate integrated over the time domain should yield the total ionization propability.
 Therefore we can write the SFA rate \eqref{eq:smatrix} as:
 \begin{align*}
-    \lim_{t\to\infty}\braket{\Psi(t)|\Psi(t)} = &\int_{-\infty}^{\infty} \Gamma_{\mathrm{SFA}}(t) \dd t = \int_{\R^3}\dd^3p \braket{\Psi_n(t)|\Pi(t_{\mathrm{c}})}\braket{\Pi(t_{\mathrm{c}})|\Psi_n(t)}\\ 
+    \lim_{t\to\infty}\braket{\Psi(t)|\Psi(t)} = &\int_{-\infty}^{\infty} \Gamma_{\mathrm{SFA}}(t) \dd t \\ %= \int_{\R^3}\dd^3p \braket{\Psi_n(t)|\Pi(t_{\mathrm{c}})}\braket{\Pi(t_{\mathrm{c}})|\Psi_n(t)}\\ 
     = &\int \dd^3 p \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} \dd t_1  \dd t_2 \, e^{\frac{i}{2}\int_{t_1}^{t_2}(\uvec{p}+A_z(t''))^2\dd t''} E_z(t_1)E_z(t_2)\\
     &\times\left(\sum_{n}e^{iE_nt_1}c_n^*(t_1)d_{z,n}^*(\uvec{p}+A_z(t_1))\right)\left(\sum_{n}e^{-iE_nt_2}c_n(t_2)d_{z,n}(\uvec{p}+A_z(t_2))\right)
 \end{align*}
@@ -322,4 +322,5 @@ Changing variables to $t=\frac{t_2+t_1}{2}$ and $T=\frac{t_2-t_1}{2}$ and using 
 \section{Strong Field Ionization}
 Decied to do Phenomenology after theory.\\
 Phenomenology of strong field ionization, Different types of Ionization, tunneling Ionization, multiphoton, stark effect.
-
+\subsection{Stark effect}
+\subsection{REMPI}

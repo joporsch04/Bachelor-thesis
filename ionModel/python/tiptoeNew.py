@@ -37,7 +37,7 @@ def main(excitedstates):
     delay = np.array(delaydf["delay"].values)
     ion_tRecX = readtRecX_ion("/home/user/TIPTOE-Hydrogen/process_all_files_output/ionProb_850nm_350nm_1.25e+14.csv")
 
-    REDO_comp = True
+    REDO_comp = False
     for file_name, lam0_pump, I_pump, lam0_probe, I_probe, FWHM_probe, cep_pump, cep_probe in file_params:
         if REDO_comp:
             laser_pulses = LaserField(cache_results=True)
@@ -87,6 +87,7 @@ def main(excitedstates):
             ion_na_reconstructed_GASFIR=np.array(pd.to_numeric(data_rate_delay['ion_NA_reconstructed_GASFIR'].values))
             ion_na_reconstructed_SFA=np.array(pd.to_numeric(0*data_rate_delay['ion_NA_reconstructed_SFA'].values))
         except:
+            print("recon except")
             ion_na_reconstructed_GASFIR = []
             ion_na_reconstructed_SFA = []
             na_background_GASFIR=np.trapz(ion_na_rate_GASFIR, time_recon)

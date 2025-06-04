@@ -1,18 +1,39 @@
-\section{tRecX}
-I need to check if trecx coeff are trustable, use pertubation theory first order, for n>>1 trecx should predict different results because pert theory is not valid anymore\\
-I also need to check how often I have to write the coefficients to the expec file. That depends on the characterisitc time of the state and on the frequency of the laser of course.\\
-in E4 it was easy because laser had cosine shape. attosecond physics not the case, more a lase pulse, cos8 envelope so it doesnt make much sense to speak of rabi oszillations.\\
-Difference between length gauge and velocity gauge in numerics\\
-Why is it so diffficult? Solving time dependent Schroedinger euation numerically is not that hard. But in attosecond regime electron in Hydrogen likes length gauge because everything can be defined by giving the position of the electron. 
-But a free electron in a strong laser pulse really likes velocity gauge because everything can be described by the kinetic energy of the electron.\\
-Since we dont know how trecx outputs the coefficients (in which pciture) we need to check that.
-\subsection{irECS}
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-\subsection{tSURFF}
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-\subsection{Challenges}
-dangling pointer: interesting problem actually, how to solve it, how to find it, etc
+For retrieving ionisation rates, there are different ways of calculating the rates.\\
+In this chapter I will explain some concepts and methods that are used to calculate the ionisation rates and what to do with them, how to verify them and so on.
 
-\newpage
-\section{Python Implementation of Ionization Model}
-it uses a kernel, quasistatic
+
+
+
+
+%%%%%%%%%%%%%%%%
+\section{SFA Python Implementation}
+The implementation of formula ?? was being done in python. Most of the implementation was already done by the Authors of \cite{Theory_NPS}.
+The only part missing in the implementation was the extension to excited states. 
+For that, major difficulty arrises from the fact that we now need the coefficients $c_n(t)$ of the state before ionization.
+
+\subsection{Coefficients}
+In theory, $|c_n(t)|^2$ or the amplitude of the coefficients is observable quantity and can be measured in experiment.
+It tells us how propable the system is to be in a certain state $n$ at time $t$.
+Furthermore, and most importantly, they are gauge independent. 
+But since SFA is gauge dependent theory, and now we are not even dealing with the amplitude instead the complex coefficients, we need to be extremely careful with the gauge.
+
+\subsection{Dipole matrix Elements}
+Veery corse approximation since states are not plane waves in reality. Calculated in \ref{sec:dipolematrixelements}.
+
+
+%%%%%%%%%%%%%%%%%%
+\section{GASFIR}
+test
+% \begin{align*}
+%     K(t,T) &= E_\mathrm{+}E_\mathrm{-} \int_0^{\infty} dp\, p^2 \int_0^\pi d\theta \sin\theta e^{ i T (p^2+2\overline{\Delta A} p \cos{\theta})} \\
+%            &\quad \times \int_0^{2\pi}d\phi \,d_z^*\bigl(\bm{p} + \bm{e}_z A_\mathrm{+}\bigr) d_z\bigl(\bm{p} + \bm{e}_z A_\mathrm{-}\bigr) e^{ i T (2I_\mathrm{p} + \overline{\Delta A^2})}.
+% \end{align*}
+A general approximator for strong field ionization rates
+
+\section{TIPTOE}
+TIPTOE \cite{Park:18} is a sampling method used for sub femtosecond processes. It is relevant for this thesis because it was used to verify the results from the Ionization model. 
+TIPTOE is great because its fundamentals are very simple but it can tell you a lot about the dynamics in attosecond regime. 
+
+\subsection{Time reversal symmetry}
+TIPTOE -> we found out time reversal symmetry is violated. Normally TRS comes from ...
+

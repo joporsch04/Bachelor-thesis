@@ -151,6 +151,9 @@ class HydrogenSolver:
                 n, l, m = self.states[i]
                 
                 if plot_type == "occ":
+                    # sumcn = np.zeros_like(solution.t)
+                    # for j in range(len(self.states)):
+                    #     sumcn += np.abs(solution.y[j, :])**2
                     y_data = np.abs(solution.y[i, :])**2
                     trace_name = f'|{n},{l},{m}⟩² ({gauge})'
                     y_title = "Population |c<sub>k</sub>(t)|²"
@@ -176,23 +179,13 @@ class HydrogenSolver:
                     name=trace_name
                 ))
         
-        laser_text = "<br>".join([
-            "<b>Laser Parameters:</b>",
-            f"Wavelength: {self.laser_params[0]} nm",
-            f"Intensity: {self.laser_params[1]:.0e} W/cm²",
-            f"CEP: {self.laser_params[2]}"
-        ])
+        laser_text = "<br>".join(["<b>Laser Parameters:</b>",f"Wavelength: {self.laser_params[0]} nm",f"Intensity: {self.laser_params[1]:.0e} W/cm²",f"CEP: {self.laser_params[2]}"])
         
-        title_map = {
-            "occ": "Hydrogen Atom State Populations",
-            "real": "Real Part of Hydrogen Atom Coefficients", 
-            "imag": "Imaginary Part of Hydrogen Atom Coefficients",
-            "mag": "Magnitude of Hydrogen Atom Coefficients"
-        }
+        title_map = {"occ": "Hydrogen Atom State Populations","real": "Real Part of Hydrogen Atom Coefficients","imag": "Imaginary Part of Hydrogen Atom Coefficients","mag": "Magnitude of Hydrogen Atom Coefficients"}
         
         fig.update_layout(
             title=title_map.get(plot_type, "Hydrogen Atom Coefficients"),
-            xaxis_title="Time (atomic units)",
+            xaxis_title="Time (a.u.)",
             yaxis_title=y_title,
             xaxis=dict(range=[-100, 100]),
             annotations=[
@@ -218,17 +211,17 @@ class HydrogenSolver:
 if __name__ == "__main__":
     laser_params = (850, 1e14, 0)
     
-    solver3 = HydrogenSolver(max_n=3, laser_params=laser_params)
-    solver4 = HydrogenSolver(max_n=5, laser_params=laser_params)
+    solver3 = HydrogenSolver(max_n=5, laser_params=laser_params)
+    #solver4 = HydrogenSolver(max_n=5, laser_params=laser_params)
 
     print(f"Basis states ({len(solver3.states)}): {solver3.states}")
-    print(f"Basis states ({len(solver4.states)}): {solver4.states}")
+    #print(f"Basis states ({len(solver4.states)}): {solver4.states}")
     
     solutions3 = solver3.solve(gauge='length')
-    solutions4 = solver4.solve(gauge='length')
+    #solutions4 = solver4.solve(gauge='length')
     
-    fig = solver3.plot_populations(solutions3, [4], plot_type="real")
-    fig = solver3.plot_populations(solutions3, [4], plot_type="imag")
+    fig = solver3.plot_populations(solutions3, [0], plot_type="occ")
+    #fig = solver3.plot_populations(solutions3, [4], plot_type="imag")
 
-    fig = solver4.plot_populations(solutions4, [4], plot_type="real")
-    fig = solver4.plot_populations(solutions4, [4], plot_type="imag")
+    #fig = solver4.plot_populations(solutions4, [4], plot_type="real")
+    #fig = solver4.plot_populations(solutions4, [4], plot_type="imag")

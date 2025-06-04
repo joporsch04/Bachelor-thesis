@@ -1,5 +1,5 @@
-\documentclass[12pt]{report}
-\usepackage[a4paper, top=3cm, bottom=3cm, left=2.1cm, right=2.1cm]{geometry}
+\documentclass[12pt, twoside]{report}
+\usepackage[a4paper, top=3cm, bottom=3cm, left=2.1cm, right=2.1cm, bindingoffset=0.5cm]{geometry}
 
 
 \usepackage[normalem]{ulem}
@@ -14,7 +14,7 @@
 \usepackage{comment}
 \usepackage{placeins}
 \usepackage{pgfplots}
-\usepackage[english]{babel}
+\usepackage[ngerman, english]{babel}
 
 \pgfplotsset{compat=newest}
 \usepgfplotslibrary{fillbetween}
@@ -22,6 +22,8 @@
 \usepackage{tikz}
 \usepackage{csquotes}
 \usepackage{float}
+\usepackage{setspace}   %not shure...
+\onehalfspacing         %not shure...
 
 %\usepackage{bm}
 \usepackage{amsmath, amsfonts, amssymb, enumerate, mathtools, bbm, mathrsfs} % mathematical packages 
@@ -31,6 +33,8 @@
 \usepackage{titlesec}
 \usepackage{listings}   % for code format
 \usepackage{xcolor}
+\usepackage{fancyhdr}
+
 \lstdefinestyle{mystyle}{
   backgroundcolor=\color{white},
   commentstyle=\color{green!50!black},
@@ -51,6 +55,39 @@
 \titleformat{\chapter}[hang]{\normalfont\huge\bfseries}{\thechapter.}{0.5em}{} % formating chapters s.t. they are in the same row
 
 
+
+
+
+
+% Configure fancyhdr for custom headers/footers
+\pagestyle{fancy}
+\fancyhf{} % Clear default header/footer
+
+\renewcommand{\chaptermark}[1]{%
+  \markboth{\chaptername\ \thechapter:\ #1}{}%
+}
+\renewcommand{\sectionmark}[1]{%
+  \markright{\thesection.\ #1}%
+}
+
+% Set header: even pages get chapter title, odd pages get section title
+\fancyhead[LE]{\nouppercase{\leftmark}} % Left header on even pages: chapter title
+\fancyhead[RO]{\nouppercase{\rightmark}} % Right header on odd pages: section title
+
+% Place page numbers on the outer corners
+\fancyhead[LO]{\thepage} % Left header on odd pages: page number
+\fancyhead[RE]{\thepage} % Right header on even pages: page number
+
+% Remove headers from chapter-opening pages
+\makeatletter
+\let\ps@plain\ps@empty
+\makeatother
+
+
+
+
+
+
 \input{tex-files/commands.tex}
 
 %-----------------------------------------------------------------
@@ -58,20 +95,13 @@
 \begin{document}
 
 \input{tex-files/titlepage.tex}
-\newpage
-
-
-\thispagestyle{empty}
-\mbox{}
-\newpage
-
-
+\cleardoublepage
 \input{tex-files/titlepage_deutsch.tex}
-\newpage
+\cleardoublepage
 
-\thispagestyle{empty}
-\mbox{}
-\newpage
+
+\pagenumbering{roman}
+\setcounter{page}{1}
 
 
 \begin{abstract}
@@ -82,78 +112,84 @@
 
 
 \tableofcontents
-\newpage
+\cleardoublepage
 
 
 \phantomsection % ...
 \addcontentsline{toc}{chapter}{List of Figures} % ...
 \listoffigures
-\newpage
+\cleardoublepage
+
+
+\pagenumbering{arabic}
+\setcounter{page}{1}
 
 
 \chapter{Introduction}
 \input{tex-files/chapter1.tex}
-\newpage
+\cleardoublepage
 
 
 \chapter{Theory}
 \input{tex-files/chapter2.tex}
-\newpage
-
-
-\chapter{Ionization Model}
-\input{tex-files/chapter3.tex}
-\newpage
+\cleardoublepage
 
 
 \chapter{Numerical Methods}
+\input{tex-files/chapter3.tex}
+\cleardoublepage
+
+
+\chapter{Ionization Model}
 \input{tex-files/chapter4.tex}
-\newpage
+\cleardoublepage
 
 
 \chapter{Results and Discussion}
 \input{tex-files/chapter5.tex}
-\newpage
+\cleardoublepage
 
 
 \chapter{Conclusion and Outlook}
 \input{tex-files/summary.tex}
-\newpage
+\cleardoublepage
 
 
 \appendix
 \chapter{Volkov states}
 \input{tex-files/appendixA.tex}
-\newpage
+\cleardoublepage
 
 
 \chapter{Dipole transition matrix elements}
 \input{tex-files/appendixB.tex}
-\newpage
+\cleardoublepage
 
 
 \chapter{Semi-classical Hamiltonian}
 \input{tex-files/appendixC.tex}
-\newpage
+\cleardoublepage
 
 
 \chapter{TDSE Solution}
 \input{tex-files/appendixD.tex}
-\newpage
+\cleardoublepage
 
 
 \chapter{Code}
 \input{tex-files/appendixF.tex}
-\newpage
+\cleardoublepage
 
 
 \phantomsection % ...
 \addcontentsline{toc}{chapter}{Bibliography} % ...
 \bibliographystyle{plain}
 \bibliography{bibliography}
-\newpage
+\cleardoublepage
 
 
+\chapter*{Declaration of Authorship}
+\addcontentsline{toc}{chapter}{Declaration of Authorship}
 \emph{Hiermit erkläre ich, die vorliegende Arbeit selbständig verfasst zu haben und keine anderen als die in der Arbeit angegebenen Quellen und Hilfsmittel benutzt zu haben.}
 
 \vspace{2cm}  
