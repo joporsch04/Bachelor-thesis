@@ -14,11 +14,45 @@ For that, major difficulty arrises from the fact that we now need the coefficien
 \subsection{Coefficients}
 In theory, $|c_n(t)|^2$ or the amplitude of the coefficients is observable quantity and can be measured in experiment.
 It tells us how propable the system is to be in a certain state $n$ at time $t$.
-Furthermore, and most importantly, they are gauge independent. 
-But since SFA is gauge dependent theory, and now we are not even dealing with the amplitude instead the complex coefficients, we need to be extremely careful with the gauge.
+Furthermore, and most importantly, they are gauge independent.
+But since SFA is gauge dependent theory, and now we are not even dealing with the amplitude instead the complex coefficients, we need to be extremely careful with the gauge.\\
+In my thesis there are mostly two gauges used, the length gauge and the velocity gauge. 
+In the following plot you see that the amplitudes are indeed not gauge independent. But why is that the case?\\\\
+
+% When field-free states are used as part of the basis, they retain their intended physical meaning only when
+% length gauge is used. On the other hand, for computational efficiency we want velocity gauge where the electron
+% is essentially moving freely. How to combine the two is described in Ref. [?]. In the transition region rather ugly,
+% quadrupole-type operators appear. These are pre-defined for polar coordinates as <<MixedGaugeDipole:Rg=20>>.
+% In this example length gauge will be used up to the “gauge radius” Rg = 20. The radius must coincide with an
+% element boundary. This will be checked and the code terminates, if it is violated.
+% Surfaces will be transformed to velocity gauge before saving, such that spectral analysis works exactly as in
+% velocity gauge. At present, this transformation is only implemented from length to velocity gauge, therefore we
+% need the surface radius Rc ≤ Rg (not a deep limitation, can and will be removed).
+% Mixed gauge is computationally slightly less efficient than velocity gauge, see figure
+
+
+% # note: there is a frequent desire to see the populations
+% # BUT physical meaning can only be attached to it after the pulse is over
+% # during the pulse, the values are gauge-dependent
+
+
+The gauge is a very fundamental porbelm. Not so fundamental is our ansatz, as mentioned erlier we artificially force the electron to stay in the part of the Hilbert space covered by the bound state.
+This restricts us to small ionization propabilities, and may also cause some numerical problems as will discussed later.\\ %for 850nm weird sozillations for max_n > 3
+Also the numerical issue that we need to have infinitely many bound states for covering the aprt of the Hilbert space completely is not possible, so we have to limit ourselves.
+First this seems like a big problem, but we will see that most of the dynamics inside the electron before ionisation is in my simulations only determined by a few bound states.
+But one still need to be carefull with the number of used bound states, but because of numerical reasons.  
+
 
 \subsection{Dipole matrix Elements}
-Veery corse approximation since states are not plane waves in reality. Calculated in \ref{sec:dipolematrixelements}.
+The dipole matrix elements are an essential part of the formula in \eqref{eq:smatrix}. 
+Calculating it generall can be cumbersome, but in the case of hydrogen its even possible to do it analytically \ref{sec:dipolematrixelements}.
+However, its that easy to calculate because we made a very coarse approximation, since the final state after ionisation is in realtiy a plane wave, but we approximated it with that by using SFA.\\
+Furthermore, our problem is 
+
+
+
+
+
 
 
 %%%%%%%%%%%%%%%%%%

@@ -20,7 +20,7 @@ from line_profiler import profile
 
 file_params = [
     #("850nm_350nm_1.25e+14", 850, 1.25e14, 350, 1e10, 0.93, 0, -np.pi/2),
-    ("850nm_1e+14", 850, 1.25e14, 350, 1e10, 1, 0, -np.pi/2),
+    ("450nm_8e+13", 450, 8e13, 250, 8e9, 1, 0, -np.pi/2),
     # ("850nm_350nm_7.5e+13", 850, 7.50e13, 350, 6.00e09, 0.93, 0, -np.pi/2),
     # ("900nm_320nm_5e+14", 900, 5e14, 320, 4e10, 0.75, 0, -np.pi/2),
     # ("1200nm_320nm_1e+14", 1200, 1e14, 320, 4e10, 0.75, 0, -np.pi/2),
@@ -32,13 +32,15 @@ file_params = [
 def main(excitedstates):
     params = {'E_g': 0.5, 'αPol': 4.51, 'tau': 2.849306230484045, 'e1': 2.2807090369952894, 't0': 0.1, 't1': 3.043736601676354, 't2': 7.270940402611973, 'e2': 0, 't3': 0, 't4': 1, "div_p":2**-4, "div_theta":1, 'lam0': 850, 'intensity': 1.25e14, 'cep': 0}
 
-    delaydf = pd.read_csv("/home/user/TIPTOE-Hydrogen/plot_ion_tau_calc_output_data/ion_prob_850nm_350nm_1.25e+14.csv")
 
-    delay = np.array(delaydf["delay"].values)
-    ion_tRecX = readtRecX_ion("/home/user/TIPTOE-Hydrogen/process_all_files_output/ionProb_850nm_350nm_1.25e+14.csv")
-
-    REDO_comp = False
+    REDO_comp = True
     for file_name, lam0_pump, I_pump, lam0_probe, I_probe, FWHM_probe, cep_pump, cep_probe in file_params:
+
+        delaydf = pd.read_csv("/home/user/TIPTOE-Hydrogen/plot_ion_tau_calc_output_data/ionProb_450nm_250nm_8e+13.csv")
+
+        delay = np.array(delaydf["delay"].values)
+        ion_tRecX = readtRecX_ion(f"/home/user/TIPTOE-Hydrogen/plot_ion_tau_calc_output_data/ionProb_450nm_250nm_8e+13.csv")
+
         if REDO_comp:
             laser_pulses = LaserField(cache_results=True)
             ion_qs = []

@@ -211,17 +211,6 @@ class HydrogenSolver:
 if __name__ == "__main__":
     laser_params = (850, 1e14, 0)
     
-    solver3 = HydrogenSolver(max_n=5, laser_params=laser_params)
-    #solver4 = HydrogenSolver(max_n=5, laser_params=laser_params)
-
-    print(f"Basis states ({len(solver3.states)}): {solver3.states}")
-    #print(f"Basis states ({len(solver4.states)}): {solver4.states}")
-    
-    solutions3 = solver3.solve(gauge='length')
-    #solutions4 = solver4.solve(gauge='length')
-    
-    fig = solver3.plot_populations(solutions3, [0], plot_type="occ")
-    #fig = solver3.plot_populations(solutions3, [4], plot_type="imag")
-
-    #fig = solver4.plot_populations(solutions4, [4], plot_type="real")
-    #fig = solver4.plot_populations(solutions4, [4], plot_type="imag")
+    solver = HydrogenSolver(max_n=2, laser_params=laser_params)
+    solutions = solver.solve(gauge='length')
+    solver.plot_populations(solutions, state_indices=[0], plot_type="occ")

@@ -189,8 +189,6 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                             f0[i, j] = EF[tp]*EF[tm]*G1_T*absleft[tm]*absright[tp]
                 current_state_rate = 2*np.real(IOF(Tar, f0, (phase0)*1j))*4*np.pi       #21.5%
                 rate += current_state_rate
-                print(1-np.exp(-np.double(simpson(rate, x=time_recon, axis=-1, even='simpson'))))
-                print(1-np.exp(-np.double(simpson(rate, x=time_recon, axis=-1, even='simpson'))))
                 # rates_by_state.append(rate.copy())
                 
                 # config_str = f"n={config[state_idx][0]}, l={config[state_idx][1]}, m={config[state_idx][2]}"
