@@ -170,13 +170,13 @@ class tRecXdata:
         return laser_params
 
 if __name__ == "__main__":
-    datamixed = tRecXdata("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0040")
-    datalength = tRecXdata("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0042")
-    datavelocity = tRecXdata("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0044")
+    # datamixed = tRecXdata("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0040")
+    # datalength = tRecXdata("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0042")
+    # datavelocity = tRecXdata("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0044")
     data = tRecXdata("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0034")
 
     #datamixed.plotCoefficients([1,3], "occ")
     #datalength.plotCoefficients([3], "imag")
     #datavelocity.plotCoefficients([1,3], "occ")
-    #datalength.plotCoefficients([1,3], "occ")
-    print(data.laser_params)
+    data.plotCoefficients([1,2,3,4,5], "occ")
+    #print(data.laser_params)

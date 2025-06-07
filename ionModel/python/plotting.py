@@ -5,13 +5,13 @@ import matplotlib
 from matplotlib.backends.backend_pdf import PdfPages
 
 class plotter:
-    def __init__(self, params, time_data, rate_SFA, rateExcited, rateExcited_1, rateExcited_c0is1, useTex=False):
+    def __init__(self, params, time_data, rate_SFA, rateExcited_1, rateExcited_2, rateExcited_3, useTex=False):
         self.params = params
         self.time_data = time_data
         self.rate_SFA = rate_SFA
-        self.rateExcited = rateExcited
         self.rateExcited_1 = rateExcited_1
-        self.rateExcited_c0is1 = rateExcited_c0is1
+        self.rateExcited_2 = rateExcited_2
+        self.rateExcited_3 = rateExcited_3
         if useTex:
             plt.rcParams['text.usetex'] = useTex
             plt.rcParams['font.family'] = 'serif'
@@ -26,7 +26,7 @@ class plotter:
 
         # Plot 1: Rate SFA vs Rate Excited (3 states)
         ax1.plot(self.time_data, np.real(self.rate_SFA), label='Rate SFA', color='green', linewidth=1)
-        ax1.plot(self.time_data, np.real(self.rateExcited), label='Rate Excited (3 states)', color='red', linewidth=1)
+        ax1.plot(self.time_data, np.real(self.rateExcited_1), label='Rate Excited (3 states)', color='red', linewidth=1)
         ax1.set_xlabel('Time (a.u.)')
         ax1.set_ylabel('Ionization Rate')
         ax1.set_title('SFA vs excited rate (3 states)')
@@ -36,7 +36,7 @@ class plotter:
         
         # Plot 2: Rate SFA vs Rate Excited (1 state)
         ax2.plot(self.time_data, np.real(self.rate_SFA), label='Rate SFA', color='green', linewidth=1)
-        ax2.plot(self.time_data, np.real(self.rateExcited_1), label='Rate Excited (1 state, abs(c0)=1)', color='blue', linewidth=1)
+        ax2.plot(self.time_data, np.real(self.rateExcited_2), label='Rate Excited (1 state, abs(c0)=1)', color='blue', linewidth=1)
         ax2.set_xlabel('Time (a.u.)')
         ax2.set_ylabel('Ionization Rate')
         ax2.set_title('SFA vs excited rate (1 state, c_n=0, abs(c_0)=1)')
@@ -46,7 +46,7 @@ class plotter:
         
         # Plot 3: Rate SFA vs Rate Excited c0=1
         ax3.plot(self.time_data, np.real(self.rate_SFA), label='Rate SFA', color='green', linewidth=1)
-        ax3.plot(self.time_data, np.real(self.rateExcited_c0is1), label='Rate Excited (abs(c0)=1)', color='orange', linewidth=1)
+        ax3.plot(self.time_data, np.real(self.rateExcited_3), label='Rate Excited (abs(c0)=1)', color='orange', linewidth=1)
         ax3.set_xlabel('Time (a.u.)')
         ax3.set_ylabel('Ionization Rate')
         ax3.set_title('SFA vs excited rate (3 states, only abs(c_0)=1)')
@@ -56,9 +56,9 @@ class plotter:
         
         # Plot 4: All rates comparison
         ax4.plot(self.time_data, np.real(self.rate_SFA), label='Rate SFA', color='green', linewidth=1)
-        ax4.plot(self.time_data, np.real(self.rateExcited), label='Rate Excited (3 states)', color='red', linewidth=1)
-        ax4.plot(self.time_data, np.real(self.rateExcited_1), label='Rate Excited (1 state)', color='blue', linewidth=1)
-        ax4.plot(self.time_data, np.real(self.rateExcited_c0is1), label='Rate Excited (abs(c0)=1)', color='orange', linewidth=1)
+        ax4.plot(self.time_data, np.real(self.rateExcited_1), label='Rate Excited (3 states)', color='red', linewidth=1)
+        ax4.plot(self.time_data, np.real(self.rateExcited_2), label='Rate Excited (1 state)', color='blue', linewidth=1)
+        ax4.plot(self.time_data, np.real(self.rateExcited_3), label='Rate Excited (abs(c0)=1)', color='orange', linewidth=1)
         ax4.set_xlabel('Time (a.u.)')
         ax4.set_ylabel('Ionization Rate')
         ax4.set_title('All Rates Comparison')

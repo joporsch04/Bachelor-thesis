@@ -139,7 +139,7 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
         eigenEnergy = get_eigenEnergy(excitedStates, get_p_only)
         config = get_hydrogen_states(excitedStates, get_p_only)
         rate = np.zeros(tar.size, dtype=np.cdouble)
-        # rates_by_state = []
+        rates_by_state = []
 
         for state_idx in range(excitedStates):
             for state_range_idx in range(excitedStates):
@@ -154,21 +154,14 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                 phaseright = np.unwrap(np.angle(cRight))
                 absleft = np.abs(cLeft)
                 absright = np.abs(cRight)
+
                 if only_c0_is_1_rest_normal and state_idx == 0:
-                    only_absc0_is_1 = False
+                    only_absc0_is_1 = True
                     if only_absc0_is_1:
                         absleft, absright = absleft*0+1, absright*0+1
                     else:
                         phaseleft, phaseright, absleft, absright = phaseleft*0, phaseright*0, absleft*0+1, absright*0+1
-                only_c1_is_1_rest_normal = False
-                if only_c1_is_1_rest_normal and state_idx == 1:
-                    only_absc1_is_1 = True
-                    if only_absc1_is_1:
-                        absleft, absright = absleft*0+1, absright*0+1
-                    else:
-                        phaseleft, phaseright, absleft, absright = phaseleft*0, phaseright*0, absleft*0+1, absright*0+1
-                    
-                
+
                 for i in prange(Tar.size):
                     Ti=Ti_ar[i]
                     for j in range(tar.size):
@@ -185,7 +178,7 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                             G1_T_p=np.trapz(f_t_1*np.exp(1j*pz*DelA)*np.sin(theta), Theta_grid)     #17%
                             G1_T=np.trapz(G1_T_p*window*p_grid**2*np.exp(1j*p_grid**2*T), p_grid)   #11.7%
                             DelA = DelA + 2 * VPt * T
-                            phase0[i, j]  = (intA2[tp] - intA2[tm])/2  + T*VPt**2-VPt*DelA +2*eigenEnergy[state_idx]*T -phaseleft[tm]+phaseright[tp]    #eigenEnergy[state_idx]*(T-tar[j])-eigenEnergy[state_range_idx]*(T+tar[j])
+                            phase0[i, j]  = (intA2[tp] - intA2[tm])/2  + T*VPt**2-VPt*DelA +eigenEnergy[state_idx]*tp*dT-eigenEnergy[state_range_idx]*tm*dT -phaseleft[tm]+phaseright[tp]    #eigenEnergy[state_idx]*(T-tar[j])-eigenEnergy[state_range_idx]*(T+tar[j])
                             f0[i, j] = EF[tp]*EF[tm]*G1_T*absleft[tm]*absright[tp]
                 current_state_rate = 2*np.real(IOF(Tar, f0, (phase0)*1j))*4*np.pi       #21.5%
                 rate += current_state_rate

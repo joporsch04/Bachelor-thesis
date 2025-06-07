@@ -209,8 +209,8 @@ class HydrogenSolver:
         return fig
 
 if __name__ == "__main__":
-    laser_params = (850, 1e14, 0)
+    laser_params = (450, 1e14, 0)
     
-    solver = HydrogenSolver(max_n=2, laser_params=laser_params)
+    solver = HydrogenSolver(max_n=3, laser_params=laser_params)
     solutions = solver.solve(gauge='length')
-    solver.plot_populations(solutions, state_indices=[0], plot_type="occ")
+    solver.plot_populations(solutions, plot_type="occ")

@@ -36,11 +36,17 @@ In the following plot you see that the amplitudes are indeed not gauge independe
 % # during the pulse, the values are gauge-dependent
 
 
-The gauge is a very fundamental porbelm. Not so fundamental is our ansatz, as mentioned erlier we artificially force the electron to stay in the part of the Hilbert space covered by the bound state.
+The gauge is a very fundamental problem. Not so fundamental is our ansatz, as mentioned erlier we artificially force the electron to stay in the part of the Hilbert space covered by the bound state.
 This restricts us to small ionization propabilities, and may also cause some numerical problems as will discussed later.\\ %for 850nm weird sozillations for max_n > 3
 Also the numerical issue that we need to have infinitely many bound states for covering the aprt of the Hilbert space completely is not possible, so we have to limit ourselves.
 First this seems like a big problem, but we will see that most of the dynamics inside the electron before ionisation is in my simulations only determined by a few bound states.
-But one still need to be carefull with the number of used bound states, but because of numerical reasons.  
+But one still need to be carefull with the number of used bound states, but because of numerical reasons.\\\\
+
+For my numerica solution I used a system of ordinary differential equations (ODEs) to calculate the coefficients $c_n(t)$ using the interaction picture.
+In my implementation I neglected transitions to states that are forbidden via the dipole selection rules. 
+However this is an approximation, since in reality two-photon processes can occur, effectively allowing transitions between $1s$ and $2s$ for instance. 
+I numerically solved the schroedinger equation with tRecX and modyfied the code to print out the coefficients $c_n(t)$ allowing me to get insight in the "real" dynamics of the electron.
+% the dont differ???? why??? i thoguht im negecting that in ODE c_ns but it seems not, |2,0,0> is still there, why?
 
 
 \subsection{Dipole matrix Elements}

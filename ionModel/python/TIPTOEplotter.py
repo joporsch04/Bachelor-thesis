@@ -196,7 +196,7 @@ class TIPTOEplotter:
         # plt.close()
 
     def plotly4(self):
-        x_lim_ion_yield = 5
+        x_lim_ion_yield = 2
 
         ion_na_tRecX = self.ion_tRecX - self.ion_tRecX[-1]
         ion_na_GASFIR = self.ion_na_GASFIR - self.ion_na_GASFIR[-1]
@@ -228,51 +228,41 @@ class TIPTOEplotter:
             "QS": r"$\mathrm{P}_\mathrm{QS}$",
             "GASFIR": r"$\mathrm{P}_\mathrm{nonAdiabaticGASFIR}$",
             "ReconGASFIR": r"$\mathrm{P}_\mathrm{nonAdReconGASFIR}$",
-            "SFA": r"$\mathrm{P}_\mathrm{nonAdiabaticSFA}$",
-            "ReconSFA": r"$\mathrm{P}_\mathrm{nonAdReconSFA}$"
+            "SFA": r"$\mathrm{P}_\mathrm{SFA}$",
+            "ReconSFA": r"$\mathrm{P}_\mathrm{nonAdReconSFA}$",
+            "SFA_excited": r"$\mathrm{P}_\mathrm{SFA_excited}$",
+            "tRecX": r"$\mathrm{P}_{\mathrm{tRecX}}$"
         }
 
         fig = make_subplots(
             rows=2, cols=2,
             subplot_titles=(
                 "Ionization Yield with background",
-                "Ionization Yield without Background",
+                "Ionization Yield without Background and normalized",
                 "Spectral Response Absolute Value",
                 "Spectral Response Phase"
             )
         )
 
-        fig.add_trace(go.Scatter(x=self.delay*self.AU.fs, y=self.ion_tRecX, name='tRecX'), row=1, col=1)
-        fig.add_trace(go.Scatter(x=self.delay*self.AU.fs, y=self.ion_QS, name=names["QS"]), row=1, col=1)
-        fig.add_trace(go.Scatter(x=self.delay*self.AU.fs, y=self.ion_na_GASFIR, name=names["GASFIR"]), row=1, col=1)
-        fig.add_trace(go.Scatter(x=self.delay*self.AU.fs, y=self.ion_na_SFA, name=names["SFA"]), row=1, col=1)
-        fig.add_trace(go.Scatter(x=self.delay*self.AU.fs, y=self.ion_na_reconstructed_GASFIR, name=names["ReconGASFIR"]), row=1, col=1)
-        fig.add_trace(go.Scatter(x=self.delay*self.AU.fs, y=self.ion_na_reconstructed_SFA, name=names["ReconSFA"]), row=1, col=1)
+        fig.add_trace(go.Scatter(x=self.delay*self.AU.fs, y=self.ion_tRecX, name=names["tRecX"]), row=1, col=1)
+        fig.add_trace(go.Scatter(x=self.delay*self.AU.fs, y=self.ion_na_GASFIR, name=names["SFA"]), row=1, col=1)
+        fig.add_trace(go.Scatter(x=self.delay*self.AU.fs, y=self.ion_na_SFA, name=names["SFA_excited"]), row=1, col=1)
         fig.update_xaxes(title_text="Delay (fs)", row=1, col=1, range=[-x_lim_ion_yield, x_lim_ion_yield])
         fig.update_yaxes(title_text="Ionization Yield", row=1, col=1)
 
-        fig.add_trace(go.Scatter(x=self.delay*self.AU.fs, y=0.1*ion_na_tRecX, name='tRecX'), row=1, col=2)
-        fig.add_trace(go.Scatter(x=self.delay*self.AU.fs, y=ion_QS, name=names["QS"]), row=1, col=2)
-        fig.add_trace(go.Scatter(x=self.delay*self.AU.fs, y=ion_na_GASFIR, name=names["GASFIR"]), row=1, col=2)
-        fig.add_trace(go.Scatter(x=self.delay*self.AU.fs, y=ion_na_reconstructed_GASFIR, name=names["ReconGASFIR"]), row=1, col=2)
-        fig.add_trace(go.Scatter(x=self.delay*self.AU.fs, y=ion_na_SFA, name=names["SFA"]), row=1, col=2)
-        fig.add_trace(go.Scatter(x=self.delay*self.AU.fs, y=ion_na_reconstructed_SFA, name=names["ReconSFA"]), row=1, col=2)
+        fig.add_trace(go.Scatter(x=self.delay*self.AU.fs, y=ion_na_tRecX/(max(ion_na_tRecX)), name=names["tRecX"]), row=1, col=2)
+        fig.add_trace(go.Scatter(x=self.delay*self.AU.fs, y=ion_na_GASFIR/(max(ion_na_GASFIR)), name=names["SFA"]), row=1, col=2)
+        fig.add_trace(go.Scatter(x=self.delay*self.AU.fs, y=ion_na_SFA/(max(ion_na_SFA)), name=names["SFA_excited"]), row=1, col=2)
         fig.update_xaxes(title_text="Delay (fs)", row=1, col=2, range=[-x_lim_ion_yield, x_lim_ion_yield])
         fig.update_yaxes(title_text="Ionization Yield", row=1, col=2)
 
-        fig.add_trace(go.Scatter(x=omega/2/np.pi, y=np.abs(ion_QS_resp), name=names["QS"]), row=2, col=1)
-        fig.add_trace(go.Scatter(x=omega/2/np.pi, y=np.abs(ion_nonAdiabatic_resp_GASFIR), name=names["GASFIR"]), row=2, col=1)
-        fig.add_trace(go.Scatter(x=omega/2/np.pi, y=np.abs(ion_nonAdiabatic_reconstructed_resp_GASFIR), name=names["ReconGASFIR"]), row=2, col=1)
-        fig.add_trace(go.Scatter(x=omega/2/np.pi, y=np.abs(ion_nonAdiabatic_resp_SFA), name=names["SFA"]), row=2, col=1)
-        fig.add_trace(go.Scatter(x=omega/2/np.pi, y=np.abs(ion_nonAdiabatic_reconstructed_resp_SFA), name=names["ReconSFA"]), row=2, col=1)
+        fig.add_trace(go.Scatter(x=omega/2/np.pi, y=np.abs(ion_nonAdiabatic_resp_GASFIR), name=names["SFA"]), row=2, col=1)
+        fig.add_trace(go.Scatter(x=omega/2/np.pi, y=np.abs(ion_nonAdiabatic_resp_SFA), name=names["SFA_excited"]), row=2, col=1)
         fig.update_xaxes(title_text="Frequency (PHz)", row=2, col=1)
         fig.update_yaxes(title_text="Amplitude", row=2, col=1)
 
-        fig.add_trace(go.Scatter(x=omega/2/np.pi, y=np.unwrap(np.angle(ion_QS_resp)), name=names["QS"]), row=2, col=2)
-        fig.add_trace(go.Scatter(x=omega/2/np.pi, y=np.unwrap(np.angle(ion_nonAdiabatic_resp_GASFIR)), name=names["GASFIR"]), row=2, col=2)
-        fig.add_trace(go.Scatter(x=omega/2/np.pi, y=np.unwrap(np.angle(ion_nonAdiabatic_reconstructed_resp_GASFIR)), name=names["ReconGASFIR"]), row=2, col=2)
-        fig.add_trace(go.Scatter(x=omega/2/np.pi, y=np.unwrap(np.angle(ion_nonAdiabatic_resp_SFA)), name=names["SFA"]), row=2, col=2)
-        fig.add_trace(go.Scatter(x=omega/2/np.pi, y=np.unwrap(np.angle(ion_nonAdiabatic_reconstructed_resp_SFA)), name=names["ReconSFA"]), row=2, col=2)
+        fig.add_trace(go.Scatter(x=omega/2/np.pi, y=np.unwrap(np.angle(ion_nonAdiabatic_resp_GASFIR)), name=names["SFA"]), row=2, col=2)
+        fig.add_trace(go.Scatter(x=omega/2/np.pi, y=np.unwrap(np.angle(ion_nonAdiabatic_resp_SFA)), name=names["SFA_excited"]), row=2, col=2)
         fig.update_xaxes(title_text="Frequency (PHz)", row=2, col=2)
         fig.update_yaxes(title_text="Phase", row=2, col=2)
 
@@ -296,9 +286,10 @@ class TIPTOEplotter:
             legend=dict(x=1.05, y=1),
             font=dict(family="serif", size=16)
         )
+        
 
         fig.for_each_trace(lambda t: t.update(hovertemplate=t.name))
-        fig.update_layout(title_text="Side By Side Subplots", width=1920, height=1080)
+        fig.update_layout(title_text="Side By Side Subplots", width=1800, height=1080)
         fig.show()
 
 

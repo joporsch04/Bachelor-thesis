@@ -309,7 +309,7 @@ This mainly follows \cite{Theory_NPS} with some modification.\\
 The ionization rate integrated over the time domain should yield the total ionization propability.
 Therefore we can write the SFA rate \eqref{eq:smatrix} as:
 \begin{align*}
-    \lim_{t\to\infty}\braket{\Psi(t)|\Psi(t)} = &\int_{-\infty}^{\infty} \Gamma_{\mathrm{SFA}}(t) \dd t \\ %= \int_{\R^3}\dd^3p \braket{\Psi_n(t)|\Pi(t_{\mathrm{c}})}\braket{\Pi(t_{\mathrm{c}})|\Psi_n(t)}\\ 
+    \lim_{t\to\infty}\braket{\Psi(t)|\int \dd^3 p \ket{p}\bra{p} |\Psi(t)} = &\int_{-\infty}^{\infty} \Gamma_{\mathrm{SFA}}(t) \dd t \\ %= \int_{\R^3}\dd^3p \braket{\Psi_n(t)|\Pi(t_{\mathrm{c}})}\braket{\Pi(t_{\mathrm{c}})|\Psi_n(t)}\\ 
     = &\int \dd^3 p \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} \dd t_1  \dd t_2 \, e^{\frac{i}{2}\int_{t_1}^{t_2}(\uvec{p}+A_z(t''))^2\dd t''} E_z(t_1)E_z(t_2)\\
     &\times\left(\sum_{n}e^{iE_nt_1}c_n^*(t_1)d_{z,n}^*(\uvec{p}+A_z(t_1))\right)\left(\sum_{n}e^{-iE_nt_2}c_n(t_2)d_{z,n}(\uvec{p}+A_z(t_2))\right)
 \end{align*}
@@ -329,3 +329,11 @@ Decied to do Phenomenology after theory.\\
 Phenomenology of strong field ionization, Different types of Ionization, tunneling Ionization, multiphoton, stark effect.
 \subsection{Stark effect}
 \subsection{REMPI}
+\subsection{Ionization rate}
+What is a ionization rate and why do we want to have it?\\
+Dilemma: numerical simulations yield good ion propabilitiees but no ionization rate, analytical calculations yield good ionization rates but incorrect propabilities (see GASFIR paper).\\
+Furthermore, no experimental method has been developed yet to measure ionization rates, only ionization propabilities - a quantum mechanical observable.\\
+As long as the electromagnetic
+field is present, projecting onto bound/unbound states
+yields non-physical gauge-dependent predictions [14].\\       % M. Yuan, P. Xin, T. Chu, H. Liu, Optics Express 2017,25, 19 23493
+Tunneling time is imaginary, source???\\

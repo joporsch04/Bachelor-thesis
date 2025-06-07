@@ -16,7 +16,11 @@ from TIPTOEplotter import AU as AtomicUnits
 from scipy.integrate import simpson
 from line_profiler import profile
 
-
+def read_ion_Prob_data(file_path):
+    data = pd.read_csv(file_path, header=None)
+    delay = pd.to_numeric(data.iloc[2].iloc[2:].values)[:-1]
+    ion_y = pd.to_numeric(data.iloc[1].iloc[2:].values)[:-1]
+    return delay, ion_y
 
 file_params = [
     #("850nm_350nm_1.25e+14", 850, 1.25e14, 350, 1e10, 0.93, 0, -np.pi/2),
@@ -29,17 +33,20 @@ file_params = [
     # ("900nm_250nm_1e+14", 900, 1e14, 250, 6e8, 0.58, 0, -np.pi/2),
     # ("900nm_250nm_1.1e+14", 900, 1.1e14, 250, 6e8, 0.58, 0, -np.pi/2),
 ]
+
 def main(excitedstates):
-    params = {'E_g': 0.5, 'αPol': 4.51, 'tau': 2.849306230484045, 'e1': 2.2807090369952894, 't0': 0.1, 't1': 3.043736601676354, 't2': 7.270940402611973, 'e2': 0, 't3': 0, 't4': 1, "div_p":2**-4, "div_theta":1, 'lam0': 850, 'intensity': 1.25e14, 'cep': 0}
+    params = {'E_g': 0.5, 'αPol': 4.51, 'tau': 2.849306230484045, 'e1': 2.2807090369952894, 't0': 0.1, 't1': 3.043736601676354, 't2': 7.270940402611973, 'e2': 0, 't3': 0, 't4': 1, "div_p":2**-4*16, "div_theta":1*8, 'lam0': 450, 'intensity': 8e13, 'cep': 0}
 
 
     REDO_comp = True
     for file_name, lam0_pump, I_pump, lam0_probe, I_probe, FWHM_probe, cep_pump, cep_probe in file_params:
 
-        delaydf = pd.read_csv("/home/user/TIPTOE-Hydrogen/plot_ion_tau_calc_output_data/ionProb_450nm_250nm_8e+13.csv")
+        # delaydf = pd.read_csv("/home/user/TIPTOE-Hydrogen/plot_ion_tau_calc_output_data/ionProb_450nm_250nm_8e+13.csv")
 
-        delay = np.array(delaydf["delay"].values)
-        ion_tRecX = readtRecX_ion(f"/home/user/TIPTOE-Hydrogen/plot_ion_tau_calc_output_data/ionProb_450nm_250nm_8e+13.csv")
+        # delay = np.array(delaydf["delay"].values)
+        # ion_tRecX = readtRecX_ion(f"/home/user/TIPTOE-Hydrogen/plot_ion_tau_calc_output_data/ionProb_450nm_250nm_8e+13.csv")
+
+        delay, ion_tRecX = read_ion_Prob_data("/home/user/TIPTOE-Hydrogen/process_all_files_output/ionProb_450nm_250nm_8e+13.csv")
 
         if REDO_comp:
             laser_pulses = LaserField(cache_results=True)
@@ -52,8 +59,8 @@ def main(excitedstates):
             t_min, t_max = laser_pulses.get_time_interval()
             time_recon= np.arange(t_min, t_max+1, 1)
             dt_dE=1/np.gradient(laser_pulses.Electric_Field(time_recon),time_recon)
-            ion_na_rate_GASFIR = IonRate(time_recon, laser_pulses, params, dT=0.5, kernel_type='GASFIR')
-            ion_na_rate_SFA = IonRate(time_recon, laser_pulses, params, dT=0.5, kernel_type='exact_SFA', excitedStates=excitedstates, coeffType="numerical", gauge="length", get_p_only=True, only_c0_is_1_rest_normal=False)
+            ion_na_rate_GASFIR = IonRate(time_recon, laser_pulses, params, dT=0.5/4, kernel_type='GASFIR')
+            ion_na_rate_SFA = IonRate(time_recon, laser_pulses, params, dT=0.5/4, kernel_type='exact_SFA', excitedStates=1, coeffType="numerical", gauge="length", get_p_only=True, only_c0_is_1_rest_normal=False)
             na_background_GASFIR=np.trapz(ion_na_rate_GASFIR, time_recon)
             na_background_SFA=np.trapz(ion_na_rate_SFA, time_recon)
             na_grad_GASFIR=np.gradient(ion_na_rate_GASFIR, laser_pulses.Electric_Field(time_recon))
@@ -66,10 +73,10 @@ def main(excitedstates):
                 t_min, t_max = laser_pulses.get_time_interval()
                 time=np.arange(t_min, t_max+1, 1)
                 ion_qs.append(1-np.exp(-np.trapz(analyticalRate(time, laser_pulses, params), time)))
-                ion_na_GASFIR.append(1-np.exp(-IonProb(laser_pulses, params, dt=2, dT=0.5, kernel_type='GASFIR')))
+                ion_na_GASFIR.append(1-np.exp(-IonProb(laser_pulses, params, dt=2, dT=0.5/4, kernel_type='GASFIR')))
                 #ion_na_SFA.append(1-np.exp(-IonProb(laser_pulses, params, dt=2, dT=0.5, kernel_type='exact_SFA')))
-                ion_na_rate_SFA_probe = IonRate(time_recon, laser_pulses, params, dT=0.5, kernel_type='exact_SFA', excitedStates=excitedstates, coeffType="numerical", gauge="length", get_p_only=True, only_c0_is_1_rest_normal=False)
-                ion_na_SFA.append(1-np.exp(-(1-np.exp(-np.double(simpson(ion_na_rate_SFA_probe, x=time_recon, axis=-1, even='simpson'))))))
+                ion_na_rate_SFA_probe = IonRate(time_recon, laser_pulses, params, dT=0.5/4, kernel_type='exact_SFA', excitedStates=excitedstates, coeffType="numerical", gauge="length", get_p_only=True, only_c0_is_1_rest_normal=False)
+                ion_na_SFA.append(1-np.exp(-np.double(simpson(ion_na_rate_SFA_probe, x=time_recon, axis=-1, even='simpson'))))
                 laser_pulses.reset()
                 laser_pulses.add_pulse(lam0_probe, I_probe, cep_probe, FWHM_probe/AtomicUnits.fs, t0=-tau)
                 ion_na_reconstructed_GASFIR.append(1-np.exp(-na_background_GASFIR-np.trapz(na_grad_GASFIR*laser_pulses.Electric_Field(time_recon), time_recon)))
@@ -82,12 +89,15 @@ def main(excitedstates):
         delay=np.array(data_rate_delay['delay'].values)
         ion_tRecX=np.array(data_rate_delay['ion_tRecX'].values)
         ion_na_GASFIR=np.array(data_rate_delay['ion_NA_GASFIR'].values)
+        print("test2")
         ion_na_SFA=np.array(data_rate_delay['ion_NA_SFA'].values)
         ion_QS=np.array(data_rate_delay['ion_QS'].values)
 
         try:
+            print("recon try")
             ion_na_reconstructed_GASFIR=np.array(pd.to_numeric(data_rate_delay['ion_NA_reconstructed_GASFIR'].values))
             ion_na_reconstructed_SFA=np.array(pd.to_numeric(0*data_rate_delay['ion_NA_reconstructed_SFA'].values))
+            print("test")
         except:
             print("recon except")
             ion_na_reconstructed_GASFIR = []
@@ -114,11 +124,14 @@ def main(excitedstates):
         tmin, tmax=probe.get_time_interval()
         time=np.arange(tmin, tmax+1, 1.)
         field_probe_fourier_time=probe.Electric_Field(time)
+        print("test3")
 
-        plotter = TIPTOEplotter(ion_tRecX, ion_QS, ion_na_GASFIR, ion_na_SFA, ion_na_reconstructed_GASFIR, ion_na_reconstructed_SFA, delay, field_probe_fourier_time, time, AU, lam0_pump, I_pump, lam0_probe, I_probe, FWHM_probe)
-        plotter.plotly4()
+        # plotter = TIPTOEplotter(ion_tRecX, ion_QS, ion_na_GASFIR, ion_na_SFA, ion_na_reconstructed_GASFIR, ion_na_reconstructed_SFA, delay, field_probe_fourier_time, time, AU, lam0_pump, I_pump, lam0_probe, I_probe, FWHM_probe)
+        # print("test4")
+        # plotter.plotly4()
+
 
 if __name__ == "__main__":
-    main(1)
-    main(2)
+    # main(1)
+    # main(2)
     main(3)
