@@ -61,6 +61,63 @@ class tRecXdata:
         df.columns = df.columns[1:].tolist() + [""]
         df = df.iloc[:, :-1]
         return df
+    
+    def extractDelay(self):
+        file_path = os.path.join(self.folder_path, "inpc")
+        if not os.path.exists(file_path):
+            raise FileNotFoundError(f"inpc file not found in {self.folder_path}")
+        with open(file_path, 'r') as file:
+                lines=file.readlines()
+                for index, line in enumerate(lines):
+                    if 'Laser:' in line:
+                        peak_index=line.replace(','," ").split()[1:].index('peakTime')
+                        try:
+                            delay=float(lines[index+1].split(',')[peak_index].split()[0])-float(lines[index+2].split(',')[peak_index].split()[0])
+                        except:
+                             delay=float(lines[index+1].split(',')[peak_index].split()[0])
+                return delay
+    
+    def extractLaserParams(self):
+        """Extract laser parameters from inpc file"""
+        file_path = os.path.join(self.folder_path, "inpc")
+        if not os.path.exists(file_path):
+            raise FileNotFoundError(f"inpc file not found in {self.folder_path}")
+        
+        laser_params = {}
+        with open(file_path, 'r') as file:
+            lines = file.readlines()
+            
+            for i, line in enumerate(lines):
+                if line.strip().startswith('Laser:') and 'shape' in line:
+                    if i + 1 < len(lines):
+                        values_line = lines[i + 1].strip()
+                        values = values_line.split()
+                        
+                        if len(values) >= 8:
+                            fwhm_value = values[2].rstrip(',')
+                            if len(values) >= 9 and values[3].rstrip(',') == 'OptCyc':
+                                fwhm_full = f"{fwhm_value} {values[3].rstrip(',')}"
+                                wavelength_idx = 4
+                            else:
+                                fwhm_full = fwhm_value
+                                wavelength_idx = 3
+                            
+                            laser_params = {
+                                'shape': values[0].rstrip(','),
+                                'intensity': f"{float(values[1].rstrip(',')):.2e}",
+                                'FWHM': fwhm_full,
+                                'lam0': float(values[wavelength_idx].rstrip(',')),
+                                'polar_angle': float(values[wavelength_idx + 1].rstrip(',')),
+                                'azimuth_angle': float(values[wavelength_idx + 2].rstrip(',')),
+                                'CEP': float(values[wavelength_idx + 3].rstrip(',')),
+                                'peak_time': values[wavelength_idx + 4].rstrip(',') if wavelength_idx + 4 < len(values) else ''
+                            }
+                        break
+        
+        if not laser_params:
+            raise ValueError("Could not find laser parameters in inpc file")
+        
+        return laser_params
 
     def plotCoefficients(self, state_indices, plot_type="occ"):
         fig = go.Figure()
@@ -127,56 +184,19 @@ class tRecXdata:
         )
         fig.show()
 
-    def extractLaserParams(self):
-        """Extract laser parameters from inpc file"""
-        file_path = os.path.join(self.folder_path, "inpc")
-        if not os.path.exists(file_path):
-            raise FileNotFoundError(f"inpc file not found in {self.folder_path}")
-        
-        laser_params = {}
-        with open(file_path, 'r') as file:
-            lines = file.readlines()
-            
-            for i, line in enumerate(lines):
-                if line.strip().startswith('Laser:') and 'shape' in line:
-                    if i + 1 < len(lines):
-                        values_line = lines[i + 1].strip()
-                        values = values_line.split()
-                        
-                        if len(values) >= 8:
-                            fwhm_value = values[2].rstrip(',')
-                            if len(values) >= 9 and values[3].rstrip(',') == 'OptCyc':
-                                fwhm_full = f"{fwhm_value} {values[3].rstrip(',')}"
-                                wavelength_idx = 4
-                            else:
-                                fwhm_full = fwhm_value
-                                wavelength_idx = 3
-                            
-                            laser_params = {
-                                'shape': values[0].rstrip(','),
-                                'intensity': f"{float(values[1].rstrip(',')):.2e}",
-                                'FWHM': fwhm_full,
-                                'lam0': float(values[wavelength_idx].rstrip(',')),
-                                'polar_angle': float(values[wavelength_idx + 1].rstrip(',')),
-                                'azimuth_angle': float(values[wavelength_idx + 2].rstrip(',')),
-                                'CEP': float(values[wavelength_idx + 3].rstrip(',')),
-                                'peak_time': values[wavelength_idx + 4].rstrip(',') if wavelength_idx + 4 < len(values) else ''
-                            }
-                        break
-        
-        if not laser_params:
-            raise ValueError("Could not find laser parameters in inpc file")
-        
-        return laser_params
-
 if __name__ == "__main__":
     # datamixed = tRecXdata("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0040")
     # datalength = tRecXdata("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0042")
     # datavelocity = tRecXdata("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0044")
-    data = tRecXdata("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0034")
+    # data = tRecXdata("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0034")
 
     #datamixed.plotCoefficients([1,3], "occ")
     #datalength.plotCoefficients([3], "imag")
     #datavelocity.plotCoefficients([1,3], "occ")
-    data.plotCoefficients([1,2,3,4,5], "occ")
+    # data.plotCoefficients([1,2,3,4,5], "occ")
     #print(data.laser_params)
+
+
+
+    data = tRecXdata("/home/user/TIPTOE/new_data/450nm/250nm/I_8.00e+13/15")
+    print(data.extractLaserParams())

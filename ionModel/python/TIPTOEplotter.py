@@ -196,7 +196,7 @@ class TIPTOEplotter:
         # plt.close()
 
     def plotly4(self):
-        x_lim_ion_yield = 2
+        x_lim_ion_yield = 5
 
         ion_na_tRecX = self.ion_tRecX - self.ion_tRecX[-1]
         ion_na_GASFIR = self.ion_na_GASFIR - self.ion_na_GASFIR[-1]
@@ -243,6 +243,7 @@ class TIPTOEplotter:
                 "Spectral Response Phase"
             )
         )
+        print(self.AU.fs)
 
         fig.add_trace(go.Scatter(x=self.delay*self.AU.fs, y=self.ion_tRecX, name=names["tRecX"]), row=1, col=1)
         fig.add_trace(go.Scatter(x=self.delay*self.AU.fs, y=self.ion_na_GASFIR, name=names["SFA"]), row=1, col=1)
@@ -290,7 +291,7 @@ class TIPTOEplotter:
 
         fig.for_each_trace(lambda t: t.update(hovertemplate=t.name))
         fig.update_layout(title_text="Side By Side Subplots", width=1800, height=1080)
-        fig.show()
+        return fig
 
 
 

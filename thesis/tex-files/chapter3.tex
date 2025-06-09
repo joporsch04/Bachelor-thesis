@@ -5,8 +5,12 @@ Especially for expanding an already existing model, it is important to compare a
 
 
 
-%%%%%%%%%%%%%%%%
-\section{tRecX}
+%%%%%%%%%%%%%%%%%%%%%%%
+\section{Numerical Methods}
+
+
+
+\subsection{tRecX}
 I need to check if trecx coeff are trustable, use pertubation theory first order, for n>>1 trecx should predict different results because pert theory is not valid anymore\\
 I also need to check how often I have to write the coefficients to the expec file. That depends on the characterisitc time of the state and on the frequency of the laser of course.\\
 in E4 it was easy because laser had cosine shape. attosecond physics not the case, more a lase pulse, cos8 envelope so it doesnt make much sense to speak of rabi oszillations.\\
@@ -14,9 +18,47 @@ Difference between length gauge and velocity gauge in numerics\\
 Why is it so diffficult? Solving time dependent Schroedinger euation numerically is not that hard. But in attosecond regime electron in Hydrogen likes length gauge because everything can be defined by giving the position of the electron. 
 But a free electron in a strong laser pulse really likes velocity gauge because everything can be described by the kinetic energy of the electron.\\
 Since we dont know how trecx outputs the coefficients (in which pciture) we need to check that.
-\subsection{irECS}
+\subsubsection{irECS}
 Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-\subsection{tSURFF}
+\subsubsection{tSURFF}
 Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-\subsection{Challenges}
+\subsubsection{Challenges}
 dangling pointer: interesting problem actually, how to solve it, how to find it, etc
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+\section{TIPTOE}
+This follows \cite{Park:18} and manorams master thesis.\\\\
+In some way, TIPTOE motivates this thesis, since TIPTOE's results showed us the break in time reversal symmetrie mentioned earlier.
+But what is TIPTOE? TIPTOE \cite{Park:18} is short for tunneling ionization with a perturbation for the time-domain observation of an electric field. 
+It is used for direct sampling an electric pulse in the femtosecond to attosecond regime using quasistatic subcycle tunneling ionization in a gaseous medium or air.
+Tunneling ionization differes from multiphoton ionization in the sense that the laser field is so strong that it deforms the coulomb barrier of the atom, allowing the electron to tunnel through it.
+However, our motivation to establish an instantanious ionization rate remains promising, especially because in the models that describe tunneling ionization, the ionization rate only depends on the field strength of the laser pulse.
+% 16. M. V. Ammosov, N. B. Delone, and V. P. Krainov, “Tunnel ionization of
+% complex atoms and of atomic ions in an alternating electromagnetic
+% field,” Sov. Phys. JETP 64, 1191–1194 (1986).
+% 17. L. V. Keldysh, “Ionization in the field of a strong electromagnetic wave,”
+% Sov. Phys. JETP 20, 1307 (1965).
+A typical TIPTOE simulation consist of two linear polarised lase pulses, a "fundamental" and a "signal" pulse, similar to common pump-probe experiments. 
+The drive pulse is the pulse we want to sample at the end just by measuren the ionization yield for a certain medium.
+In the first order we can approximate the ionization rate as
+\begin{equation*}
+    \Gamma(E_{\mathrm{F}}+E_{\mathrm{S}})=\Gamma(E_{\mathrm{F}})+\left.E_{\mathrm{S}}\frac{\dd \Gamma(E_{\mathrm{S}})}{\dd E}\right|_{E=E_{\mathrm{F}}}
+\end{equation*}
+However in this approximation we are going to neglect the depletion of the ground state. 
+Then the total ionisation yield $N$ obtained by the two pulses is given by
+\begin{equation*}
+    N=N_0+\delta N = \int \dd t\,\Gamma(E_{\mathrm{F}}(t))+\int \dd t\,E_{\mathrm{S}(t)}\left.\frac{\dd \Gamma(E_{\mathrm{S}}(t))}{\dd E}\right|_{E=E_{\mathrm{F}}(t)}
+\end{equation*}
+By changing the delay $\tau$ between the two pulses, the ionization yield of course different values.
+With this we can find that:
+\begin{equation*}
+    \delta N(\tau)=E_{\mathrm{S}}(\tau)
+\end{equation*}
+so we can sample the field amplitude of the signal pulse by measuring the ionization yield for different delays.
+The TIPTOE method can be applied for the broad spectral range of the signal pulse, as long as the fundamental pulse is shorter than $1.5$ optical cycles.\\
+This method is very usefull because the problem of numerical simulations giving good predicitons about ionization propabilities and analytical models about ionization rates.
+Now we have a method to compare both ways and egt insight in the dynamics of the electron. 
+We will later integrate the ionization rate of $E_{\mathrm{F}}+E_{\mathrm{S}}$ over the full time domain and compare the ionization yield for different delay with the resluts from the numerical solution of the TDSE.

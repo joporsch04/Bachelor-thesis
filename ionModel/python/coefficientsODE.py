@@ -12,14 +12,18 @@ class AtomicUnits:
     speed_of_light = 137.035999
 
 class HydrogenSolver:
-    def __init__(self, max_n, laser_params):
+    def __init__(self, max_n, laser_pulses):
         self.max_n = max_n
         self._radial_cache = {}
         self.states = self._build_basis()
         self.energies = np.array([-0.5/n**2 for n, l, m in self.states])
         self.z_matrix = self._compute_z_matrix()
         #self.p_matrix = self._compute_p_matrix()
-        self.laser_params = laser_params
+        self.laser_pulses = laser_pulses
+        self.laser_params = self.get_laser_params()
+    
+    def get_laser_params(self):
+        return [450, 8e13, 0]
     
     def _build_basis(self):
         return [(n, l, 0) for n in range(1, self.max_n + 1) for l in range(n)]
@@ -97,7 +101,7 @@ class HydrogenSolver:
         c = y
         dc_dt = np.zeros_like(c, dtype=complex)
         
-        E_field = self.laser.Electric_Field(t)
+        E_field = self.laser_pulses.Electric_Field(t)
         
         for k in range(len(self.states)):
             for n in range(len(self.states)):
@@ -108,11 +112,8 @@ class HydrogenSolver:
     
     #@profile
     def solve(self, gauge='both'):
-        lam0, intensity, cep = self.laser_params[:3]
-        self.laser = LaserField(cache_results=True)
-        self.laser.add_pulse(lam0, intensity, cep, lam0/ AtomicUnits.nm / AtomicUnits.speed_of_light) #make complex 128, float 64
-        
-        t_start, t_end = self.laser.get_time_interval()
+
+        t_start, t_end = self.laser_pulses.get_time_interval()
         t_eval = np.linspace(t_start, t_end, 16000)     #64000
         
         results = {}
@@ -208,9 +209,11 @@ class HydrogenSolver:
         fig.show()
         return fig
 
-if __name__ == "__main__":
-    laser_params = (450, 1e14, 0)
+if __name__ == "__main__":          #("450nm_8e+13", 450, 8e13, 250, 8e9, 1, 0, -np.pi/2),
+    laserPulses = LaserField(cache_results=True)
+    laserPulses.add_pulse(450, 8e13, 0, 450 / AtomicUnits.nm / AtomicUnits.speed_of_light)
+    laserPulses.add_pulse(250, 8e9, 0, 250 / AtomicUnits.nm / AtomicUnits.speed_of_light, t0=0)
     
-    solver = HydrogenSolver(max_n=3, laser_params=laser_params)
+    solver = HydrogenSolver(max_n=3, laser_pulses=laserPulses)
     solutions = solver.solve(gauge='length')
     solver.plot_populations(solutions, plot_type="occ")

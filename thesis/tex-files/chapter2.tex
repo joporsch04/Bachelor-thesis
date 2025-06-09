@@ -17,6 +17,10 @@ A $\cdot$ denotes a scalar product between two vectors, $\times$ is just normal 
 
 The strucutre in this chapter mainly follows \cite{Ivanov20012005} with some modifications.
 
+What im going to do in this chapter: derive an instantanious ionization rate (IIR) by solving time dependent schroedinger equation (TDSE) using the strong field approximation (SFA) and the interaction picture.
+First I solve the TDSE without making any (strict/harsh) approximations and piece by piece establish our physical setting (hydrogen atom with external laser field, in multiphoton ionisation regime, ionpropability around 0.01%)
+
+
 
 
 %%%%%%%%%%%%%%%%%%%%%
@@ -302,9 +306,27 @@ The interesting part is that the dynamics before ionizing the atom is exact so n
 
 
 
+
+
 %%%%%%%%%%%%%%%%%%%%
 \newpage
 \section{Derivation of SFA Rate}
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%
+\subsection{Ionization rate}
+What is a ionization rate and why do we want to have it?\\
+Dilemma: numerical simulations yield good ion propabilitiees but no ionization rate, analytical calculations yield good ionization rates but incorrect propabilities (see GASFIR paper).\\
+Furthermore, no experimental method has been developed yet to measure ionization rates, only ionization propabilities - a quantum mechanical observable.\\
+As long as the electromagnetic
+field is present, projecting onto bound/unbound states
+yields non-physical gauge-dependent predictions [14].\\       % M. Yuan, P. Xin, T. Chu, H. Liu, Optics Express 2017,25, 19 23493
+Tunneling time is imaginary, source???\\
+
 This mainly follows \cite{Theory_NPS} with some modification.\\
 The ionization rate integrated over the time domain should yield the total ionization propability.
 Therefore we can write the SFA rate \eqref{eq:smatrix} as:
@@ -322,6 +344,10 @@ Changing variables to $t=\frac{t_2+t_1}{2}$ and $T=\frac{t_2-t_1}{2}$ and using 
 \end{align*}
 
 
+
+
+
+
 %%%%%%%%%%%%%%%%%%%%%
 \newpage
 \section{Strong Field Ionization}
@@ -329,11 +355,3 @@ Decied to do Phenomenology after theory.\\
 Phenomenology of strong field ionization, Different types of Ionization, tunneling Ionization, multiphoton, stark effect.
 \subsection{Stark effect}
 \subsection{REMPI}
-\subsection{Ionization rate}
-What is a ionization rate and why do we want to have it?\\
-Dilemma: numerical simulations yield good ion propabilitiees but no ionization rate, analytical calculations yield good ionization rates but incorrect propabilities (see GASFIR paper).\\
-Furthermore, no experimental method has been developed yet to measure ionization rates, only ionization propabilities - a quantum mechanical observable.\\
-As long as the electromagnetic
-field is present, projecting onto bound/unbound states
-yields non-physical gauge-dependent predictions [14].\\       % M. Yuan, P. Xin, T. Chu, H. Liu, Optics Express 2017,25, 19 23493
-Tunneling time is imaginary, source???\\

@@ -3,6 +3,7 @@ from scipy.special import gamma, binom, hyp2f1, sph_harm, lpmv
 from scipy.interpolate import interp1d
 from line_profiler import profile
 from numba import njit
+import os, os.path
 
 from coefficientsODE import HydrogenSolver
 from tRecXdata import tRecXdata
@@ -12,10 +13,9 @@ def get_eigenEnergy(excitedStates, get_p_states):
     return np.array([0.5*1/(n**2) for (n,l,m) in states])
 
 #@profile
-def get_coefficientsNumerical(excitedStates, t_grid, get_only_p_states, Gauge, params):
-    laser_params = (np.real(params['lam0']), np.real(params['intensity']), np.real(params['cep']))
+def get_coefficientsNumerical(excitedStates, t_grid, get_only_p_states, Gauge, laser_pulses):
     
-    solver = HydrogenSolver(max_n=8, laser_params=laser_params)
+    solver = HydrogenSolver(max_n=6, laser_pulses=laser_pulses)
     print(f"Basis states ({len(solver.states)}): {solver.states}")
     
     solutions = solver.solve(gauge=Gauge)
@@ -43,10 +43,54 @@ def get_coefficientsNumerical(excitedStates, t_grid, get_only_p_states, Gauge, p
             c_list.append(c_interp)
         return np.vstack(c_list)
 
+def get_coefficientstRecX_delay(excitedStates, t_grid, get_p_states, params, delay):
+
+    delay_files_path = "/home/user/TIPTOE/new_data/450nm/250nm/I_8.00e+13"
+
+    count_files = [eintrag for eintrag in os.listdir(delay_files_path) if os.path.isdir(os.path.join(delay_files_path, eintrag)) and eintrag.isdigit()]
+    files_number = max([int(eintrag) for eintrag in count_files])
+
+    for i in range(0, files_number+1):
+        dir_path = os.path.join(delay_files_path, str(i)) #dir_path = os.path.join(base_dir, '850nm', '350_nm_Drive_dense', str(i))
+        data = tRecXdata(dir_path)
+        if float(data.extractDelay()) != float(delay):
+            continue
+        else:
+            print(f"Found matching delay: {delay} in file {dir_path}")
+
+            if float(data.laser_params['lam0']) != float(np.real(params['lam0'])) or float(data.laser_params['intensity']) != float(np.real(params['intensity'])):
+                raise ValueError("Laser parameters do not match the expected values.")
+            
+            time = data.coefficients['Time']
+
+            c_list = []
+            eigenEnergy = get_eigenEnergy(excitedStates+5, get_p_states)
+
+            for state_idx in range(excitedStates):
+                if get_p_states:
+                    if state_idx == 2:
+                        state_idx = 4  # skip the 2p state
+                #print(data.coefficients[f"Re{{<H0:{state_idx}|psi>}}"].head())
+                c = np.array(data.coefficients[f"Re{{<H0:{state_idx}|psi>}}"]) + np.array(data.coefficients[f"Imag{{<H0:{state_idx}|psi>}}"]) * 1j
+                
+                unique_time, unique_indices = np.unique(time, return_index=True)
+                c_unique = c[unique_indices]
+
+                interp_real = interp1d(unique_time, c_unique.real, kind='cubic', fill_value="extrapolate")
+                interp_imag = interp1d(unique_time, c_unique.imag, kind='cubic', fill_value="extrapolate")
+
+                c_interp = (interp_real(t_grid) + 1j * interp_imag(t_grid))*np.exp(-1j*eigenEnergy[state_idx]*t_grid)        #*np.exp(+1j*eigenEnergy[i]*t_grid)
+                c_list.append(c_interp)
+
+            return np.vstack(c_list)
+    raise ValueError(f"No matching delay {delay} found in the specified directory.")
+
 def get_coefficientstRecX(excitedStates, t_grid, get_p_states, params):
     data = tRecXdata("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0042")
 
     if float(data.laser_params['lam0']) != float(np.real(params['lam0'])) or float(data.laser_params['intensity']) != float(np.real(params['intensity'])):
+        print(f"Expected laser parameters: {np.real(params['lam0'])}, {np.real(params['intensity'])}")
+        print(f"Found laser parameters: {data.laser_params['lam0']}, {data.laser_params['intensity']}")
         raise ValueError("Laser parameters do not match the expected values.")
     
     time = data.coefficients['Time']
