@@ -77,10 +77,10 @@ def main(excitedstates):
                 ion_na_reconstructed_GASFIR.append(1-np.exp(-na_background_GASFIR-np.trapz(na_grad_GASFIR*laser_pulses.Electric_Field(time_recon), time_recon)))
                 ion_na_reconstructed_SFA.append(1-np.exp(-na_background_SFA-np.trapz(na_grad_SFA*laser_pulses.Electric_Field(time_recon), time_recon))) #+na_grad2*laser_pulses.Electric_Field(time_recon)**2/2
                 laser_pulses.reset()
-            output_file = f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/ionProb_{file_name}_{excitedstates}.csv"
+            output_file = f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/ionProb_{file_name}_{excitedstates}_numerical_all1.csv"
             writecsv_prob(output_file, delay, ion_tRecX, ion_qs, ion_na_GASFIR, ion_na_SFA, ion_na_reconstructed_GASFIR, ion_na_reconstructed_SFA)
 
-        data_rate_delay = pd.read_csv(f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/ionProb_{file_name}_{excitedstates}.csv")
+        data_rate_delay = pd.read_csv(f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/ionProb_{file_name}_{excitedstates}_numerical_all1.csv")
         delay=np.array(data_rate_delay['delay'].values)
         ion_tRecX=np.array(data_rate_delay['ion_tRecX'].values)
         ion_na_GASFIR=np.array(data_rate_delay['ion_NA_GASFIR'].values)
@@ -125,13 +125,13 @@ def main(excitedstates):
         print("test4")
         fig = go.Figure()
         fig = plotter.plotly4()
-        output_path = f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/plot_{file_name}_{excitedstates}_maxnhigh.html"
-        fig.write_html(output_path)
-        print(f"Plot saved to: {output_path}")
-        # fig.show()
+        # output_path = f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/plot_{file_name}_{excitedstates}_maxnhigh.html"
+        # fig.write_html(output_path)
+        # print(f"Plot saved to: {output_path}")
+        fig.show()
 
 
 if __name__ == "__main__":
     main(1)
-    main(2)
-    main(3)
+    # main(2)
+    # main(3)
