@@ -20,7 +20,7 @@ The strucutre in this chapter mainly follows \cite{Ivanov20012005} with some mod
 What im going to do in this chapter: derive an instantanious ionization rate (IIR) by solving time dependent schroedinger equation (TDSE) using the strong field approximation (SFA) and the interaction picture.
 First I solve the TDSE without making any (strict/harsh) approximations and piece by piece establish our physical setting (hydrogen atom with external laser field, in multiphoton ionisation regime, ionpropability around 0.01%)
 
-
+QUESTION: What does vlad mean with two ways of deriving the basic formula for ionization rates?
 
 
 %%%%%%%%%%%%%%%%%%%%%
@@ -290,8 +290,14 @@ In this equation, $\bra{\vec{p}+\vec{A}}\hat{Y}\hat{\Hs}(t')\hat{X}\ket{\Psi_n(t
 Furthermore we make an ansatz for $\hat{\U}_0(t',t_0)\ket{\Psi_n(t_0)}=\ket{\Psi_n(t)}$ using the interaction picture.
 In contrast to other literature (\cite{Theory_NPS}, \cite{Ivanov20012005}) I am not neglecting transitions between different bound states before the ionisation. 
 For instance it can happen that the laserpulse excites the electron but doesnt ionise it quite yet. But we still have a price to pay. 
-Because with this ansantz we neglect explicit coupling to the continuum and artificially force the electron into staying inside the atom even though it may have enough energy to ionize.
-So we have to note for later that this ansatz is only valid for very small ionisation propabilities and even then its still an approximations.\\
+Because with this ansantz we neglect explicit coupling to the continuum and artificially force the electron into staying inside the atom even though it may have enough energy to ionize.\\
+IMPORTANT: I have to be more carefull here. There is a difference between solving the schroedinger euqation in the whole hilbert space and then projecting it into the subspace spanned by the bound states,
+and solving the schroedinger equation in the subspace.\\
+In our case it doesnt make much difference becaus the ionization propability is still small so solving it in the whole hilbertspac eshould not ,ake much difference.
+But fundamentally they are rally different ways on going about this problem and jsut 2 different approximations, both are not the truth!!.\\
+We will later see how well these two approximations perform but for now I stick with solving the schroedinger equation in the subsoace spanned by the bound states since that is whats most natural in the dyson equation.\\
+Using this leads to a system of ordinary differential equaitons in an ansatz called interaction picture. Solving this system of ODE's results in the coefficients $c_n(t)$. 
+They should contain all the relevant information that happe inside a hydrogen atom before ionization (effects like DC/AC stark shift, muktiphoton transitions, etc.).
 Our expression then reads:
 \begin{equation*}
     \braket{\Pi(t_{\mathrm{c}})|\Psi_n(t)} = -\frac{i}{2}\int_{t_0}^{t} e^{-i \int_{t'}^{t} (\uvec{P} - A_z(t''))^2 \dd t''}E_z(t')\sum_{n}c_n(t)e^{-iE_nt'}\bra{\vec{p}+A_z}\hat{d}_z\ket{\Psi_n} \dd t'       \label{eq:smatrix}
@@ -331,7 +337,7 @@ This mainly follows \cite{Theory_NPS} with some modification.\\
 The ionization rate integrated over the time domain should yield the total ionization propability.
 Therefore we can write the SFA rate \eqref{eq:smatrix} as:
 \begin{align*}
-    \lim_{t\to\infty}\braket{\Psi(t)|\int \dd^3 p \ket{p}\bra{p} |\Psi(t)} = &\int_{-\infty}^{\infty} \Gamma_{\mathrm{SFA}}(t) \dd t \\ %= \int_{\R^3}\dd^3p \braket{\Psi_n(t)|\Pi(t_{\mathrm{c}})}\braket{\Pi(t_{\mathrm{c}})|\Psi_n(t)}\\ 
+    \lim_{t\to\infty}\braket{\Psi(t)|\int \dd^3 p \ket{p}\bra{p}\Psi(t)} = &\int_{-\infty}^{\infty} \Gamma_{\mathrm{SFA}}(t) \dd t \\ %= \int_{\R^3}\dd^3p \braket{\Psi_n(t)|\Pi(t_{\mathrm{c}})}\braket{\Pi(t_{\mathrm{c}})|\Psi_n(t)}\\ 
     = &\int \dd^3 p \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} \dd t_1  \dd t_2 \, e^{\frac{i}{2}\int_{t_1}^{t_2}(\uvec{p}+A_z(t''))^2\dd t''} E_z(t_1)E_z(t_2)\\
     &\times\left(\sum_{n}e^{iE_nt_1}c_n^*(t_1)d_{z,n}^*(\uvec{p}+A_z(t_1))\right)\left(\sum_{n}e^{-iE_nt_2}c_n(t_2)d_{z,n}(\uvec{p}+A_z(t_2))\right)
 \end{align*}

@@ -129,7 +129,7 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
     pz=p*np.cos(theta)
     if (excitedStates!=0):
         # fig = make_subplots(rows=excitedStates, cols=1, shared_xaxes=True, subplot_titles=[f"After state {i}" for i in range(excitedStates)])
-        EF_grid=np.arange(-N, N+1, 1) * dT
+        EF_grid = np.arange(-N, N+1, 1.) * dT
         if coeffType == "trecx":
             if delay != None:
                 print("using trecx delay")
@@ -145,14 +145,13 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
         rate = np.zeros(tar.size, dtype=np.cdouble)
         rates_by_state = []
 
-        if True:
-            laser_pulses.reset()
-            laser_pulses.add_pulse(450, 8e13, 0, 450/ AtomicUnits.nm / AtomicUnits.speed_of_light)
-            laser_pulses.add_pulse(250, 8e9, -np.pi/2, 250/ AtomicUnits.nm / AtomicUnits.speed_of_light, t0=-264.99)
-            t_min, t_max = laser_pulses.get_time_interval()
-            time_recon= np.arange(int(t_min), int(t_max)+1, 1.)
-            coeff_compare = get_coefficientsNumerical(excitedStates, EF_grid, get_p_only, gauge, laser_pulses)
-            phaseleft_compare = np.unwrap(np.angle(coeff_compare[0, :]))
+        # if True:
+        #     laser_pulses.reset()
+        #     laser_pulses.add_pulse(450, 8e13, 0, 450/ AtomicUnits.nm / AtomicUnits.speed_of_light)
+        #     laser_pulses.add_pulse(250, 8e9, -np.pi/2, 250/ AtomicUnits.nm / AtomicUnits.speed_of_light, t0=-264.99)
+        #     t_min, t_max = laser_pulses.get_time_interval()
+        #     coeff_compare = get_coefficientsNumerical(excitedStates, EF_grid, get_p_only, gauge, laser_pulses)
+        #     phaseleft_compare = np.unwrap(np.angle(coeff_compare[0, :]))
 
 
         for state_idx in range(excitedStates):
@@ -198,34 +197,34 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                             f0[i, j] = EF[tp]*EF[tm]*G1_T*absleft[tm]*absright[tp]
                 current_state_rate = 2*np.real(IOF(Tar, f0, (phase0)*1j))*4*np.pi       #21.5% is it the phase? or something else? whats causing the bump 
                 rate += current_state_rate
-                rates_by_state.append(rate.copy())
+                # rates_by_state.append(rate.copy())
                 
-                config_str = f"n={config[state_idx][0]}, l={config[state_idx][1]}, m={config[state_idx][2]}"
-                subplot_titles = (f"Rate (state {state_idx}, {config_str})", f"Coeff (state {state_idx}, {config_str})")
-                fig = make_subplots(
-                    rows=1, cols=2, shared_xaxes=False, 
-                    subplot_titles=subplot_titles,
-                    horizontal_spacing=0.15
-                )
+                # config_str = f"n={config[state_idx][0]}, l={config[state_idx][1]}, m={config[state_idx][2]}"
+                # subplot_titles = (f"Rate (state {state_idx}, {config_str})", f"Coeff (state {state_idx}, {config_str})")
+                # fig = make_subplots(
+                #     rows=1, cols=2, shared_xaxes=False, 
+                #     subplot_titles=subplot_titles,
+                #     horizontal_spacing=0.15
+                # )
                 
-                for i in range(state_idx + 1):
-                    config_i = config[i]
-                    config_str_i = f"n={config_i[0]}, l={config_i[1]}, m={config_i[2]}"
-                    fig.add_trace(
-                        go.Scatter(x=tar, y=np.real(rates_by_state[i]), mode='lines', name=f'Rate up to state {i} ({config_str_i})'), row=1, col=1)
+                # for i in range(state_idx + 1):
+                #     config_i = config[i]
+                #     config_str_i = f"n={config_i[0]}, l={config_i[1]}, m={config_i[2]}"
+                #     fig.add_trace(
+                #         go.Scatter(x=tar, y=np.real(rates_by_state[i]), mode='lines', name=f'Rate up to state {i} ({config_str_i})'), row=1, col=1)
                 
-                fig.add_trace(
-                    go.Scatter(x=EF_grid, y=phaseleft-phaseleft_compare, mode='lines', name='unwrap(angle(cLeft))'), row=1, col=2
-                )
-                fig.update_layout(
-                    width=1200, height=400, xaxis=dict(range=[-50, 50]),
-                    title_text=f"State {state_idx} ({config_str})"
-                )
-                fig.update_xaxes(title_text="Time (a.u.)", row=1, col=1)
-                fig.update_xaxes(title_text="Time (a.u.)", row=1, col=2)
-                fig.update_yaxes(title_text="Rate", row=1, col=1)
-                fig.update_yaxes(title_text="Coefficient", row=1, col=2)
-                fig.show()
+                # fig.add_trace(
+                #     go.Scatter(x=EF_grid, y=phaseleft, mode='lines', name='unwrap(angle(cLeft))'), row=1, col=2
+                # )
+                # fig.update_layout(
+                #     width=1200, height=400, xaxis=dict(range=[-50, 50]),
+                #     title_text=f"State {state_idx} ({config_str})"
+                # )
+                # fig.update_xaxes(title_text="Time (a.u.)", row=1, col=1)
+                # fig.update_xaxes(title_text="Time (a.u.)", row=1, col=2)
+                # fig.update_yaxes(title_text="Rate", row=1, col=1)
+                # fig.update_yaxes(title_text="Coefficient", row=1, col=2)
+                # fig.show()
 
         return rate
     else:

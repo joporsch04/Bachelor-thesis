@@ -45,7 +45,7 @@ class HydrogenSolver:
         integrand = lambda r: (self._radial_wavefunction(r, n1, l1) * r * 
                               self._radial_wavefunction(r, n2, l2) * r**2)
         
-        r_max = 20 * max(n1, n2)**2 + 200
+        r_max = 30 * max(n1, n2)**2 + 500
 
         # result, _ = quad(integrand, 0, r_max, limit=200, epsabs=1e-9)
         
@@ -114,7 +114,7 @@ class HydrogenSolver:
     def solve(self, gauge='both'):
 
         t_start, t_end = self.laser_pulses.get_time_interval()
-        t_eval = np.linspace(t_start, t_end, 16000)     #64000
+        t_eval = np.linspace(int(t_start), int(t_end), 64000*8)     #64000
         
         results = {}
         
