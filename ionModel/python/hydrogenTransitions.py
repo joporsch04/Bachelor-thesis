@@ -4,6 +4,8 @@ from scipy.interpolate import interp1d
 from line_profiler import profile
 from numba import njit
 import os, os.path
+import matplotlib.pyplot as plt
+import pandas as pd
 
 from coefficientsODE import HydrogenSolver
 from tRecXdata import tRecXdata
@@ -26,6 +28,8 @@ def get_coefficientsNumerical(excitedStates, t_grid, get_only_p_states, Gauge, l
     for gauge_idx, gauge in enumerate(gauges):
         solution = solutions[gauge]
 
+        time = solution.t
+
         c_list = []
         for state_idx in range(excitedStates):
             if get_only_p_states:
@@ -37,10 +41,30 @@ def get_coefficientsNumerical(excitedStates, t_grid, get_only_p_states, Gauge, l
                     c = solution.y[4, :]    #3p state
             else:
                 c = solution.y[state_idx, :]
-            interp_real = interp1d(solution.t, c.real, kind='cubic', fill_value="extrapolate")
-            interp_imag = interp1d(solution.t, c.imag, kind='cubic', fill_value="extrapolate")
-            c_interp = (interp_real(t_grid) + 1j * interp_imag(t_grid))
-            c_list.append(c_interp)
+            
+            interpolate_ways = True
+            if interpolate_ways:
+                interp_real = interp1d(solution.t, c.real, kind='cubic', fill_value="extrapolate")
+                interp_imag = interp1d(solution.t, c.imag, kind='cubic', fill_value="extrapolate")
+                c_interp = (interp_real(t_grid) + 1j * interp_imag(t_grid))
+                c_list.append(c_interp)
+            else:
+                # Create DataFrame and handle duplicates properly
+                df = pd.DataFrame({'time': time, 'c_real': c.real, 'c_imag': c.imag})
+                df = df.groupby('time').mean()  # Average duplicates
+                df = df.sort_index()  # Ensure sorted
+                
+                # Interpolate using pandas
+                target_df = pd.DataFrame({'time': t_grid}).set_index('time')
+                df_interp = df.reindex(df.index.union(target_df.index)).interpolate(method='cubic')
+                df_result = df_interp.loc[target_df.index]
+                
+                # Convert to numpy arrays before creating complex array
+                c_real_interp = np.array(df_result['c_real'].values)
+                c_imag_interp = np.array(df_result['c_imag'].values)
+                c_interp = (c_real_interp + 1j * c_imag_interp) * np.exp(-1j*eigenEnergy[state_idx]*t_grid)
+                c_list.append(c_interp)
+
         return np.vstack(c_list)
 
 def get_coefficientstRecX_delay(excitedStates, t_grid, get_p_states, params, delay):
@@ -51,7 +75,7 @@ def get_coefficientstRecX_delay(excitedStates, t_grid, get_p_states, params, del
     files_number = max([int(eintrag) for eintrag in count_files])
 
     for i in range(0, files_number+1):
-        dir_path = os.path.join(delay_files_path, str(i)) #dir_path = os.path.join(base_dir, '850nm', '350_nm_Drive_dense', str(i))
+        dir_path = os.path.join(delay_files_path, str(i))
         data = tRecXdata(dir_path)
         if float(data.extractDelay()) != float(delay):
             continue
@@ -61,7 +85,7 @@ def get_coefficientstRecX_delay(excitedStates, t_grid, get_p_states, params, del
             if float(data.laser_params['lam0']) != float(np.real(params['lam0'])) or float(data.laser_params['intensity']) != float(np.real(params['intensity'])):
                 raise ValueError("Laser parameters do not match the expected values.")
             
-            time = data.coefficients['Time']
+            time =  np.array(data.coefficients['Time'])
 
             c_list = []
             eigenEnergy = get_eigenEnergy(excitedStates+5, get_p_states)
@@ -71,17 +95,35 @@ def get_coefficientstRecX_delay(excitedStates, t_grid, get_p_states, params, del
                     if state_idx == 2:
                         state_idx = 4  # skip the 2p state
                 #print(data.coefficients[f"Re{{<H0:{state_idx}|psi>}}"].head())
-                c = np.array(data.coefficients[f"Re{{<H0:{state_idx}|psi>}}"]) + np.array(data.coefficients[f"Imag{{<H0:{state_idx}|psi>}}"]) * 1j
+                c_real = np.array(data.coefficients[f"Re{{<H0:{state_idx}|psi>}}"]) 
+                c_imag = np.array(data.coefficients[f"Imag{{<H0:{state_idx}|psi>}}"])
+                c = c_real + 1j * c_imag
+
+                # Create DataFrame and handle duplicates properly
+                df = pd.DataFrame({'time': time, 'c_real': c.real, 'c_imag': c.imag})
+                df = df.groupby('time').mean()  # Average duplicates
+                df = df.sort_index()  # Ensure sorted
                 
-                unique_time, unique_indices = np.unique(time, return_index=True)
-                c_unique = c[unique_indices]
-
-                interp_real = interp1d(unique_time, c_unique.real, kind='cubic', fill_value="extrapolate")
-                interp_imag = interp1d(unique_time, c_unique.imag, kind='cubic', fill_value="extrapolate")
-
-                c_interp = (interp_real(t_grid) + 1j * interp_imag(t_grid))*np.exp(-1j*eigenEnergy[state_idx]*t_grid)        #*np.exp(+1j*eigenEnergy[i]*t_grid)
+                # Interpolate using pandas
+                target_df = pd.DataFrame({'time': t_grid}).set_index('time')
+                df_interp = df.reindex(df.index.union(target_df.index)).interpolate(method='cubic')
+                df_result = df_interp.loc[target_df.index]
+                
+                # Convert to numpy arrays before creating complex array
+                c_real_interp = np.array(df_result['c_real'].values)
+                c_imag_interp = np.array(df_result['c_imag'].values)
+                c_interp = (c_real_interp + 1j * c_imag_interp) * np.exp(-1j*eigenEnergy[state_idx]*t_grid)
                 c_list.append(c_interp)
 
+                # interp_real = interp1d(time, c_real, kind='cubic', fill_value="extrapolate", assume_sorted=False)
+                # interp_imag = interp1d(time, c_imag, kind='cubic', fill_value="extrapolate", assume_sorted=False)
+
+                # c_interp = (interp_real(t_grid) + 1j * interp_imag(t_grid))*np.exp(-1j*eigenEnergy[state_idx]*t_grid)        #*np.exp(+1j*eigenEnergy[i]*t_grid)
+                # c_list.append(c_interp)
+
+                plt.plot(t_grid, np.abs(c_interp)**2, label='Re(c_1)')
+                plt.show()
+                plt.close()
             return np.vstack(c_list)
     raise ValueError(f"No matching delay {delay} found in the specified directory.")
 
