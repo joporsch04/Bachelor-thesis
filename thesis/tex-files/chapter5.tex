@@ -58,7 +58,15 @@ The first idea is that the interaction with the coulomb potential after ionizati
 Even though it is counterintuitive, becasue if the coulomb potential is still noticable for the electron after ionization, why would it increase the results we are seeing??????
 But this is in principle what our simulations are telling us. We can argue that we have two different ways of calculating the coefficients (ODE and tRecX) and the reproduce the same result.\\
 However it indicates that real ionization propabilities do have some characterisitcs that the improved SFA model does not capture.\\
-One also should make clear what the ODE coefficients do not capture. First, I implemented the code such that it ignores transitions not allowed by the dipole selection rules.
+One also should make clear what the ODE coefficients do not capture. First, I implemented the code such that it ignores transitions not allowed by the dipole selection rules.\\
+So in principle, assuming my SFA modification was correct the TIPTOE results tell us that the coulomb potential is not negligible after all. 
+Maybe because the laser is not that intense (multiphoton ionization).
+But its difficult to test that because if I increase the laser intensity, the approximations I made with the coefficients is not valid anymore.\\\\
+
+Looking at not normalized results, tRecX is much more sensitive to the shift of probe and pump pulse, while excited SFA coefficients are not
+Maybe because tRecX takes into account all the dynamics and effects inside an atom, while excited SFA coefficients does not care that much.
+I would expect with tRecX coefficients more sensitive than with ODE coefficients???
+
 
 
 

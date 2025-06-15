@@ -202,7 +202,7 @@ class TIPTOEplotter:
         ion_na_GASFIR = self.ion_na_GASFIR - self.ion_na_GASFIR[-1]
         ion_QS = self.ion_QS - self.ion_QS[-1]
         ion_na_reconstructed_GASFIR = self.ion_na_reconstructed_GASFIR - self.ion_na_reconstructed_GASFIR[-1]
-        ion_na_SFA = self.ion_na_SFA - self.ion_na_SFA[-1]
+        ion_na_SFA = self.ion_na_SFA - self.ion_na_SFA[45]
         ion_na_reconstructed_SFA = self.ion_na_reconstructed_SFA - self.ion_na_reconstructed_SFA[-1]
 
         field_probe_fourier, omega = FourierTransform(self.time*self.AU.fs, self.field_probe_fourier_time, t0=0)

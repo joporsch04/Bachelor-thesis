@@ -6,7 +6,7 @@ In this chapter I will explain some concepts and methods that are used to calcul
 
 
 %%%%%%%%%%%%%%%%
-\section{SFA Python Implementation}
+\section{SFA Implementation}
 The implementation of formula ?? was being done in python. Most of the implementation was already done by the Authors of \cite{Theory_NPS}.
 The only part missing in the implementation was the extension to excited states. 
 For that, major difficulty arrises from the fact that we now need the coefficients $c_n(t)$ of the state before ionization.
@@ -30,7 +30,7 @@ with $\omega_{nm} = E_n - E_m$.
 Now we have two problems.
 First, $\sum_n$ goes from $0$ to $\infty$, but since we are in numerical simulations we have to limit ourselves to a finite number of states.
 How can we justify the number we chosen?
-How can we make shure that the abrubt end of the sum does not cause any numerical problems?
+How can we make shure that the abrubt end of the sum does not cause any numerical problems (like oszillations at the end)?
 Further, equation \eqref{eq:ode} is gauge dependent because of $\braket{m|\hat{\Hs}_{\mathrm{Pert}}(t)|n}$. 
 Which gauge should we use to get the most meaningful results?
 I will discuss these questions later.\\\\
@@ -50,7 +50,7 @@ Also it is far more difficult to interpret the rsults from tRecX since many effe
 
 
 %%%%%%%%%%%%%%%%
-\subsection{Coefficients}
+\section{Coefficients}
 In theory, $|c_n(t)|^2$ or the amplitude of the coefficients is observable quantity and can be measured in experiment.
 It tells us how propable the system is to be in a certain state $n$ at time $t$.
 Furthermore, and most importantly, they are gauge independent.
@@ -86,9 +86,30 @@ In my implementation I neglected transitions to states that are forbidden via th
 However this is an approximation, since in reality two-photon processes can occur, effectively allowing transitions between $1s$ and $2s$ for instance. 
 I numerically solved the schroedinger equation with tRecX and modyfied the code to print out the coefficients $c_n(t)$ allowing me to get insight in the "real" dynamics of the electron.
 % the dont differ???? why??? i thoguht im negecting that in ODE c_ns but it seems not, |2,0,0> is still there, why?
+% i think im not neglecting these transitions, its the normal dynamic of the electron without neglecting 1s->2s transitions
+% its jsut that the angular integral is 0 but thats just mathematics
+\\\\
+Question: how many cound states do we nodd (mentioned earlier)?\\
+Naiv: as much as possible to be precise as possible. 
+But: we dont want to exceed the length gauge regime, are best described in length not velocity gauge.
+Further: more phenomenological but most of the dynamics is int the first few bound states, like 2s, 2p, 3p thats mostly it. 
+For that just look at the $|c_n(t)|^2$ which has the highest amplitudes.\\\\ %ask vlad if this is correct????
+For extracting the coefficients from tRecX so solving the full TDSE and then projecting onto bound states I modifyed the code as following:
+Already implemented was the Occupation propability of specified bound states, so the code prints out $\braket{\Psi(t)|\hat{P}_{\mathrm{Occ\{H0:n\}}}\footnote{The notation here is the same as in the code for better reference}|\Psi(t)}=|\braket{\Psi(t)|n}|^2$
+In principle all I did was changing implementing a new function that changes the left bra $\bra{\Psi(t)}$ to the eigenstate used in $\hat{P}_{\mathrm{Occ\{H0:n\}}}$ and verifying that the eigenstates are normalized.
+This gives us 
+\begin{equation*}
+    \braket{\Psi(t)|\hat{P}_{\mathrm{Occ\{H0:n\}}}|\Psi(t)} \rightarrow \braket{n|\hat{P}_{\mathrm{Occ\{H0:n\}}}|\Psi(t)} = \braket{n|n}\times\braket{n|\Psi(t)} = c_n(t)
+\end{equation*}
+For that I needed to solve the eigenvalueporblem again, and pass the eigenstates down to the function calculating the expectation value.
+There is defenitely a more elegant way to do that, especially efficiency wise, since the eigenstates are already calculated elsewhere, but for now this works.
+
+\subsection{ODE coefficients Implementation}
 
 
-\subsection{Dipole matrix Elements}
+
+
+\section{Dipole matrix Elements}
 The dipole matrix elements are an essential part of the formula in \eqref{eq:smatrix}. 
 Calculating it generall can be cumbersome, but in the case of hydrogen its even possible to do it analytically \ref{sec:dipolematrixelements}.
 However, its that easy to calculate because we made a very coarse approximation, since the final state after ionisation is in realtiy a plane wave, but we approximated it with that by using SFA.\\

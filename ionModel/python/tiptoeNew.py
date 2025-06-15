@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import plotly.graph_objects as go
+import time
 
 from kernels import IonProb, IonRate, analyticalRate
 from field_functions import LaserField
@@ -30,7 +31,7 @@ file_params = [
 ]
 
 def main(excitedstates):
-    params = {'E_g': 0.5, 'αPol': 4.51, 'tau': 2.849306230484045, 'e1': 2.2807090369952894, 't0': 0.1, 't1': 3.043736601676354, 't2': 7.270940402611973, 'e2': 0, 't3': 0, 't4': 1, "div_p":2**-4*16, "div_theta":1, 'lam0': 450, 'intensity': 8e13, 'cep': 0}
+    params = {'E_g': 0.5, 'αPol': 4.51, 'tau': 2.849306230484045, 'e1': 2.2807090369952894, 't0': 0.1, 't1': 3.043736601676354, 't2': 7.270940402611973, 'e2': 0, 't3': 0, 't4': 1, "div_p":2**-4*32*2, "div_theta":1*8, 'lam0': 450, 'intensity': 8e13, 'cep': 0}
 
 
     REDO_comp = False
@@ -52,10 +53,9 @@ def main(excitedstates):
             ion_na_reconstructed_SFA = []
             laser_pulses.add_pulse(lam0_pump, I_pump, cep_pump, lam0_pump/ AtomicUnits.nm / AtomicUnits.speed_of_light)
             t_min, t_max = laser_pulses.get_time_interval()
-            time_recon= np.arange(t_min, t_max+1, 1)
-            dt_dE=1/np.gradient(laser_pulses.Electric_Field(time_recon),time_recon)
+            time_recon= np.arange(t_min, t_max+1, 1.)
             ion_na_rate_GASFIR = IonRate(time_recon, laser_pulses, params, dT=0.5, kernel_type='GASFIR')
-            ion_na_rate_SFA = IonRate(time_recon, laser_pulses, params, dT=0.5, kernel_type='exact_SFA', excitedStates=excitedstates, coeffType="trecx", gauge="length", get_p_only=True, only_c0_is_1_rest_normal=False, delay=-264.99)
+            ion_na_rate_SFA = IonRate(time_recon, laser_pulses, params, dT=0.5/2, kernel_type='exact_SFA', excitedStates=excitedstates, coeffType="trecx", gauge="length", get_p_only=True, only_c0_is_1_rest_normal=False, delay=-264.99)
             na_background_GASFIR=np.trapz(ion_na_rate_GASFIR, time_recon)
             na_background_SFA=np.trapz(ion_na_rate_SFA, time_recon)
             na_grad_GASFIR=np.gradient(ion_na_rate_GASFIR, laser_pulses.Electric_Field(time_recon))
@@ -66,11 +66,11 @@ def main(excitedstates):
                 laser_pulses.add_pulse(lam0_pump, I_pump, cep_pump, lam0_pump/ AtomicUnits.nm / AtomicUnits.speed_of_light)
                 laser_pulses.add_pulse(lam0_probe, I_probe, cep_probe, FWHM_probe/AtomicUnits.fs, t0=-tau)
                 t_min, t_max = laser_pulses.get_time_interval()
-                time=np.arange(t_min, t_max+1, 1)
+                time=np.arange(t_min, t_max+1, 1.)
                 ion_qs.append(1-np.exp(-np.trapz(analyticalRate(time, laser_pulses, params), time)))
                 ion_na_GASFIR.append(1-np.exp(-IonProb(laser_pulses, params, dt=2, dT=0.5, kernel_type='GASFIR')))
                 #ion_na_SFA.append(1-np.exp(-IonProb(laser_pulses, params, dt=2, dT=0.5, kernel_type='exact_SFA')))
-                ion_na_rate_SFA_probe = IonRate(time_recon, laser_pulses, params, dT=0.5, kernel_type='exact_SFA', excitedStates=excitedstates, coeffType="trecx", gauge="length", get_p_only=True, delay=-tau, only_c0_is_1_rest_normal=False)
+                ion_na_rate_SFA_probe = IonRate(time_recon, laser_pulses, params, dT=0.5/2, kernel_type='exact_SFA', excitedStates=excitedstates, coeffType="trecx", gauge="length", get_p_only=True, delay=-tau, only_c0_is_1_rest_normal=False)
                 print(np.real(np.trapz(ion_na_rate_SFA_probe, time_recon)))
                 ion_na_SFA.append(1-np.exp(-np.double(simpson(ion_na_rate_SFA_probe, x=time_recon, axis=-1, even='simpson'))))
                 laser_pulses.reset()
@@ -111,6 +111,15 @@ def main(excitedstates):
 
 
 if __name__ == "__main__":
+    start_time = time.time()
     main(1)
-    # main(2)
-    # main(3)
+    end_time = time.time()
+    print("time: ", start_time-end_time)
+    start_time = time.time()
+    main(2)
+    end_time = time.time()
+    print("time: ", start_time-end_time)
+    start_time = time.time()
+    main(3)
+    end_time = time.time()
+    print("time: ", start_time-end_time)

@@ -41,29 +41,40 @@ def get_coefficientsNumerical(excitedStates, t_grid, get_only_p_states, Gauge, l
                     c = solution.y[4, :]    #3p state
             else:
                 c = solution.y[state_idx, :]
+
+            df = pd.DataFrame({'time': time, 'c_real': c.real, 'c_imag': c.imag})
+            df = df.groupby('time').mean().reset_index().sort_values('time')
             
-            interpolate_ways = True
-            if interpolate_ways:
-                interp_real = interp1d(solution.t, c.real, kind='cubic', fill_value="extrapolate")
-                interp_imag = interp1d(solution.t, c.imag, kind='cubic', fill_value="extrapolate")
-                c_interp = (interp_real(t_grid) + 1j * interp_imag(t_grid))
-                c_list.append(c_interp)
-            else:
-                # Create DataFrame and handle duplicates properly
-                df = pd.DataFrame({'time': time, 'c_real': c.real, 'c_imag': c.imag})
-                df = df.groupby('time').mean()  # Average duplicates
-                df = df.sort_index()  # Ensure sorted
-                
-                # Interpolate using pandas
-                target_df = pd.DataFrame({'time': t_grid}).set_index('time')
-                df_interp = df.reindex(df.index.union(target_df.index)).interpolate(method='cubic')
-                df_result = df_interp.loc[target_df.index]
-                
-                # Convert to numpy arrays before creating complex array
-                c_real_interp = np.array(df_result['c_real'].values)
-                c_imag_interp = np.array(df_result['c_imag'].values)
-                c_interp = (c_real_interp + 1j * c_imag_interp) * np.exp(-1j*eigenEnergy[state_idx]*t_grid)
-                c_list.append(c_interp)
+            t_min_data, t_max_data = df['time'].min(), df['time'].max()
+            
+            t_grid_clipped = np.clip(t_grid, t_min_data, t_max_data)
+            
+            interp_real = interp1d(df['time'], df['c_real'], kind='cubic', 
+                                    bounds_error=False, fill_value='extrapolate')
+            interp_imag = interp1d(df['time'], df['c_imag'], kind='cubic', 
+                                    bounds_error=False, fill_value='extrapolate')
+            
+            c_real_interp = interp_real(t_grid_clipped)
+            c_imag_interp = interp_imag(t_grid_clipped)
+            
+            mask_before = t_grid < t_min_data
+            mask_after = t_grid > t_max_data
+            
+            if np.any(mask_before):
+                c_real_interp[mask_before] = df['c_real'].iloc[0]
+                c_imag_interp[mask_before] = df['c_imag'].iloc[0]
+            
+            if np.any(mask_after):
+                c_real_interp[mask_after] = df['c_real'].iloc[-1]
+                c_imag_interp[mask_after] = df['c_imag'].iloc[-1]
+            
+            c_interp = (c_real_interp + 1j * c_imag_interp)
+            c_list.append(c_interp)
+            
+            # interp_real = interp1d(solution.t, c.real, kind='cubic', fill_value="extrapolate")
+            # interp_imag = interp1d(solution.t, c.imag, kind='cubic', fill_value="extrapolate")
+            # c_interp = (interp_real(t_grid) + 1j * interp_imag(t_grid))
+            # c_list.append(c_interp)
 
         return np.vstack(c_list)
 
@@ -95,35 +106,40 @@ def get_coefficientstRecX_delay(excitedStates, t_grid, get_p_states, params, del
                     if state_idx == 2:
                         state_idx = 4  # skip the 2p state
                 #print(data.coefficients[f"Re{{<H0:{state_idx}|psi>}}"].head())
+
                 c_real = np.array(data.coefficients[f"Re{{<H0:{state_idx}|psi>}}"]) 
                 c_imag = np.array(data.coefficients[f"Imag{{<H0:{state_idx}|psi>}}"])
                 c = c_real + 1j * c_imag
 
-                # Create DataFrame and handle duplicates properly
                 df = pd.DataFrame({'time': time, 'c_real': c.real, 'c_imag': c.imag})
-                df = df.groupby('time').mean()  # Average duplicates
-                df = df.sort_index()  # Ensure sorted
+                df = df.groupby('time').mean().reset_index().sort_values('time')
                 
-                # Interpolate using pandas
-                target_df = pd.DataFrame({'time': t_grid}).set_index('time')
-                df_interp = df.reindex(df.index.union(target_df.index)).interpolate(method='cubic')
-                df_result = df_interp.loc[target_df.index]
+                t_min_data, t_max_data = df['time'].min(), df['time'].max()
                 
-                # Convert to numpy arrays before creating complex array
-                c_real_interp = np.array(df_result['c_real'].values)
-                c_imag_interp = np.array(df_result['c_imag'].values)
+                t_grid_clipped = np.clip(t_grid, t_min_data, t_max_data)
+                
+                interp_real = interp1d(df['time'], df['c_real'], kind='cubic', 
+                                     bounds_error=False, fill_value='extrapolate')
+                interp_imag = interp1d(df['time'], df['c_imag'], kind='cubic', 
+                                     bounds_error=False, fill_value='extrapolate')
+                
+                c_real_interp = interp_real(t_grid_clipped)
+                c_imag_interp = interp_imag(t_grid_clipped)
+                
+                mask_before = t_grid < t_min_data
+                mask_after = t_grid > t_max_data
+                
+                if np.any(mask_before):
+                    c_real_interp[mask_before] = df['c_real'].iloc[0]
+                    c_imag_interp[mask_before] = df['c_imag'].iloc[0]
+                
+                if np.any(mask_after):
+                    c_real_interp[mask_after] = df['c_real'].iloc[-1]
+                    c_imag_interp[mask_after] = df['c_imag'].iloc[-1]
+                
                 c_interp = (c_real_interp + 1j * c_imag_interp) * np.exp(-1j*eigenEnergy[state_idx]*t_grid)
                 c_list.append(c_interp)
 
-                # interp_real = interp1d(time, c_real, kind='cubic', fill_value="extrapolate", assume_sorted=False)
-                # interp_imag = interp1d(time, c_imag, kind='cubic', fill_value="extrapolate", assume_sorted=False)
-
-                # c_interp = (interp_real(t_grid) + 1j * interp_imag(t_grid))*np.exp(-1j*eigenEnergy[state_idx]*t_grid)        #*np.exp(+1j*eigenEnergy[i]*t_grid)
-                # c_list.append(c_interp)
-
-                plt.plot(t_grid, np.abs(c_interp)**2, label='Re(c_1)')
-                plt.show()
-                plt.close()
             return np.vstack(c_list)
     raise ValueError(f"No matching delay {delay} found in the specified directory.")
 

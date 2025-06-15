@@ -47,15 +47,7 @@ class HydrogenSolver:
         
         r_max = 30 * max(n1, n2)**2 + 500
 
-        # result, _ = quad(integrand, 0, r_max, limit=200, epsabs=1e-9)
-        
-        # self._radial_cache[key] = result
-        # return result
-    
-        #result, err_est = quad(integrand, 0, r_max, limit=200, epsabs=1e-9)
         result = np.trapz(integrand(np.linspace(0, r_max, 10000)), np.linspace(0, r_max, 10000))
-        # if err_est > 1e-7: # Or some threshold you're uncomfortable with
-        #     print(f"Warning: Large error estimate ({err_est:.2e}) for radial integral with n1={n1}, l1={l1}, n2={n2}, l2={l2}")
         self._radial_cache[key] = result
         return result
     
@@ -83,19 +75,24 @@ class HydrogenSolver:
                 z_matrix[i, j] = radial * angular
         return z_matrix
     
-    # def _tdse_rhs_velocity(self, t, y):
-    #     c = y
-    #     dc_dt = np.zeros_like(c, dtype=complex)
+    def _compute_p_matrix(self):
+        n_states = len(self.states)
+        p_matrix = np.zeros((n_states, n_states))
+        return p_matrix
+    
+    def _tdse_rhs_velocity(self, t, y):
+        c = y
+        dc_dt = np.zeros_like(c, dtype=complex)
         
-    #     A_z = self.laser.Vector_potential(t)
+        A_z = self.laser.Vector_potential(t)
         
-    #     for k in range(len(self.states)):
-    #         for n in range (len(self.states)):
-    #             omega_kn = self.energies[k] - self.energies[n]
-    #             V_kn = -1j*self.p_matrix[k, n] * A_z
-    #             dc_dt[k] += -1j*np.exp(1j*omega_kn)*V_kn*c[n]
+        for k in range(len(self.states)):
+            for n in range (len(self.states)):
+                omega_kn = self.energies[k] - self.energies[n]
+                V_kn = -1j*self.p_matrix[k, n] * A_z
+                dc_dt[k] += -1j*np.exp(1j*omega_kn)*V_kn*c[n]
         
-    #     return dc_dt
+        return None
     
     def _tdse_rhs_length(self, t, y):
         c = y
