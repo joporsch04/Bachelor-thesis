@@ -248,15 +248,15 @@ def transitionElementtest(configState, p, pz, Az, Ip):      #first state and nor
     if n == 1 and l == 0:
         numerator = 16 * 2**(3/4) * Ip**2 * (Az + pz)
         denominator = (termsqrtdenom *(2 * Ip + termsqrt)**3 * np.pi)
-        return numerator / denominator
+        return (numerator / denominator).astype(np.complex128)
     elif n == 2 and l == 0:
         numerator = 128 * 2**(1/4) * Ip**2 * (Ip - termsqrt) * (Az + pz)
         denominator = (termsqrtdenom * (Ip + 2 * termsqrt)**4 * np.pi)
-        return numerator / denominator
+        return (numerator / denominator).astype(np.complex128)
     elif n == 3 and l == 0:
         numerator = -432 * 2**(3/4) * np.sqrt(3) * Ip**2 * (44 * Ip**2 - 324 * Ip * (Az + p)**2 + 243 * (Az + p)**4) * (Az + pz)
         denominator = (termsqrtdenom * (2 * Ip + 9 * termsqrt)**5 * np.pi)
-        return numerator / denominator
+        return (numerator / denominator).astype(np.complex128)
     elif n == 2 and l == 1:
         thetap = np.arccos(pz/(p+1e14))
         phi_p = 1
@@ -273,7 +273,7 @@ def transitionElementtest(configState, p, pz, Az, Ip):      #first state and nor
             )
         )
         denominator = (1 + 4 * p**2)**4 * np.pi
-        return 1/3*numerator / denominator
+        return (1/3*numerator / denominator).astype(np.complex128)
     elif n==3 and l==1:
         thetap = np.arccos(pz/(p+1e14))
         phi_p = 1
@@ -290,4 +290,4 @@ def transitionElementtest(configState, p, pz, Az, Ip):      #first state and nor
             )
         )
         denominator = (1 + 9 * p**2)**5 * np.pi
-        return 1/3*numerator / denominator
+        return (1/3*numerator / denominator).astype(np.complex128)

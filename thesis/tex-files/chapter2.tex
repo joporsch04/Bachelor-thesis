@@ -203,15 +203,15 @@ First we project the full timedependent Hamiltonian $\hat{\Hs}(t)$ onto subspace
 \end{equation*}
 With $\ket{\Psi_n}$ being the bound states of our atom. We can write:
 \begin{equation*}
-    \hat{\Hs}(t) = \underbrace{\hat{X}\hat{\Hs}(t)\hat{X}}_{\hat{\Hs}^{\mathrm{X}}(t)=\hat{\Hs}_{\mathrm{0}}(t)} + \underbrace{\hat{Y}\hat{\Hs}(t)\hat{Y} + \hat{X}\hat{\Hs}(t)\hat{Y} + \hat{Y}\hat{\Hs}(t)\hat{X}}_{\hat{\Hs}^{\mathrm{Y}}(t)+\hat{\Hs}^{\mathrm{XY}}(t)+\hat{\Hs}^{\mathrm{YX}}(t)=\hat{\Hs}_{\mathrm{I}}(t)}
+    \hat{\Hs}(t) = \underbrace{\hat{X}\hat{\Hs}(t)\hat{X}}_{\hat{\Hs}^{\mathrm{XX}}(t)} + \underbrace{\hat{Y}\hat{\Hs}(t)\hat{Y} + \hat{X}\hat{\Hs}(t)\hat{Y} + \hat{Y}\hat{\Hs}(t)\hat{X}}_{\hat{\Hs}^{\mathrm{YY}}(t)+\hat{\Hs}^{\mathrm{XY}}(t)+\hat{\Hs}^{\mathrm{YX}}(t)=\hat{\Hs}_{\mathrm{I}}(t)}
 \end{equation*}
-Lets think about what these terms mean. $\hat{\Hs}^{\mathrm{X}}(t)$ can be seen as just our quantum system but with a small distortion by our electric field. 
+Lets think about what these terms mean. $\hat{\Hs}^{\mathrm{XX}}(t)$ can be seen as just our quantum system but with a small distortion by our electric field. 
 This part causes effects like Stark shift both in the eigenstates and eigenenergies of our atom. 
 As long as the laser pulse is not too strong and no ionisation has happened, we can treat the pulse like a pertubation to the system.
-The distortion may be time dependent but the good thing is that we can easily determine the propagator with repsect to $\hat{\Hs}^{\mathrm{X}}(t)$ by using the interaction picture and solving a system of coupled differential equations.
+The distortion may be time dependent but the good thing is that we can easily determine the propagator with repsect to $\hat{\Hs}^{\mathrm{XX}}(t)$ by using the interaction picture and solving a system of coupled differential equations.
 In other words this Hamiltonian determines the time evolution of the first hilbert space, as mentioned above. \\
 Lets think about the other terms. For that we need to establish a setting. Say our Atom sits in the ground state and gets ionised. 
-Based on this image we can say two from three parts are uneccessary. First $\hat{\Hs}^{\mathrm{Y}}(t)$ plays no role because we project the initial state into the continuum state, and since their can be no overlap between them this part will play no role.
+Based on this image we can say two from three parts are uneccessary. First $\hat{\Hs}^{\mathrm{YY}}(t)$ plays no role because we project the initial state into the continuum state, and since their can be no overlap between them this part will play no role.
 This term actually just describes the evolution of a continuum state that remains a continuum state after the interaction so the laser pulse has happened.
 Second $\hat{\Hs}^{\mathrm{XY}}(t)$ plays no role either since we projct the initial (bound) state into the continuum. 
 This term would determine the time evolution of a continuum state that recombines with the atom after the interaction has happened.
@@ -228,22 +228,23 @@ This is the perfect part to later start the strong field approximation with.\\
 
 
 
-\subsection{Avoiding Dyson series}
+\subsection{Dyson equation}
+NEED TO CHECK WITH VLADS DOCUMENT IF $U_0$ IS RIGHT!!
 For determining the time evolution we need to be carefull since the whole Hamiltonian doesnt commutate with itself at different times so we need to be exact. 
 Since the full Dyson series \eqref{eq:dyson} can be cumbersome to deal with, we choose a different way. 
 What helps us is the fact that we can split the Hamiltonian by projecting it into subspaces in two parts of which one can be solved directly as mentioned above. 
 Lets first write our ansatz:
 \begin{equation}
-    \hat{\U}(t,t_0)=\hat{\U}_0(t,t_0)-i\int_{t_0}^{t} \hat{\U}(t,t')\hat{\Hs}_{\mathrm{I}}(t')\hat{\U}_0(t',t_0) \dd t'       \label{eq:dysonAnsatz}
+    \hat{\U}(t,t_0)=\hat{\U}_{\mathrm{XX}}(t,t_0)-i\int_{t_0}^{t} \hat{\U}(t,t')\hat{\Hs}_{\mathrm{I}}(t')\hat{\U}_{\mathrm{XX}}(t',t_0) \dd t'       \label{eq:dysonAnsatz}
 \end{equation}
 It is very easy to show that \eqref{eq:dysonAnsatz} is a solution to \eqref{eq:schroedinger}.\\
-In our setting we start with the ground state of the atom so the time evolution is given by $\ket{\Psi_n(t)}=\hat{\U}(t,t_0)\ket{\Psi_n(t_0)}$.
-To make things even simpler, we project this state into a continuum state $\ket{\Pi(t_{\mathrm{c}})}$ at time $t_{\mathrm{c}}$ with $t_{\mathrm{c}}$ being sufficiently big enough for the electron to be in the continuum ($t_{\mathrm{c}} >> t'$).\\
-Of course, there is no overlap between $\ket{\Pi(t_{\mathrm{c}})}$ and $\hat{\U}_0(t,t_0)\ket{\Psi_n(t_0)}$ since the electron did not get ionisaed yet. 
+In our setting we start with the ground state of the atom so the time evolution is given by $\hat{\U}(t,t_0)\ket{\Psi_0(t_0)}$.
+To make things even simpler, we project into a continuum state $\ket{\Pi(t_{\mathrm{c}})}$ at time $t_{\mathrm{c}}$ with $t_{\mathrm{c}}$ being sufficiently big enough for the electron to be in the continuum ($t_{\mathrm{c}} >> t'$).\\
+Of course, there is no overlap between $\ket{\Pi(t_{\mathrm{c}})}$ and $\hat{\U}_{\mathrm{XX}}(t,t_0)\ket{\Psi_n(t_0)}$ since the electron did not get ionisaed yet. 
 Furthermore, if we expand $\hat{\Hs}_{\mathrm{I}}(t')$ and remind ourself about the orthogonality of the bound states and the continuum states, we see that most of the terms of $\hat{\Hs}_{\mathrm{I}}(t')$ vanish.
 We are being left with:
 \begin{equation}
-    \braket{\Pi(t_{\mathrm{c}})|\Psi_n(t)} = -i \int_{t_0}^{t} \bra{\Pi(t_{\mathrm{c}})}\hat{\U}(t,t')\hat{Y}\hat{\Hs}(t')\hat{X}\hat{\U}_0(t',t_0)\ket{\Psi_n(t_0)} \dd t' \label{eq:smatrixlike1}
+    \braket{\Pi(t_{\mathrm{c}})|\Psi_n(t)} = -i \int_{t_0}^{t} \bra{\Pi(t_{\mathrm{c}})}\hat{\U}(t,t')\hat{Y}\hat{\Hs}(t')\hat{X}\hat{\U}_{\mathrm{XX}}(t',t_0)\ket{\Psi_0(t_0)} \dd t' \label{eq:smatrixlike1}
 \end{equation}
 Note: No approximations have been made, \eqref{eq:smatrixlike1} is exact.
 
@@ -297,21 +298,31 @@ Furthermore (how??)
 \end{equation*}
 Combining all these equations give us the following exprression:
 \begin{equation*}
-    \braket{\Pi(t_{\mathrm{c}})|\Psi_n(t)} = -i \int_{t_0}^{t} e^{-i \int_{t'}^{t} (\uvec{P} - \vec{A}(t''))^2 \dd t''}\hat{\U}_0(t',t_0)\bra{\vec{p}+\vec{A}}\hat{Y}\hat{\Hs}(t')\hat{X}\ket{\Psi_n(t_0)} \dd t' \label{eq:smatrixlike}
+    \braket{\Pi(t_{\mathrm{c}})|\Psi_n(t)} = -i \int_{t_0}^{t} e^{-i \int_{t'}^{t} (\uvec{P} - \vec{A}(t''))^2 \dd t''}\bra{\vec{p}+\vec{A}}\hat{Y}\hat{\Hs}(t')\hat{X}\hat{\U}_{\mathrm{XX}}(t',t_0)\ket{\Psi_0(t_0)} \dd t' \label{eq:smatrixlike}
 \end{equation*}
-In this equation, $\bra{\vec{p}+\vec{A}}\hat{Y}\hat{\Hs}(t')\hat{X}\ket{\Psi_n(t_0)}$ with some simplification is just the tranition dipole matrix element $\vec{d}_{\mathrm{n}}(\vec{p})$ between the bound state and the continuum state, generated by the laser pulse (ionisation).\\
-Furthermore we make an ansatz for $\hat{\U}_0(t',t_0)\ket{\Psi_n(t_0)}=\ket{\Psi_n(t)}$ using the interaction picture.
+Now comes the cruical part and a second, big approximation about $\hat{\U}_{\mathrm{XX}}$. 
+Whatever the final form if this will be, it can be expanded in the bound states $\ket{n}$ since we are projecting onto them. 
+With this in mind we make an ansatz using the interaction picture as:
+\begin{equation*}
+    \hat{\U}_{\mathrm{XX}}(t',t_0)\ket{\Psi_0(t_0)} = \sum_{n}c_n(t')e^{-iE_nt'}\ket{\Psi_n(t_0)}
+\end{equation*}
+The main problem with this ansatz is how can we get the coefficients $c_n(t')$. 
+There are two ways. 
+Solve the TDSE for the coefficients in the subspace spanned by the bund states or solve the TDSE for the coefficients in the whole hilbertspace and then project into the bound states.
+The derivation here suggests the second way. 
+For a detailed analysis which way is better see chapter 4.\\\\
 In contrast to other literature (\cite{Theory_NPS}, \cite{Ivanov20012005}) I am not neglecting transitions between different bound states before the ionisation. 
-For instance it can happen that the laserpulse excites the electron but doesnt ionise it quite yet. But we still have a price to pay. 
-Because with this ansantz we neglect explicit coupling to the continuum and artificially force the electron into staying inside the atom even though it may have enough energy to ionize.\\
+For instance it can happen that the laserpulse excites the electron but doesnt ionise it quite yet. 
 IMPORTANT: I have to be more carefull here. There is a difference between solving the schroedinger euqation in the whole hilbert space and then projecting it into the subspace spanned by the bound states,
 and solving the schroedinger equation in the subspace.\\
-In our case it doesnt make much difference becaus the ionization propability is still small so solving it in the whole hilbertspac eshould not ,ake much difference.
+In our case it doesnt make much difference becaus the ionization propability is still small so solving it in the sub hilbertspace should not make much difference.
 But fundamentally they are rally different ways on going about this problem and jsut 2 different approximations, both are not the truth!!.\\
 We will later see how well these two approximations perform but for now I stick with solving the schroedinger equation in the subsoace spanned by the bound states since that is whats most natural in the dyson equation.\\
 Using this leads to a system of ordinary differential equaitons in an ansatz called interaction picture. Solving this system of ODE's results in the coefficients $c_n(t)$. 
-They should contain all the relevant information that happe inside a hydrogen atom before ionization (effects like DC/AC stark shift, muktiphoton transitions, etc.).
-Our expression then reads:
+They should contain all the relevant information that happe inside a hydrogen atom before ionization (effects like DC/AC stark shift, muktiphoton transitions, etc.).\\\\
+Lets first write the final expression.
+$\bra{\vec{p}+\vec{A}}\hat{Y}\hat{\Hs}(t')\hat{X}\ket{\Psi_n(t_0)}$ is just the transition dipole matrix element $\vec{d}_{\mathrm{n}}(\vec{p}+\vec{A})$ between the bound state and the continuum state, generated by the laser pulse (ionisation).
+Some simple manipulations of this expectation value lets us apply the dipole approximation \eqref{eq:dipoleApprox} and lets us write:
 \begin{equation*}
     \braket{\Pi(t_{\mathrm{c}})|\Psi_n(t)} = -\frac{i}{2}\int_{t_0}^{t} e^{-i \int_{t'}^{t} (\uvec{P} - A_z(t''))^2 \dd t''}E_z(t')\sum_{n}c_n(t)e^{-iE_nt'}\bra{\vec{p}+A_z}\hat{d}_z\ket{\Psi_n} \dd t'       \label{eq:smatrix}
 \end{equation*}
