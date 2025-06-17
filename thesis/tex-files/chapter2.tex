@@ -40,7 +40,7 @@ The formal solution depends on the time dependence of the hamiltonian and the ph
 With no further assumptions about our Hamiltonian becasue $[\hat{\Hs}(t), \hat{\Hs}(t')] \neq 0$ we can write the formal solution to \eqref{eq:schroedinger} as a Dyson series:
 The solution is then given by 
 \begin{equation}
-    \ket{\Psi(t)} = \hat{\U}(t)\ket{\Psi(0)} = \hat{1} + \sum_{n=1}^{\infty} (-i)^n \int_{t_0}^{t} \dd t_1 \int_{t_0}^{t_1} \dd t_2 \cdots \int_{t_0}^{t_{n-1}} \dd t_n \hat{\Hs}(t_n) \hat{\Hs}(t_{n-1})\cdots\hat{\Hs}(t_1) \ket{\Psi(0)}. \label{eq:dyson}
+    \ket{\Psi(t)} = \hat{\U}(t,t_0)\ket{\Psi(t_0)} = \hat{1} + \sum_{n=1}^{\infty} (-i)^n \int_{t_0}^{t} \dd t_1 \int_{t_0}^{t_1} \dd t_2 \cdots \int_{t_0}^{t_{n-1}} \dd t_n \hat{\Hs}(t_n) \hat{\Hs}(t_{n-1})\cdots\hat{\Hs}(t_1) \ket{\Psi(0)}. \label{eq:dyson}
 \end{equation}
 % Now its time so establish a physical setting. We have Hydrogen Atom with nucleus and electron described by time indepentent Hamilton $\hat{\Hs}_0$. 
 % The external laser Field is described by an time dependent part $\hat{V}(t)$. To describe the interaction of the atom with the laser field we use in the following the dipole approximation.\\
@@ -376,6 +376,31 @@ Changing variables to $t=\frac{t_2+t_1}{2}$ and $T=\frac{t_2-t_1}{2}$ and using 
     &= \sum_{n_1}\sum_{n_2} \int_{-\infty}^{\infty} \dd p\,p^2\int_0^{\pi} \dd\theta\,\sin\theta \int_0^{2\pi}\dd \phi\int_{-\infty}^{\infty} \dd T \, e^{\frac{i}{2}\int_{t-T}^{t+T}(\uvec{p}+A_z(t''))^2\dd t''} e^{i(t-T)E_{n_1}-i(t+T)E_{n_2}}\\
     &\times E_z(t-T) E_z(t+T)c_{n_1}^*(t-T)c_{n_2}(t+T) d_{z,n_1}^*(\uvec{p}+A_z(t-T))d_{z,n_2}(\uvec{p}+A_z(t+T))
 \end{align*}
+Now we change the integration from $\vec{p}$ to $\vec{p}+\vec{A}$ and defining $\vec{\Delta}(t') = \vec{A}(t+t') - \vec{A}(t)$ gives us:
+\begin{align*}
+    &\sum_{n_1}\sum_{n_2} \int_{-\infty}^{\infty} \dd p\,p^2\int_0^{\pi} \dd\theta\,\sin\theta \int_0^{2\pi}\dd \phi\int_{-\infty}^{\infty} \dd T \, e^{\frac{i}{2}\int_{-T}^{T}(\uvec{p}+\Delta_z(t''))^2\dd t''} e^{i(t-T)E_{n_1}-i(t+T)E_{n_2}}\\
+    &\times E_z(t-T) E_z(t+T)c_{n_1}^*(t-T)c_{n_2}(t+T) d_{z,n_1}^*(\uvec{p}+\Delta_z(-T))d_{z,n_2}(\uvec{p}+\Delta_z(T))
+\end{align*}
+Also the integrand in the exponential function can be further simplifyed:
+\begin{align*}
+    \frac{i}{2}\int_{-T}^{T}(\vec{p}+\Delta_z(t''))^2\dd t'' &= i\vec{p}^2T + \frac{i}{2}\int_{-T}^{T}\Delta_z(t'')^2+2\vec{p}\cdot\Delta_z(t'')\dd t'' \\
+    &= i\vec{p}^2T + ip\cos\theta\int_{-T}^{T}\Delta_z(t'')\dd t'' +  \frac{i}{2}\int_{-T}^{T}\Delta_z(t'')^2\dd t''
+\end{align*}
+Because in the code as well as in \cite{Theory_NPS} the notation
+\begin{equation*}
+    \vec{\bar{\Delta}}^k = \int_{-T}^{T}\vec{\Delta}^k(t')\dd t' = \int_{-T}^{T}\left(\vec{A}(t+t') - \vec{A}(t)\right)^k\dd t'
+\end{equation*}
+was used, we can write the final SFA rate thats later being implemented as
+\begin{align*}
+    \Gamma_{\mathrm{SFA}}(t) &= \sum_{n_1}\sum_{n_2} \int_{-\infty}^{\infty} \dd p\,p^2\int_0^{\pi} \dd\theta\,\sin\theta \int_0^{2\pi}\dd \phi\int_{-\infty}^{\infty} \dd T\\
+    &\times \exp\left(i\vec{p}^2T + ip\cos\theta\bar{\Delta}_z^k +  \frac{i}{2}\bar{\Delta}_z^2  + i(t-T)E_{n_1}-i(t+T)E_{n_2}\right)\\
+    &\times E_z(t-T) E_z(t+T)c_{n_1}^*(t-T)c_{n_2}(t+T) d_{z,n_1}^*(\uvec{p}+\Delta_z(-T))d_{z,n_2}(\uvec{p}+\Delta_z(T))
+\end{align*}
+For numerical calculations it can be convenient to split a complex integrand into its phase and absolute value. 
+Mostly this is beong done with this formula, but the coefficients remain complex and may have a very fast oscillating phase.
+
+
+
 
 
 
@@ -386,7 +411,9 @@ Changing variables to $t=\frac{t_2+t_1}{2}$ and $T=\frac{t_2-t_1}{2}$ and using 
 \newpage
 \section{Strong Field Ionization}
 Decied to do Phenomenology after theory.\\
-Phenomenology of strong field ionization, Different types of Ionization, tunneling Ionization, multiphoton, stark effect.
+Phenomenology of strong field ionization, Different types of Ionization, tunneling Ionization, multiphoton, stark effect.\\
+\subsection{Tunneling ionization}
+\subsection{Multiphoton ionization}
 \subsection{Stark effect}
 Transition of energy levels in presence of an external electric field. 
 Here mainly focused on DC stark shift and for subcycle pulses.
