@@ -410,10 +410,41 @@ Mostly this is beong done with this formula, but the coefficients remain complex
 %%%%%%%%%%%%%%%%%%%%%
 \newpage
 \section{Strong Field Ionization}
-Decied to do Phenomenology after theory.\\
-Phenomenology of strong field ionization, Different types of Ionization, tunneling Ionization, multiphoton, stark effect.\\
+This mostly follows [master manoram thesis]
+Ionization can occur in different ways, depending on the laser parameters and the atom or material used. 
+To distinguish these two processes, we need to define some parameters. 
+According to \cite{Keldysh:1965ojf} the strong field ionization depends mostly on three parameters: the photon energy, the binding potential and the ponderomotive energy.
+
+
+\paragraph{Ponderomotive Energy}
+The ponderomotive energy is the cycle-averaged quiver energy of a free electron in an electromagnetic field. [cite wikipedia]
+Since the particle experiences harmonic motion, the time-averaged kinetic energy is given by 
+\begin{equation*}
+    \frac{1}{2}m\omega^2 \braket{x^2}=\frac{e^2E^2}{4m_e\omega^2} = \frac{E^2}{4\omega^2}
+\end{equation*}
+
+\paragraph{Keldysh Parameter}
+The Keldysh parameter $\gamma$ compares the ponderomotive energy with the ionization potential. 
+It is defined as
+\begin{equation*}
+    \gamma = \sqrt{\frac{I_p}{2U_p}}
+\end{equation*}
+The ionization potential in the hydrogen atom is $I_p = 13.6\mathrm{eV} = 0.5 \mathrm{au.}$
+Depending on what the keldysh parameter is, one can define different regimes of ionization with different physical interpretations.
+
+%how much should i write about these kind of things???
 \subsection{Tunneling ionization}
+Usually one can define this regime with $\gamma \ll 1$.
+However one can also define it with saying the tunneling regime is where the quasi static approximation holds, i.e the instantanious ionization rate is entirely defined by the absolute value of the electric field at that time. cite [manoram masterthesis]
+Further is possible to calculate the ionization rate for DC and AC fields (under certain conditions like adiabacity) in this regime analytically \cite{tunnel_ion_complexatoms}. 
+
+
 \subsection{Multiphoton ionization}
+The regime where $\gamma \gg 1$ is called multiphoton ionization.
+
+
+
+
 \subsection{Stark effect}
 Transition of energy levels in presence of an external electric field. 
 Here mainly focused on DC stark shift and for subcycle pulses.
