@@ -28,9 +28,18 @@ dangling pointer: interesting problem actually, how to solve it, how to find it,
 
 
 
+\subsection{ODE/Python}
+
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%
 \section{TIPTOE}
 This follows \cite{Park:18} and manorams master thesis.\\\\
+\paragraph{Why do we need TIPTOE?} 
+In order to verify the ionization rates determined by the models, we need to compare it with something that is experimentally accessible.
+However an ionization rate is not a quantum mechanical observable, we can only measure the ionization yield so $\int \Gamma(t) \dd t$.
+
 In some way, TIPTOE motivates this thesis, since TIPTOE's results showed us the break in time reversal symmetrie mentioned earlier.
 But what is TIPTOE? TIPTOE \cite{Park:18} is short for tunneling ionization with a perturbation for the time-domain observation of an electric field. 
 It is used for direct sampling an electric pulse in the femtosecond to attosecond regime using quasistatic subcycle tunneling ionization in a gaseous medium or air.
@@ -62,3 +71,18 @@ The TIPTOE method can be applied for the broad spectral range of the signal puls
 This method is very usefull because the problem of numerical simulations giving good predicitons about ionization propabilities and analytical models about ionization rates.
 Now we have a method to compare both ways and egt insight in the dynamics of the electron. 
 We will later integrate the ionization rate of $E_{\mathrm{F}}+E_{\mathrm{S}}$ over the full time domain and compare the ionization yield for different delay with the resluts from the numerical solution of the TDSE.
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%
+\section{GASFIR}
+test
+% \begin{align*}
+%     K(t,T) &= E_\mathrm{+}E_\mathrm{-} \int_0^{\infty} dp\, p^2 \int_0^\pi d\theta \sin\theta e^{ i T (p^2+2\overline{\Delta A} p \cos{\theta})} \\
+%            &\quad \times \int_0^{2\pi}d\phi \,d_z^*\bigl(\bm{p} + \bm{e}_z A_\mathrm{+}\bigr) d_z\bigl(\bm{p} + \bm{e}_z A_\mathrm{-}\bigr) e^{ i T (2I_\mathrm{p} + \overline{\Delta A^2})}.
+% \end{align*}
+A general approximator for strong field ionization rates

@@ -80,10 +80,11 @@ def get_coefficientsNumerical(excitedStates, t_grid, get_only_p_states, Gauge, l
 
 def get_coefficientstRecX_delay(excitedStates, t_grid, get_p_states, params, delay):
 
-    delay_files_path = "/home/user/TIPTOE/new_data/450nm/250nm/I_8.00e+13"
+    delay_files_path = "/home/user/TIPTOE/new_data/450nm_dense_length_gauge/250nm/I_8.00e+13"
 
     count_files = [eintrag for eintrag in os.listdir(delay_files_path) if os.path.isdir(os.path.join(delay_files_path, eintrag)) and eintrag.isdigit()]
     files_number = max([int(eintrag) for eintrag in count_files])
+
 
     for i in range(0, files_number+1):
         dir_path = os.path.join(delay_files_path, str(i))
@@ -93,7 +94,11 @@ def get_coefficientstRecX_delay(excitedStates, t_grid, get_p_states, params, del
         else:
             print(f"Found matching delay: {delay} in file {dir_path}")
 
-            if float(data.laser_params['lam0']) != float(np.real(params['lam0'])) or float(data.laser_params['intensity']) != float(np.real(params['intensity'])):
+            laser_params = data.laser_params
+            if isinstance(laser_params, list):
+                laser_params = laser_params[0]
+            
+            if float(laser_params['lam0']) != float(np.real(params['lam0'])) or float(laser_params['intensity']) != float(np.real(params['intensity'])):
                 raise ValueError("Laser parameters do not match the expected values.")
             
             time =  np.array(data.coefficients['Time'])

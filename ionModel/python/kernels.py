@@ -166,9 +166,6 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                 if get_p_only:
                     if state_idx != state_range_idx:
                         continue
-                # if (state_idx == state_range_idx and state_idx == 0) or (state_idx == state_range_idx and state_idx == 1):
-                #     print(state_idx, state_range_idx, "skipping state")
-                #     continue
                 f0 = np.zeros((Tar.size, tar.size), dtype=np.cdouble)
                 phase0 = np.zeros((Tar.size, tar.size), dtype=np.cdouble)
                 cLeft = coefficients[state_idx, :]
@@ -206,33 +203,34 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                 current_state_rate = 2*np.real(IOF(Tar, f0, (phase0)*1j))*4*np.pi       #21.5% is it the phase? or something else? whats causing the bump
                 rate += current_state_rate
                 
-                rates_by_state.append(rate.copy())
-                
-                config_str = f"n={config[state_idx][0]}, l={config[state_idx][1]}, m={config[state_idx][2]}"
-                subplot_titles = (f"Rate (state {state_idx}, {config_str})", f"Coeff (state {state_idx}, {config_str})")
-                fig = make_subplots(
-                    rows=1, cols=2, shared_xaxes=False, 
-                    subplot_titles=subplot_titles,
-                    horizontal_spacing=0.15
-                )
-                
-                for i in range(state_idx + 1):
-                    config_i = config[i]
-                    config_str_i = f"n={config_i[0]}, l={config_i[1]}, m={config_i[2]}"
-                    fig.add_trace(go.Scatter(x=tar, y=np.real(rates_by_state[i]), mode='lines', name=f'Rate up to state {i} ({config_str_i})'), row=1, col=1)
-                    fig.add_trace(go.Scatter(x=tar, y=np.real(current_state_rate), mode='lines', name=f'current Rate {i} ({config_str_i})'), row=1, col=1)
-                
-                fig.add_trace(
-                    go.Scatter(x=EF_grid, y=abs(cLeft)**2, mode='lines', name='unwrap(angle(cLeft))'), row=1, col=2)
-                fig.update_layout(
-                    width=1200, height=400, xaxis=dict(range=[-50, 50]),
-                    title_text=f"State {state_idx} ({config_str})"
-                )
-                fig.update_xaxes(title_text="Time (a.u.)", row=1, col=1)
-                fig.update_xaxes(title_text="Time (a.u.)", row=1, col=2)
-                fig.update_yaxes(title_text="Rate", row=1, col=1)
-                fig.update_yaxes(title_text="Coefficient", row=1, col=2)
-                fig.show()
+                if params['plotting']:
+                    rates_by_state.append(rate.copy())
+                    
+                    config_str = f"n={config[state_idx][0]}, l={config[state_idx][1]}, m={config[state_idx][2]}"
+                    subplot_titles = (f"Rate (state {state_idx}, {config_str})", f"Coeff (state {state_idx}, {config_str})")
+                    fig = make_subplots(
+                        rows=1, cols=2, shared_xaxes=False, 
+                        subplot_titles=subplot_titles,
+                        horizontal_spacing=0.15
+                    )
+                    
+                    for i in range(state_idx + 1):
+                        config_i = config[i]
+                        config_str_i = f"n={config_i[0]}, l={config_i[1]}, m={config_i[2]}"
+                        fig.add_trace(go.Scatter(x=tar, y=np.real(rates_by_state[i]), mode='lines', name=f'Rate up to state {i} ({config_str_i})'), row=1, col=1)
+                        fig.add_trace(go.Scatter(x=tar, y=np.real(current_state_rate), mode='lines', name=f'current Rate {i} ({config_str_i})'), row=1, col=1)
+                    
+                    fig.add_trace(
+                        go.Scatter(x=EF_grid, y=abs(cLeft)**2, mode='lines', name='unwrap(angle(cLeft))'), row=1, col=2)
+                    fig.update_layout(
+                        width=1200, height=400, xaxis=dict(range=[-50, 50]),
+                        title_text=f"State {state_idx} ({config_str})"
+                    )
+                    fig.update_xaxes(title_text="Time (a.u.)", row=1, col=1)
+                    fig.update_xaxes(title_text="Time (a.u.)", row=1, col=2)
+                    fig.update_yaxes(title_text="Rate", row=1, col=1)
+                    fig.update_yaxes(title_text="Coefficient", row=1, col=2)
+                    fig.show()
 
         return rate
     else:

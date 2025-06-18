@@ -78,19 +78,24 @@ class tRecXdata:
                 return delay
     
     def extractLaserParams(self):
-        """Extract laser parameters from inpc file"""
+        """Extract laser parameters from inpc file - handles multiple laser pulses"""
         file_path = os.path.join(self.folder_path, "inpc")
         if not os.path.exists(file_path):
             raise FileNotFoundError(f"inpc file not found in {self.folder_path}")
         
-        laser_params = {}
+        laser_params_list = []
         with open(file_path, 'r') as file:
             lines = file.readlines()
             
             for i, line in enumerate(lines):
                 if line.strip().startswith('Laser:') and 'shape' in line:
-                    if i + 1 < len(lines):
-                        values_line = lines[i + 1].strip()
+                    j = i + 1
+                    while j < len(lines):
+                        values_line = lines[j].strip()
+                        
+                        if not values_line or values_line.startswith('#') or any(values_line.startswith(section) for section in ['TimePropagation:', 'Axis:', 'Absorption:', 'Operator:', 'Spectrum:']):
+                            break
+                        
                         values = values_line.split()
                         
                         if len(values) >= 8:
@@ -109,15 +114,21 @@ class tRecXdata:
                                 'lam0': float(values[wavelength_idx].rstrip(',')),
                                 'polar_angle': float(values[wavelength_idx + 1].rstrip(',')),
                                 'azimuth_angle': float(values[wavelength_idx + 2].rstrip(',')),
-                                'CEP': float(values[wavelength_idx + 3].rstrip(',')),
+                                'CEP': values[wavelength_idx + 3].rstrip(','),
                                 'peak_time': values[wavelength_idx + 4].rstrip(',') if wavelength_idx + 4 < len(values) else ''
                             }
-                        break
+                            laser_params_list.append(laser_params)
+                        
+                        j += 1
+                    break
         
-        if not laser_params:
+        if not laser_params_list:
             raise ValueError("Could not find laser parameters in inpc file")
         
-        return laser_params
+        if len(laser_params_list) == 1:
+            return laser_params_list[0]
+        else:
+            return laser_params_list
 
     def plotCoefficients(self, state_indices, plot_type="occ"):
         fig = go.Figure()
@@ -151,13 +162,20 @@ class tRecXdata:
         else:
             raise ValueError("plot_type must be one of: 'occupation', 'real', 'imag', 'mag'")
         
+        if isinstance(self.laser_params, list):
+            laser_info = self.laser_params[0]
+            laser_count_text = f" (Laser 1 of {len(self.laser_params)})"
+        else:
+            laser_info = self.laser_params
+            laser_count_text = ""
+        
         laser_text = "<br>".join([
-            "<b>Laser Parameters:</b>",
-            f"Shape: {self.laser_params.get('shape', 'N/A')}",
-            f"Intensity: {self.laser_params.get('intensity_W_cm2', 'N/A')} W/cm²",
-            f"FWHM: {self.laser_params.get('FWHM', 'N/A')}",
-            f"Wavelength: {self.laser_params.get('wavelength_nm', 'N/A')} nm",
-            f"CEP: {self.laser_params.get('CEP', 'N/A')}"
+            f"<b>Laser Parameters{laser_count_text}:</b>",
+            f"Shape: {laser_info.get('shape', 'N/A')}",
+            f"Intensity: {laser_info.get('intensity', 'N/A')} W/cm²",
+            f"FWHM: {laser_info.get('FWHM', 'N/A')}",
+            f"Wavelength: {laser_info.get('lam0', 'N/A')} nm",
+            f"CEP: {laser_info.get('CEP', 'N/A')}"
         ])
         
         fig.update_layout(
@@ -186,17 +204,11 @@ class tRecXdata:
 
 if __name__ == "__main__":
     # datamixed = tRecXdata("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0040")
-    # datalength = tRecXdata("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0042")
-    # datavelocity = tRecXdata("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0044")
-    # data = tRecXdata("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0034")
+    #datalength = tRecXdata("/home/user/TIPTOE/new_data/450nm_short_length_gauge/250nm/I_8.00e+13/3")
+    datavelocity = tRecXdata("/home/user/TIPTOE/new_data/450nm_old_velocity_gauge/250nm/I_8.00e+13/3")
 
     #datamixed.plotCoefficients([1,3], "occ")
-    #datalength.plotCoefficients([3], "imag")
-    #datavelocity.plotCoefficients([1,3], "occ")
-    # data.plotCoefficients([1,2,3,4,5], "occ")
+    #datalength.plotCoefficients([1,3], "occ")
+    datavelocity.plotCoefficients([1,3], "occ")
     #print(data.laser_params)
 
-
-
-    data = tRecXdata("/home/user/TIPTOE/new_data/450nm/250nm/I_8.00e+13/15")
-    print(data.extractLaserParams())

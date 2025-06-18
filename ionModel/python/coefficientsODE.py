@@ -209,7 +209,7 @@ class HydrogenSolver:
 if __name__ == "__main__":          #("450nm_8e+13", 450, 8e13, 250, 8e9, 1, 0, -np.pi/2),
     laserPulses = LaserField(cache_results=True)
     laserPulses.add_pulse(450, 8e13, 0, 450 / AtomicUnits.nm / AtomicUnits.speed_of_light)
-    laserPulses.add_pulse(250, 8e9, 0, 250 / AtomicUnits.nm / AtomicUnits.speed_of_light, t0=0)
+    laserPulses.add_pulse(250, 8e9, 0, 0.58 / AtomicUnits.fs, t0=0)
     
     solver = HydrogenSolver(max_n=3, laser_pulses=laserPulses)
     solutions = solver.solve(gauge='length')
