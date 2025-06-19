@@ -7,28 +7,36 @@ Especially for expanding an already existing model, it is important to compare a
 
 %%%%%%%%%%%%%%%%%%%%%%%
 \section{Numerical Methods}
+To implement formula \ref{eq:smatrix} we need to solve the TDSE numerically in order to obtain the coefficients $c_n(t)$. 
+For that I used two different tools (tRecX and ODE) each with its own advantages and disadvantages.
+Further, there is this dilemma with ionization rates not being quantum mechaincal observables, so we need to have trustfull ionization propabilities to compare my results.
 
 
+% Difference between length gauge and velocity gauge in numerics\\
 
 \subsection{tRecX}
-I need to check if trecx coeff are trustable, use pertubation theory first order, for n>>1 trecx should predict different results because pert theory is not valid anymore\\
-I also need to check how often I have to write the coefficients to the expec file. That depends on the characterisitc time of the state and on the frequency of the laser of course.\\
-in E4 it was easy because laser had cosine shape. attosecond physics not the case, more a lase pulse, cos8 envelope so it doesnt make much sense to speak of rabi oszillations.\\
-Difference between length gauge and velocity gauge in numerics\\
-Why is it so diffficult? Solving time dependent Schroedinger euation numerically is not that hard. But in attosecond regime electron in Hydrogen likes length gauge because everything can be defined by giving the position of the electron. 
-But a free electron in a strong laser pulse really likes velocity gauge because everything can be described by the kinetic energy of the electron.\\
-Since we dont know how trecx outputs the coefficients (in which pciture) we need to check that.
-\subsubsection{irECS}
+tRecX is a C++ code for solving generalized inhomogeneous time-dependent
+Schroedinger-type equations in arbitrary dimensions and in a variety of coordinate systems \cite{Scrinzi_trecx}.
+Usually ionization is difficult for an numerical solver because the electron "leaves" the subspace of the bound states, making the calculations very time consuming.
+tRecX uses different techniques (irECS and tSURFF) making it especially suitable for light atom interaction. 
+Further, tRecX allows to specify the gauge in which the TDSE is solved, making it more flexible. 
+This will be important later.
+
+\paragraph{irECS}
 Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-\subsubsection{tSURFF}
+\paragraph{tSURFF}
 Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-\subsubsection{Challenges}
-dangling pointer: interesting problem actually, how to solve it, how to find it, etc
+
+
+
+% \paragraph{Challenges}
+% dangling pointer: interesting problem actually, how to solve it, how to find it, etc
 
 
 
 
 \subsection{ODE/Python}
+
 
 
 
@@ -80,9 +88,19 @@ We will later integrate the ionization rate of $E_{\mathrm{F}}+E_{\mathrm{S}}$ o
 
 %%%%%%%%%%%%%%%%%%
 \section{GASFIR}
-test
+GASFIR is short for general approximator for strong field ionization rates.
+It is an analytical retrieval tool for reconstructing data obtaned from numerical solutions of the TDSE. 
+It was validated for hydrogen and shows good agreement with existing theories in the quasi static limit of tunneling ionization not only for Hydrogen, also for Helim and Neon [cite GASFIR].
+The way how GASFIR works is that it uses ionization probabilities to retrieve ionization rates. 
+It uses the idea from SFA that the rates can be written as $\int \dd T K(t,T)$ with $K(t,T)$ being a kernel function.
+Later in the code you see also the kernel function, where the modifications happened. 
+Its not really part of this thesis, but motivates it.
+Goal: make GASFIRs predictions better by improving SFA rates
+
+
+
+
 % \begin{align*}
 %     K(t,T) &= E_\mathrm{+}E_\mathrm{-} \int_0^{\infty} dp\, p^2 \int_0^\pi d\theta \sin\theta e^{ i T (p^2+2\overline{\Delta A} p \cos{\theta})} \\
 %            &\quad \times \int_0^{2\pi}d\phi \,d_z^*\bigl(\bm{p} + \bm{e}_z A_\mathrm{+}\bigr) d_z\bigl(\bm{p} + \bm{e}_z A_\mathrm{-}\bigr) e^{ i T (2I_\mathrm{p} + \overline{\Delta A^2})}.
 % \end{align*}
-A general approximator for strong field ionization rates

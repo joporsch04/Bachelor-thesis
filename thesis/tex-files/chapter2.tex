@@ -9,6 +9,7 @@ $\ket{\Phi}$ for the abstract Eigenstates of the whole Hamiltonian, \\
 $Y_{l, m}(\theta, \phi) = \braket{\theta, \phi | l, m}$ definition of spherical harmonics, \\
 $\psi_{n, l, m}(r, \theta, \phi)$ for the wavefunction of hydrogen in spherical coordinates, with $\uvec{x}=(r, \theta, \phi)$ \\
 I use underlined vectors when they are the coordinates and bold vectors when they are abstract elements in a vector space. \\
+Its the concept of a manifold. $\vec{A}$ could be in a manifold and not easy acessible but with a basis $\uvec{x}$ it has a physical meaning.\\
 The canonical momentum $\uvec{P}$ parametrises the phase space but the kinetic momentum does not so kinetic momentum $\hat{=} \vec{p}$.\\
 The position and momentum operator are in boldface $\hat{\vec{x}}$ because they do not choose any kind of basis not even a representation in which they are displayed.\\
 When i use $\ket{\vec{k}}$ I mean a plane wave solution so "special" a continuum state.\\
@@ -438,20 +439,40 @@ It is defined as
 The ionization potential in the hydrogen atom is $I_p = 13.6\mathrm{eV} = 0.5 \mathrm{au.}$
 Depending on what the keldysh parameter is, one can define different regimes of ionization with different physical interpretations.
 
+
+
 %how much should i write about these kind of things???
 \subsection{Tunneling ionization}
 Usually one can define this regime with $\gamma \ll 1$.
-However one can also define it with saying the tunneling regime is where the quasi static approximation holds, i.e the instantanious ionization rate is entirely defined by the absolute value of the electric field at that time. cite [manoram masterthesis]
-Further is possible to calculate the ionization rate for DC and AC fields (under certain conditions like adiabacity) in this regime analytically \cite{tunnel_ion_complexatoms}. 
+The laser pulse is so strong that it distorts the potential barrier.
+However one can also define it with saying the tunneling regime is where the quasi static approximation holds, i.e the instantanious ionization rate is entirely defined by the absolute value of the electric field at that time \cite{manorammasterthesis}. 
+That makes it possible to calculate the ionization rate for DC and AC fields in this regime analytically \cite{tunnel_ion_complexatoms}. 
+\begin{equation*}
+    \Gamma_{\mathrm{SFA}}(t) \propto \exp\left(-\frac{2}{3}\frac{(2I_p)^{3/2}}{F}\right)
+\end{equation*}
+With $F$ being the peak of the electric field for an AC field. 
+
+
 
 
 \subsection{Multiphoton ionization}
-The regime where $\gamma \gg 1$ is called multiphoton ionization.
+The regime where $\gamma \gg 1$ is mostly called multiphoton ionization. 
+This is espeically when the field strength is far weaker than in the tunneling regime
+In other words, multiphotonregime can be defined as the regime where
+\begin{equation*}
+    \Gamma_{\mathrm{SFA}}(t) \propto \vec{E}^{2N} \quad \text{with} \quad N = \frac{I_p}{E_e}
+\end{equation*}
+is valid \cite{Ivanov20012005}. 
+You can imagine it as the electron is being heated up, gaining energy while still under the barrier.
+That makes it the complete opposite of the tunneling regime, being non adiabatic.
+For deeper insight, refer to \cite{Ivanov20012005} and \cite{Keldysh:1965ojf}.
 
 
 
-
-\subsection{Stark effect}
-Transition of energy levels in presence of an external electric field. 
-Here mainly focused on DC stark shift and for subcycle pulses.
-\subsection{REMPI}
+\subsection{Intermediate regime}
+This is the most important regime for this thesis. 
+Previous regimes just define limits, when the complementary process is neglible.
+But in reality its more an coexistence of both processes.
+In this intermediate regime, the tunneling process is no longer adiabatic. 
+This means the potential barrier oscillates significantly during the time it takes for the electron to tunnel through it. 
+As a result, the electron can absorb energy from the laser field while it is tunneling. 

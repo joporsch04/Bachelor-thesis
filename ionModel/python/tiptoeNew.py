@@ -12,6 +12,7 @@ from TIPTOEplotter import AU as AtomicUnits
 from scipy.interpolate import interp1d
 from scipy.integrate import simpson
 from line_profiler import profile
+from TIPTOEplotterBA import TIPTOEplotterBA
 
 def read_ion_Prob_data(file_path):
     data = pd.read_csv(file_path, header=None)
@@ -48,7 +49,7 @@ def main(excitedstates):
         'delay': -224.97,
         'plotting': False
     }
-    REDO_comp = True
+    REDO_comp = False
     for file_name, lam0_pump, I_pump, lam0_probe, I_probe, FWHM_probe, cep_pump, cep_probe in file_params:
 
         # delaydf = pd.read_csv("/home/user/TIPTOE-Hydrogen/plot_ion_tau_calc_output_data/ionProb_450nm_250nm_8e+13.csv")
@@ -103,11 +104,23 @@ def main(excitedstates):
         ion_na_SFA=np.array(data_rate_delay['ion_NA_SFA'].values)
         ion_QS=np.array(data_rate_delay['ion_QS'].values)
 
-        delay_dummy, ion_tRecX_dummy = read_ion_Prob_data("/home/user/TIPTOE/process_all_files_output/ionProb_450nm_old_velocity_gauge_250nm_8e+13.csv")
+        BA_plotting = True
 
-        ion_tRecX_new = interp1d(delay_dummy, ion_tRecX_dummy, fill_value="extrapolate")(delay)
+        if BA_plotting:
+            #data_rate_delay_ODE = pd.read_csv(f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/ionProb_{file_name}_{excitedstates}_numerical_length.csv") #change numerical to ODE
+            data_rate_delay_ODE = pd.read_csv("/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/ionProb_450nm_8e+13_3_numerical_newconvergence.csv")
+            delay_ODE=np.array(data_rate_delay_ODE['delay'].values)
+            ion_tRecX_ODE=np.array(data_rate_delay_ODE['ion_tRecX'].values)
+            ion_na_GASFIR_ODE=np.array(data_rate_delay_ODE['ion_NA_GASFIR'].values)
+            ion_na_SFA_ODE=np.array(data_rate_delay_ODE['ion_NA_SFA'].values)
+            ion_QS_ODE=np.array(data_rate_delay_ODE['ion_QS'].values)
+            ion_SFA_ODE_new = interp1d(delay_ODE, ion_na_SFA_ODE, fill_value="extrapolate")(delay)
 
-        ion_tRecX = ion_tRecX_new
+        delay_dummy, ion_tRecX_dummy = read_ion_Prob_data("/home/user/TIPTOE/process_all_files_output/ionProb_450nm_dense_velocity_gauge_250nm_8e+13.csv")
+
+        #ion_tRecX_new = interp1d(delay_dummy, ion_tRecX_dummy, fill_value="extrapolate")(delay)
+
+        ion_tRecX = ion_tRecX_dummy         #now c_n in length gauge, ion_tRecX is in velocity gauge but in probably not converged parameters                                                                                                            #now
 
         ion_na_reconstructed_GASFIR=np.array(pd.to_numeric(data_rate_delay['ion_NA_reconstructed_GASFIR'].values))
         ion_na_reconstructed_SFA=np.array(pd.to_numeric(0*data_rate_delay['ion_NA_reconstructed_SFA'].values))
@@ -127,7 +140,9 @@ def main(excitedstates):
         # output_path = f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/plot_{file_name}_{excitedstates}_maxnhigh.html"
         # fig.write_html(output_path)
         # print(f"Plot saved to: {output_path}")
-        fig.show()
+        #fig.show()
+        plotterBA = TIPTOEplotterBA(ion_tRecX, ion_na_GASFIR, ion_na_SFA, ion_SFA_ODE_new, delay, time, AU, lam0_pump, I_pump, lam0_probe, I_probe, FWHM_probe)
+        plotterBA.matplot4()
 
 
 if __name__ == "__main__":
@@ -135,11 +150,11 @@ if __name__ == "__main__":
     main(3)
     end_time = time.time()
     print("time: ", start_time-end_time)
-    start_time = time.time()
-    main(2)
-    end_time = time.time()
-    print("time: ", start_time-end_time)
-    start_time = time.time()
-    main(1)
-    end_time = time.time()
-    print("time: ", end_time-start_time)
+    # start_time = time.time()
+    # main(2)
+    # end_time = time.time()
+    # print("time: ", start_time-end_time)
+    # start_time = time.time()
+    # main(1)
+    # end_time = time.time()
+    # print("time: ", end_time-start_time)
