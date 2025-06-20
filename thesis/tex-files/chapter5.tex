@@ -2,8 +2,7 @@ Before discussing the results, first we have to formulate what we want to learn 
 The main difference form previous literatuee was the use of transition to excited states before ionisation. 
 In principle we want to investigate how this tranistion influeces the ionisation process or in general the ionisation rate.\\
 Previously: time reversal symmetry, what causes it? \\
-Also we want to know what influences the ionization rate more, the stark shift or the distortion of the ground state or the possibility for the electron to also get excited to higher states instead of direct ionization.\\
-So lets start with the star effect.\\
+Also we want to know what influences the ionization rate more, the stark shift or the distortion of the ground state.\\
 Also we want to get closer to the tRecX TIPTOE results because thats all we really got (quantum mechanics fundamentals) maybe including excited states will help us.
 
 All results are stored in a github repository and can be reproduced.
@@ -28,7 +27,7 @@ Example with oszillations with time dependent resonance frequency, and external 
 
 %%%%%%%%%%%%%%%%%%%%
 \section{Rates}
-Stark shift doesnt seem to have much contribution (sadly).\\
+Stark shift doesnt seem to have much contribution (sadly) but at least more than the polarisation of the ground state.\\
 Lets investigate the influence of first coefficient, nothing more. Only the phase has a contribution, the amplitude is not important.
 Thats because the amplitude determines something occupation propabilitiy, but the phase is $e^{-iEt}$ and if $E$ is shifted by a bit you can isolate it by just using purely the phase.\\
 Top right is the isolated stark effect
@@ -45,9 +44,11 @@ From the TIPTOE results we want to learn, weither the tRecX coefficients or the 
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.9\textwidth]{figures/plotIon_450_250_8.00e+13_8.00e+09.pdf}
-    \caption{TIPTOE 3 excited states}
-    \label{fig:tiptoe}
+    \includegraphics[width=1\textwidth]{../ionModel/python/plotsTIPTOE/2plot_SFA-comparison.pdf}
+    \caption{Comparison of ionization yields from TIPTOE simulations between different SFA models and reference data from tRecX. 
+            (a) Standart SFA overall does a good job reconstructing the ionization dynamics, but some parts it does not capture at all 
+            (b) Extended SFA to excited states indeed shows some improvements in the reconstructing }
+    \label{fig:tiptoe_sfa_comparison}
 \end{figure}
 
 On the left plot we see that tRecX is still orders of magnitude larger than the SFA results. 

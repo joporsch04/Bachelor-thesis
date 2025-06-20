@@ -191,8 +191,9 @@ This is a common way to write the interaction Hamiltonian.
 The difficulty with ionisation arises because we now have in some sense two Hilbert spaces, one for the states in the Hydrogen atom that deals with some distortion of the wavefunction because of the Laser field and one for the continuum states that are affected mainly by the Laser field but also by the binding potential.\\
 We will see SFA will take care about the second Hilbertspace and make it easier. 
 The main goal of this thesis is to see how much the Laser field has an effect on the wavefunction before ionisation happens. 
-Previous work neglects this part so there is just one hilbertspace for the eigenstates unaffectet by the laser field and one hilbertspace for the continuum states that are unaffectet by the binding potential.
-
+Previous work neglects this part so there is just one hilbertspace for the eigenstates unaffectet by the laser field and one hilbertspace for the continuum states that are unaffectet by the binding potential.\\\\
+We will also see that there are two equivalent ways of solving the TDSE that that later differ when approximations are made. 
+However it becomes clear that in the end they "come together" again and yield the same analytical result.
 
 
 
@@ -204,14 +205,22 @@ Previous work neglects this part so there is just one hilbertspace for the eigen
 
 
 %%%%%%%%%%%%%%%%%%%%%
-\subsection{Subspaces}
+\subsection{\textcolor{red}{Subspaces}}
 First we project the full timedependent Hamiltonian $\hat{\Hs}(t)$ onto subspaces using projection operators defined by:
 \begin{equation*}
     \hat{X} = \sum_{n}\ket{\Psi_n}\bra{\Psi_n}\quad\text{and}\quad\hat{Y}= \hat{1} - \hat{X}
 \end{equation*}
-With $\ket{\Psi_n}$ being the bound states of our atom. We can write:
+With $\ket{\Psi_n}$ being the bound states of our atom. We are free to choose any partition of the Hamiltonian we can think of.
+First lets write:
 \begin{equation*}
-    \hat{\Hs}(t) = \underbrace{\hat{X}\hat{\Hs}(t)\hat{X}}_{\hat{\Hs}^{\mathrm{XX}}(t)} + \underbrace{\hat{Y}\hat{\Hs}(t)\hat{Y} + \hat{X}\hat{\Hs}(t)\hat{Y} + \hat{Y}\hat{\Hs}(t)\hat{X}}_{\hat{\Hs}^{\mathrm{YY}}(t)+\hat{\Hs}^{\mathrm{XY}}(t)+\hat{\Hs}^{\mathrm{YX}}(t)=\hat{\Hs}_{\mathrm{I}}(t)}
+    \hat{\Hs}(t) = \underbrace{\hat{X}\hat{\Hs}(t)\hat{X}}_{\hat{\Hs}^{\mathrm{XX}}(t)=\hat{\Hs}^{\mathrm{ODE}}_0(t)} + \underbrace{\hat{Y}\hat{\Hs}(t)\hat{Y} + \hat{X}\hat{\Hs}(t)\hat{Y} + \hat{Y}\hat{\Hs}(t)\hat{X}}_{\hat{\Hs}^{\mathrm{YY}}(t)+\hat{\Hs}^{\mathrm{XY}}(t)+\hat{\Hs}^{\mathrm{YX}}(t)=\hat{\Hs}^{\mathrm{ODE}}_{\mathrm{I}}(t)} = \hat{\Hs}^{\mathrm{ODE}}_0(t)+\hat{\Hs}^{\mathrm{ODE}}_{\mathrm{I}}(t)
+\end{equation*}
+For reasons elaborated later I will call this the ODE partition. 
+ODE stands for Ordinary Differential Equation and it will be used later to solve for the coefficients that weights our wavefunction.
+Now the notation falls from the sky but later it will make sense.\\
+We can now further partition the Hamiltonian into a different form:
+\begin{equation*}
+    \hat{\Hs}(t) = \underbrace{\hat{X}\hat{\Hs}(t)\hat{X} + \hat{Y}\hat{\Hs}(t)\hat{Y} + \hat{X}\hat{\Hs}(t)\hat{Y}}_{\hat{\Hs}^{\mathrm{XX}}(t)+\hat{\Hs}^{\mathrm{YY}}(t)+\hat{\Hs}^{\mathrm{XY}}(t)=\hat{\Hs}^{\mathrm{tRecX}}_0(t)} + \underbrace{\hat{Y}\hat{\Hs}(t)\hat{X}}_{\hat{\Hs}^{\mathrm{YX}}(t) = \hat{\Hs}^{\mathrm{tRecX}}_{\mathrm{I}}(t)} = \hat{\Hs}^{\mathrm{tRecX}}_0(t)+\hat{\Hs}^{\mathrm{tRecX}}_{\mathrm{I}}(t)
 \end{equation*}
 Lets think about what these terms mean. $\hat{\Hs}^{\mathrm{XX}}(t)$ can be seen as just our quantum system but with a small distortion by our electric field. 
 This part causes effects like Stark shift both in the eigenstates and eigenenergies of our atom. 
@@ -236,7 +245,7 @@ This is the perfect part to later start the strong field approximation with.\\
 
 
 
-\subsection{Dyson equation}
+\subsection{\textcolor{red}{Dyson equation}}
 NEED TO CHECK WITH VLADS DOCUMENT IF $U_0$ IS RIGHT!!
 For determining the time evolution we need to be carefull since the whole Hamiltonian doesnt commutate with itself at different times so we need to be exact. 
 Since the full Dyson series \eqref{eq:dyson} can be cumbersome to deal with, we choose a different way. 
@@ -260,7 +269,7 @@ Note: No approximations have been made, \eqref{eq:smatrixlike1} is exact.
 
 
 %%%%%%%%%%%%%%%%%%
-\subsection{Strong Field Approximation}
+\subsection{\textcolor{red}{Strong Field Approximation}}
 Before maing the strong field approximation, lets think about \eqref{eq:smatrixlike1} again.
 It is best to read this equation from right to left, starting with the initial state of our system and the propagation of the system in presence of a weak electric field before ionisation. 
 At moment $t'$ the Laser starts to interact with the system and it transisions into a virtual state. 

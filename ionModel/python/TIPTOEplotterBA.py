@@ -128,7 +128,7 @@ class TIPTOEplotterBA:
 
         plt.tight_layout()
 
-        pdf_filename = f'/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/plotsTIPTOE/plotIon_{self.lam0_pump}_{self.lam0_probe}_{self.I_pump:.2e}_{self.I_probe:.2e}_{self.excitedStates}.pdf'
+        pdf_filename = f'/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/plotsTIPTOE/plotIon_{self.lam0_pump}_{self.lam0_probe}_{self.I_pump:.2e}_{self.I_probe:.2e}_{self.excitedStates}_new.pdf'
         with PdfPages(pdf_filename) as pdf:
             pdf.savefig(fig)
         
@@ -137,7 +137,45 @@ class TIPTOEplotterBA:
         # plt.show()
         # plt.close()
 
+    def plot2SFA(self):
+        fig, (ax3, ax4) = plt.subplots(nrows=1, ncols=2, figsize=(14, 6))
 
+        ion_tRecX = self.ion_tRecX - self.ion_tRecX[-1]
+        ion_SFA = self.ion_SFA - self.ion_SFA[-1]
+        ion_SFA_excited_tRecX = self.ion_SFA_excited_tRecX - self.ion_SFA_excited_tRecX[10]
+        ion_SFA_excited_ODE = self.ion_SFA_excited_ODE - self.ion_SFA_excited_ODE[-1]
+
+        ax3.plot(self.delay*self.AU.fs, ion_tRecX/(max(abs(ion_tRecX))), label=r'tRecX (reference)', color='black', linestyle='-')
+        ax3.plot(self.delay*self.AU.fs, ion_SFA/(max(abs(ion_SFA))), label=r'Standard SFA', color='blue', linestyle='--', alpha=0.5)
+        ax3.set_xlabel(r'Delay $\tau$ (fs)')
+        ax3.set_ylabel(r'Normalized Ionization Yield')
+        ax3.set_xlim(-2, 2)
+        ax3.legend(loc='upper right')
+        ax3.set_title('(a) Standard SFA vs Reference')
+        ax3.grid(True, alpha=0.3)
+        
+        ax4.plot(self.delay*self.AU.fs, ion_tRecX/(max(abs(ion_tRecX))), label=r'tRecX (reference)', color='black', linestyle='-')
+        ax4.plot(self.delay*self.AU.fs, ion_SFA/(max(abs(ion_SFA))), label=r'Standard SFA', color='blue', linestyle='--', alpha=0.5)
+        ax4.plot(self.delay*self.AU.fs, ion_SFA_excited_ODE/(max(abs(ion_SFA_excited_ODE))), label=r'Extended SFA (ODE coeff.)', color='red', linestyle=':')
+        ax4.plot(self.delay*self.AU.fs, ion_SFA_excited_tRecX/(max(abs(ion_SFA_excited_tRecX))), label=r'Extended SFA (tRecX coeff.)', color='green', linestyle='-.')
+        ax4.set_xlabel(r'Delay $\tau$ (fs)')
+        ax4.set_ylabel(r'Normalized Ionization Yield')
+        ax4.set_xlim(-2, 2)
+        ax4.legend(loc='upper right')
+        ax4.set_title('(b) Extended SFA Models vs Reference')
+        ax4.grid(True, alpha=0.3)
+
+        param_text = (f'$\lambda_\mathrm{{F}}={self.lam0_pump}$ nm\n'
+                     f'$\lambda_\mathrm{{S}}={self.lam0_probe}$ nm\n'
+                     f'$I_\mathrm{{F}}={self.I_pump:.1e}$ W/cm$^2$\n'
+                     f'$I_\mathrm{{S}}={self.I_probe:.1e}$ W/cm$^2$')
+        ax3.text(0.02, 0.98, param_text, transform=ax3.transAxes, fontsize=8, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+
+        plt.tight_layout()
+        
+        pdf_filename = f'/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/plotsTIPTOE/2plot_SFA-comparison.pdf'
+        with PdfPages(pdf_filename) as pdf:
+            pdf.savefig(fig, dpi=300, bbox_inches='tight')
 
 
 

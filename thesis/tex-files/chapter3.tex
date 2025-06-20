@@ -67,20 +67,27 @@ In the first order we can approximate the ionization rate as
 However in this approximation we are going to neglect the depletion of the ground state. 
 Then the total ionisation yield $N$ obtained by the two pulses is given by
 \begin{equation*}
-    N=N_0+\delta N = \int \dd t\,\Gamma(E_{\mathrm{F}}(t))+\int \dd t\,E_{\mathrm{S}(t)}\left.\frac{\dd \Gamma(E_{\mathrm{S}}(t))}{\dd E}\right|_{E=E_{\mathrm{F}}(t)}
+    N_{\mathrm{total}}=N_0+\delta N = \int \dd t\,\Gamma(E_{\mathrm{F}}(t))+\int \dd t\,E_{\mathrm{S}}(t)\left.\frac{\dd \Gamma(E_{\mathrm{S}}(t))}{\dd E}\right|_{E=E_{\mathrm{F}}(t)}
 \end{equation*}
 By changing the delay $\tau$ between the two pulses, the ionization yield of course different values.
 With this we can find that:
 \begin{equation*}
-    \delta N(\tau)=E_{\mathrm{S}}(\tau)
+    \delta N(\tau)\propto E_{\mathrm{S}}(\tau)
 \end{equation*}
 so we can sample the field amplitude of the signal pulse by measuring the ionization yield for different delays.
-The TIPTOE method can be applied for the broad spectral range of the signal pulse, as long as the fundamental pulse is shorter than $1.5$ optical cycles.\\
-This method is very usefull because the problem of numerical simulations giving good predicitons about ionization propabilities and analytical models about ionization rates.
+The TIPTOE method can be applied for the broad spectral range of the signal pulse, as long as the fundamental pulse is shorter than $1.5$ optical cycles.\\\\
 Now we have a method to compare both ways and egt insight in the dynamics of the electron. 
+This method is very usefull because the problem of numerical simulations giving good predicitons about ionization propabilities and analytical models about ionization rates.
+Making a TIPTOE simulation can help to "reconstruct" the ionization dynamics which is particulary usefull in the context of this thesis.
 We will later integrate the ionization rate of $E_{\mathrm{F}}+E_{\mathrm{S}}$ over the full time domain and compare the ionization yield for different delay with the resluts from the numerical solution of the TDSE.
-
-
+The results of the TIPTOE simulation from the numerical solution of the TDSE (tRecX) compared to the approximative methods (variations of SFA) are shown in the figures in chapter 5.
+To have a better view on the actual physics in TIPTOE I subtracted the "background" ionization from $E_F(t)$ and normalized the ionization yield so the formula in plot ???? reads
+\begin{equation*}
+    \frac{N_{\mathrm{total}}-N_0}{N_{\mathrm{max}}}=\frac{\delta N(\tau)}{N_{\mathrm{max}}}
+\end{equation*}
+Nevertheless, one can also find some interesting physics by just comparing the net ionization yield $N_{\mathrm{total}}$ but later in chapter 5.\\\\
+Usually TIPTOE is not used for this kind of analysis, rather for the sampling aspect.
+This makes instantanious ionization rates are so usefull because with TIPTOE it allows to sample the electric field of a laser pulse in the femtosecond to attosecond regime which has of course a broad range of applications for instance in laser spectroskopy or medical physics.
 
 
 

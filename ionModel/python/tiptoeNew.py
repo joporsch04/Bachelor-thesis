@@ -42,7 +42,7 @@ def main(excitedstates):
         'intensity': 8e13, 
         'cep': 0,
         'excitedStates': excitedstates, 
-        'coeffType': 'trecx', 
+        'coeffType': 'numerical', 
         'gauge': 'length', 
         'get_p_only': True, 
         'only_c0_is_1_rest_normal': False, 
@@ -94,7 +94,7 @@ def main(excitedstates):
                 ion_na_reconstructed_GASFIR.append(1-np.exp(-na_background_GASFIR-np.trapz(na_grad_GASFIR*laser_pulses.Electric_Field(time_recon), time_recon)))
                 ion_na_reconstructed_SFA.append(1-np.exp(-na_background_SFA-np.trapz(na_grad_SFA*laser_pulses.Electric_Field(time_recon), time_recon))) #+na_grad2*laser_pulses.Electric_Field(time_recon)**2/2
                 laser_pulses.reset()
-            output_file = f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/ionProb_{file_name}_{excitedstates}_trecx_length.csv"
+            output_file = f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/ionProb_{file_name}_{excitedstates}_ODE_length.csv"
             writecsv_prob(output_file, delay, ion_tRecX, ion_qs, ion_na_GASFIR, ion_na_SFA, ion_na_reconstructed_GASFIR, ion_na_reconstructed_SFA)
 
         data_rate_delay = pd.read_csv(f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/ionProb_{file_name}_{excitedstates}_trecx_length.csv")
@@ -143,7 +143,7 @@ def main(excitedstates):
         # print(f"Plot saved to: {output_path}")
         #fig.show()
         plotterBA = TIPTOEplotterBA(excitedstates, ion_tRecX, ion_na_GASFIR, ion_na_SFA, ion_SFA_ODE_new, delay, time, AU, lam0_pump, I_pump, lam0_probe, I_probe, FWHM_probe)
-        plotterBA.matplot4()
+        plotterBA.plot2SFA()
 
 
 if __name__ == "__main__":
@@ -151,11 +151,11 @@ if __name__ == "__main__":
     main(3)
     end_time = time.time()
     print("time: ", start_time-end_time)
-    start_time = time.time()
-    main(2)
-    end_time = time.time()
-    print("time: ", start_time-end_time)
-    start_time = time.time()
-    main(1)
-    end_time = time.time()
-    print("time: ", end_time-start_time)
+    # start_time = time.time()
+    # main(2)
+    # end_time = time.time()
+    # print("time: ", start_time-end_time)
+    # start_time = time.time()
+    # main(1)
+    # end_time = time.time()
+    # print("time: ", end_time-start_time)
