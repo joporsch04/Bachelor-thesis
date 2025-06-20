@@ -149,7 +149,7 @@ def get_coefficientstRecX_delay(excitedStates, t_grid, get_p_states, params, del
     raise ValueError(f"No matching delay {delay} found in the specified directory.")
 
 def get_coefficientstRecX(excitedStates, t_grid, get_p_states, params):
-    data = tRecXdata("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0042")
+    data = tRecXdata("/home/user/BachelorThesis/trecxcoefftests/tiptoe_dense/0047")
 
     if float(data.laser_params['lam0']) != float(np.real(params['lam0'])) or float(data.laser_params['intensity']) != float(np.real(params['intensity'])):
         print(f"Expected laser parameters: {np.real(params['lam0'])}, {np.real(params['intensity'])}")

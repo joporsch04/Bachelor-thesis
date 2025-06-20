@@ -23,10 +23,31 @@ AtomicUnits=AU
 
 class TIPTOEplotterBA:
 
-    def __init__(self, ion_tRecX, ion_SFA, ion_SFA_excited_tRecX, ion_SFA_excited_ODE, delay, time, AU, lam0_pump, I_pump, lam0_probe, I_probe, FWHM_probe):
+    def __init__(self, excitedStates, ion_tRecX, ion_SFA, ion_SFA_excited_tRecX, ion_SFA_excited_ODE, delay, time, AU, lam0_pump, I_pump, lam0_probe, I_probe, FWHM_probe):
         
-        plt.rcParams['lines.linewidth'] = 1.0
-        plt.rcParams['text.usetex'] = True
+        plt.rcParams.update({
+            'text.usetex': True,
+            'font.family': 'serif',
+            'font.serif': ['Computer Modern Roman'],  # Matches lmodern package
+            'font.size': 10,
+            'axes.labelsize': 10,
+            'axes.titlesize': 12,
+            'xtick.labelsize': 9,
+            'ytick.labelsize': 9,
+            'legend.fontsize': 9,
+            'figure.titlesize': 12,
+            'lines.linewidth': 1.0,
+            'axes.linewidth': 0.8,
+            'grid.linewidth': 0.5,
+            'xtick.major.width': 0.8,
+            'ytick.major.width': 0.8,
+            'xtick.minor.width': 0.5,
+            'ytick.minor.width': 0.5,
+            'savefig.dpi': 300,
+            'savefig.bbox': 'tight',
+            'savefig.pad_inches': 0.1
+        })
+        self.excitedStates = excitedStates
         self.ion_tRecX = ion_tRecX
         self.ion_SFA = ion_SFA
         self.ion_SFA_excited_tRecX = ion_SFA_excited_tRecX
@@ -58,7 +79,7 @@ class TIPTOEplotterBA:
         ax1.set_title('Total Ionization Yield')
         ax1.set_xlim(-x_lim_ion_yield, x_lim_ion_yield)
         ax1.legend(loc='center left')
-        ax1.annotate(f'$\lambda_\mathrm{{F}}={self.lam0_pump}\mathrm{{nm}}$\n$\lambda_\mathrm{{S}}={self.lam0_probe}\mathrm{{nm}}$\n$\mathrm{{I}}_\mathrm{{F}}={self.I_pump:.2e}\mathrm{{W}}/\mathrm{{cm^2}}$\n$\mathrm{{I}}_\mathrm{{S}}={self.I_probe:.2e}\mathrm{{W}}/\mathrm{{cm^2}}$', xy=(0.72, 0.4), xycoords='axes fraction', fontsize=9, ha='left', va='center')
+        ax1.annotate(f'$\lambda_\mathrm{{F}}={self.lam0_pump}\mathrm{{nm}}$\n$\lambda_\mathrm{{S}}={self.lam0_probe}\mathrm{{nm}}$\n$\mathrm{{I}}_\mathrm{{F}}={self.I_pump:.2e}\mathrm{{W}}/\mathrm{{cm^2}}$\n$\mathrm{{I}}_\mathrm{{S}}={self.I_probe:.2e}\mathrm{{W}}/\mathrm{{cm^2}}$\nStates: 1s,2p,3p', xy=(0.72, 0.4), xycoords='axes fraction', fontsize=9, ha='left', va='center')
         
         ion_tRecX=self.ion_tRecX-self.ion_tRecX[-1]
         ion_SFA=self.ion_SFA-self.ion_SFA[-1]
@@ -107,7 +128,7 @@ class TIPTOEplotterBA:
 
         plt.tight_layout()
 
-        pdf_filename = f'/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/plotsTIPTOE/plotIon_{self.lam0_pump}_{self.lam0_probe}_{self.I_pump:.2e}_{self.I_probe:.2e}.pdf'
+        pdf_filename = f'/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/plotsTIPTOE/plotIon_{self.lam0_pump}_{self.lam0_probe}_{self.I_pump:.2e}_{self.I_probe:.2e}_{self.excitedStates}.pdf'
         with PdfPages(pdf_filename) as pdf:
             pdf.savefig(fig)
         

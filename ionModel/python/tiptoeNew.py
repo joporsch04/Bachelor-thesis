@@ -108,7 +108,7 @@ def main(excitedstates):
 
         if BA_plotting:
             #data_rate_delay_ODE = pd.read_csv(f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/ionProb_{file_name}_{excitedstates}_numerical_length.csv") #change numerical to ODE
-            data_rate_delay_ODE = pd.read_csv("/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/ionProb_450nm_8e+13_3_numerical_newconvergence.csv")
+            data_rate_delay_ODE = pd.read_csv(f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/ionProb_450nm_8e+13_{excitedstates}_numerical_newconvergence.csv")
             delay_ODE=np.array(data_rate_delay_ODE['delay'].values)
             ion_tRecX_ODE=np.array(data_rate_delay_ODE['ion_tRecX'].values)
             ion_na_GASFIR_ODE=np.array(data_rate_delay_ODE['ion_NA_GASFIR'].values)
@@ -120,7 +120,8 @@ def main(excitedstates):
 
         #ion_tRecX_new = interp1d(delay_dummy, ion_tRecX_dummy, fill_value="extrapolate")(delay)
 
-        ion_tRecX = ion_tRecX_dummy         #now c_n in length gauge, ion_tRecX is in velocity gauge but in probably not converged parameters                                                                                                            #now
+        ion_tRecX = ion_tRecX_dummy         #now c_n in length gauge, ion_tRecX is in velocity gauge but in probably not converged parameters
+                                            #ion_tRecX before was just for the rates that the coefficients are in length gauge
 
         ion_na_reconstructed_GASFIR=np.array(pd.to_numeric(data_rate_delay['ion_NA_reconstructed_GASFIR'].values))
         ion_na_reconstructed_SFA=np.array(pd.to_numeric(0*data_rate_delay['ion_NA_reconstructed_SFA'].values))
@@ -141,7 +142,7 @@ def main(excitedstates):
         # fig.write_html(output_path)
         # print(f"Plot saved to: {output_path}")
         #fig.show()
-        plotterBA = TIPTOEplotterBA(ion_tRecX, ion_na_GASFIR, ion_na_SFA, ion_SFA_ODE_new, delay, time, AU, lam0_pump, I_pump, lam0_probe, I_probe, FWHM_probe)
+        plotterBA = TIPTOEplotterBA(excitedstates, ion_tRecX, ion_na_GASFIR, ion_na_SFA, ion_SFA_ODE_new, delay, time, AU, lam0_pump, I_pump, lam0_probe, I_probe, FWHM_probe)
         plotterBA.matplot4()
 
 
@@ -150,11 +151,11 @@ if __name__ == "__main__":
     main(3)
     end_time = time.time()
     print("time: ", start_time-end_time)
-    # start_time = time.time()
-    # main(2)
-    # end_time = time.time()
-    # print("time: ", start_time-end_time)
-    # start_time = time.time()
-    # main(1)
-    # end_time = time.time()
-    # print("time: ", end_time-start_time)
+    start_time = time.time()
+    main(2)
+    end_time = time.time()
+    print("time: ", start_time-end_time)
+    start_time = time.time()
+    main(1)
+    end_time = time.time()
+    print("time: ", end_time-start_time)
