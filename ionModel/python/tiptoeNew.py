@@ -107,14 +107,19 @@ def main(excitedstates):
         BA_plotting = True
 
         if BA_plotting:
-            #data_rate_delay_ODE = pd.read_csv(f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/ionProb_{file_name}_{excitedstates}_numerical_length.csv") #change numerical to ODE
-            data_rate_delay_ODE = pd.read_csv(f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/ionProb_450nm_8e+13_{excitedstates}_numerical_newconvergence.csv")
-            delay_ODE=np.array(data_rate_delay_ODE['delay'].values)
-            ion_tRecX_ODE=np.array(data_rate_delay_ODE['ion_tRecX'].values)
-            ion_na_GASFIR_ODE=np.array(data_rate_delay_ODE['ion_NA_GASFIR'].values)
-            ion_na_SFA_ODE=np.array(data_rate_delay_ODE['ion_NA_SFA'].values)
-            ion_QS_ODE=np.array(data_rate_delay_ODE['ion_QS'].values)
-            ion_SFA_ODE_new = interp1d(delay_ODE, ion_na_SFA_ODE, fill_value="extrapolate")(delay)
+            try:
+                data_rate_delay_ODE = pd.read_csv(f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/ionProb_{file_name}_{excitedstates}_ODE_length.csv")
+                ion_SFA_ODE_new = np.array(data_rate_delay_ODE['ion_NA_SFA'].values)
+            except FileNotFoundError:
+                print(f"File not found for {file_name} with excited states {excitedstates}. Using interpolated data instead.")
+                #data_rate_delay_ODE = pd.read_csv(f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/ionProb_{file_name}_{excitedstates}_numerical_length.csv") #change numerical to ODE
+                data_rate_delay_ODE = pd.read_csv(f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/ionProb_450nm_8e+13_{excitedstates}_numerical_newconvergence.csv")
+                delay_ODE=np.array(data_rate_delay_ODE['delay'].values)
+                ion_tRecX_ODE=np.array(data_rate_delay_ODE['ion_tRecX'].values)
+                ion_na_GASFIR_ODE=np.array(data_rate_delay_ODE['ion_NA_GASFIR'].values)
+                ion_na_SFA_ODE=np.array(data_rate_delay_ODE['ion_NA_SFA'].values)
+                ion_QS_ODE=np.array(data_rate_delay_ODE['ion_QS'].values)
+                ion_SFA_ODE_new = interp1d(delay_ODE, ion_na_SFA_ODE, fill_value="extrapolate")(delay)
 
         delay_dummy, ion_tRecX_dummy = read_ion_Prob_data("/home/user/TIPTOE/process_all_files_output/ionProb_450nm_dense_velocity_gauge_250nm_8e+13.csv")
 
@@ -134,7 +139,6 @@ def main(excitedstates):
         time=np.arange(tmin, tmax+1, 1.)
         field_probe_fourier_time=probe.Electric_Field(time)
 
-
         plotter = TIPTOEplotter(ion_tRecX, ion_QS, ion_na_GASFIR, ion_na_SFA, ion_na_reconstructed_GASFIR, ion_na_reconstructed_SFA, delay, field_probe_fourier_time, time, AU, lam0_pump, I_pump, lam0_probe, I_probe, FWHM_probe)
         fig = go.Figure()
         fig = plotter.plotly4()
@@ -142,8 +146,12 @@ def main(excitedstates):
         # fig.write_html(output_path)
         # print(f"Plot saved to: {output_path}")
         #fig.show()
-        plotterBA = TIPTOEplotterBA(excitedstates, ion_tRecX, ion_na_GASFIR, ion_na_SFA, ion_SFA_ODE_new, delay, time, AU, lam0_pump, I_pump, lam0_probe, I_probe, FWHM_probe)
-        plotterBA.plot2SFA()
+
+        ion_SFA_excited_tRecX = ion_na_SFA
+        ion_SFA_excited_ODE = ion_SFA_ODE_new
+
+        # plotterBA = TIPTOEplotterBA(excitedstates, ion_tRecX, ion_na_GASFIR, ion_SFA_excited_tRecX, ion_SFA_excited_ODE, delay, time, AU, lam0_pump, I_pump, lam0_probe, I_probe, FWHM_probe)
+        # plotterBA.plot2SFA()
 
 
 if __name__ == "__main__":
@@ -151,11 +159,11 @@ if __name__ == "__main__":
     main(3)
     end_time = time.time()
     print("time: ", start_time-end_time)
-    # start_time = time.time()
-    # main(2)
-    # end_time = time.time()
-    # print("time: ", start_time-end_time)
-    # start_time = time.time()
-    # main(1)
-    # end_time = time.time()
-    # print("time: ", end_time-start_time)
+    start_time = time.time()
+    main(2)
+    end_time = time.time()
+    print("time: ", start_time-end_time)
+    start_time = time.time()
+    main(1)
+    end_time = time.time()
+    print("time: ", end_time-start_time)

@@ -189,11 +189,12 @@ This is a common way to write the interaction Hamiltonian.
 \section{Strong Field Approximation}
 %clear defintition of the strong field approximation, and the assumptions that are made.
 The difficulty with ionisation arises because we now have in some sense two Hilbert spaces, one for the states in the Hydrogen atom that deals with some distortion of the wavefunction because of the Laser field and one for the continuum states that are affected mainly by the Laser field but also by the binding potential.\\
-We will see SFA will take care about the second Hilbertspace and make it easier. 
-The main goal of this thesis is to see how much the Laser field has an effect on the wavefunction before ionisation happens. 
-Previous work neglects this part so there is just one hilbertspace for the eigenstates unaffectet by the laser field and one hilbertspace for the continuum states that are unaffectet by the binding potential.\\\\
-We will also see that there are two equivalent ways of solving the TDSE that that later differ when approximations are made. 
-However it becomes clear that in the end they "come together" again and yield the same analytical result.
+We will see SFA will take care about the second Hilbertspace and make it easier.  
+However, previous SFA's simpifies the first Hilbertsubspace so much that there is just one hilbertspace for the eigenstates unaffectet by the laser field and one hilbertspace for the continuum states that are unaffectet by the binding potential.\\\\
+SFA is in principle just the second part, neglecting the dynamics even bevore ionization is not really a part of it.
+In this section I derive an expression that does not simplify the first Hilbert space to some extend.
+However we will also see that there are two equivalent ways of solving the TDSE that that later differ when approximations are made. 
+Nonetheless it becomes clear that in the end they "come together" again and yield the same analytical result.
 
 
 
@@ -205,56 +206,60 @@ However it becomes clear that in the end they "come together" again and yield th
 
 
 %%%%%%%%%%%%%%%%%%%%%
-\subsection{\textcolor{red}{Subspaces}}
+\subsection{Subspaces}
 First we project the full timedependent Hamiltonian $\hat{\Hs}(t)$ onto subspaces using projection operators defined by:
 \begin{equation*}
     \hat{X} = \sum_{n}\ket{\Psi_n}\bra{\Psi_n}\quad\text{and}\quad\hat{Y}= \hat{1} - \hat{X}
 \end{equation*}
-With $\ket{\Psi_n}$ being the bound states of our atom. We are free to choose any partition of the Hamiltonian we can think of.
-First lets write:
+With $\ket{\Psi_n}$ being the bound states of our atom. Using $\hat{X}+\hat{Y}=\hat{1}$ we are free to choose any partition of the Hamiltonian we can think of.
+First lets write the most natural partitioning::
 \begin{equation*}
     \hat{\Hs}(t) = \underbrace{\hat{X}\hat{\Hs}(t)\hat{X}}_{\hat{\Hs}^{\mathrm{XX}}(t)=\hat{\Hs}^{\mathrm{ODE}}_0(t)} + \underbrace{\hat{Y}\hat{\Hs}(t)\hat{Y} + \hat{X}\hat{\Hs}(t)\hat{Y} + \hat{Y}\hat{\Hs}(t)\hat{X}}_{\hat{\Hs}^{\mathrm{YY}}(t)+\hat{\Hs}^{\mathrm{XY}}(t)+\hat{\Hs}^{\mathrm{YX}}(t)=\hat{\Hs}^{\mathrm{ODE}}_{\mathrm{I}}(t)} = \hat{\Hs}^{\mathrm{ODE}}_0(t)+\hat{\Hs}^{\mathrm{ODE}}_{\mathrm{I}}(t)
 \end{equation*}
+Just like with $\hat{Hs}(t)=\hat{\Hs}_0(t)+\hat{\Hs}_\mathrm{I}(t)$ where $\hat{\Hs}_\mathrm{I}(t)$ is the interacting pertubation like part for instance in length gauge \eqref{eq:dipoleApprox}, now just with the full hamiltonian and projecting onto supspaces. 
 For reasons elaborated later I will call this the ODE partition. 
 ODE stands for Ordinary Differential Equation and it will be used later to solve for the coefficients that weights our wavefunction.
 Now the notation falls from the sky but later it will make sense.\\
-We can now further partition the Hamiltonian into a different form:
+However the Hamiltonian can also be partitioned into a different form:
 \begin{equation*}
     \hat{\Hs}(t) = \underbrace{\hat{X}\hat{\Hs}(t)\hat{X} + \hat{Y}\hat{\Hs}(t)\hat{Y} + \hat{X}\hat{\Hs}(t)\hat{Y}}_{\hat{\Hs}^{\mathrm{XX}}(t)+\hat{\Hs}^{\mathrm{YY}}(t)+\hat{\Hs}^{\mathrm{XY}}(t)=\hat{\Hs}^{\mathrm{tRecX}}_0(t)} + \underbrace{\hat{Y}\hat{\Hs}(t)\hat{X}}_{\hat{\Hs}^{\mathrm{YX}}(t) = \hat{\Hs}^{\mathrm{tRecX}}_{\mathrm{I}}(t)} = \hat{\Hs}^{\mathrm{tRecX}}_0(t)+\hat{\Hs}^{\mathrm{tRecX}}_{\mathrm{I}}(t)
 \end{equation*}
-Lets think about what these terms mean. $\hat{\Hs}^{\mathrm{XX}}(t)$ can be seen as just our quantum system but with a small distortion by our electric field. 
-This part causes effects like Stark shift both in the eigenstates and eigenenergies of our atom. 
-As long as the laser pulse is not too strong and no ionisation has happened, we can treat the pulse like a pertubation to the system.
-The distortion may be time dependent but the good thing is that we can easily determine the propagator with repsect to $\hat{\Hs}^{\mathrm{XX}}(t)$ by using the interaction picture and solving a system of coupled differential equations.
-In other words this Hamiltonian determines the time evolution of the first hilbert space, as mentioned above. \\
-Lets think about the other terms. For that we need to establish a setting. Say our Atom sits in the ground state and gets ionised. 
-Based on this image we can say two from three parts are uneccessary. First $\hat{\Hs}^{\mathrm{YY}}(t)$ plays no role because we project the initial state into the continuum state, and since their can be no overlap between them this part will play no role.
-This term actually just describes the evolution of a continuum state that remains a continuum state after the interaction so the laser pulse has happened.
-Second $\hat{\Hs}^{\mathrm{XY}}(t)$ plays no role either since we projct the initial (bound) state into the continuum. 
-This term would determine the time evolution of a continuum state that recombines with the atom after the interaction has happened.
-Obviously thats not what we want. 
-The only term that remains is $\hat{\Hs}^{\mathrm{YX}}(t)$ which describes the time evolution of a bound state that gets ionised in the continuum by the laser pulse.
-This is the perfect part to later start the strong field approximation with.\\
+Lets think about what these terms mean specifcially. 
+In $\hat{\Hs}^{\mathrm{XX}}(t)$ the electron never leaves the space an can always be described by a superposition of the bound states.
+If there would be no ionization this would be the only part determining the time evolution.
+In previos work this part of the Hamiltonian was suimplified so much that effects lake stark shift or coupling to excited states were neglected.
+But in principle $\hat{\Hs}^{\mathrm{XX}}(t)$ is were the approximations that are not part of SFA are being made.\\\\
+$\hat{\Hs}^{\mathrm{YY}}(t)$ is basically the same but not in the subspace covered by the bound states, rather the continuum states.
+In reality you can not really seperate these two spaces but this is only to get a better view of it.
+This is the part where the SFA is being made later.\\\\
+Lets think about the other terms. 
+There are two processes that can happen, the electron can get ionized or it can recombine with the atom.
+These processes are governed by the terms $\hat{\Hs}^{\mathrm{XY}}(t)$ and $\hat{\Hs}^{\mathrm{YX}}(t)$.
+Of course in our case only one of the terms is relevant and further we will later see that $\hat{\Hs}^{\mathrm{YX}}(t)$ "cause" the ionization in the sense that it "kicks" the electron out of the atom \cite{Ivanov20012005}.\\\\
+
+For now this seems to a very useless thing to do, but it sets the boundarys for what the electron is going to do and builds some intuition for that.
 
 
 
 
 
-
-
-
-
-
-\subsection{\textcolor{red}{Dyson equation}}
-NEED TO CHECK WITH VLADS DOCUMENT IF $U_0$ IS RIGHT!!
+%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Dyson equation}
 For determining the time evolution we need to be carefull since the whole Hamiltonian doesnt commutate with itself at different times so we need to be exact. 
 Since the full Dyson series \eqref{eq:dyson} can be cumbersome to deal with, we choose a different way. 
-What helps us is the fact that we can split the Hamiltonian by projecting it into subspaces in two parts of which one can be solved directly as mentioned above. 
-Lets first write our ansatz:
+What helps us is the fact that we can split the Hamiltonian by projecting it into subspaces in two parts. 
+The ansatz choosen here is called dyson equation. 
+It relies on the time evolution operator and is completely equaivalent to the TDSE and therefore the dyson series \eqref{eq:dyson}.
+It can be written in two ways that are in its raw form equivalent to each other but when approximations such as SFA are made, it may yield different results.\\\\
+Lets write the in my opinion more inutitive form of the dyson equation for this physical setting:
 \begin{equation}
-    \hat{\U}(t,t_0)=\hat{\U}_{\mathrm{XX}}(t,t_0)-i\int_{t_0}^{t} \hat{\U}(t,t')\hat{\Hs}_{\mathrm{I}}(t')\hat{\U}_{\mathrm{XX}}(t',t_0) \dd t'       \label{eq:dysonAnsatz}
+    \hat{\U}(t,t_0)=\hat{\U}^{\mathrm{ODE}}_0(t,t_0)-i\int_{t_0}^{t} \hat{\U}(t,t')\hat{\Hs}^{\mathrm{ODE}}_{\mathrm{I}}(t')\hat{\U}^{\mathrm{ODE}}_0(t',t_0) \dd t'       \label{eq:dysonAnsatz}
 \end{equation}
-It is very easy to show that \eqref{eq:dysonAnsatz} is a solution to \eqref{eq:schroedinger}.\\
+Note that the ODE propagators are of course not the same as the tRecX propagators but within the dyson ansatz the full propagator $\hat{\U}$ remains the same.
+But this will change later when SFA comes into play.
+Most of the formulas in this thesis can be best read from right to left such as this one.
+It starts with the time evolution generated by the Hamiltonian projected onto the bound states. 
+I find this intuitive since the initial state before the laser hits the atom is the ground state.\\\\
 In our setting we start with the ground state of the atom so the time evolution is given by $\hat{\U}(t,t_0)\ket{\Psi_0(t_0)}$.
 To make things even simpler, we project into a continuum state $\ket{\Pi(t_{\mathrm{c}})}$ at time $t_{\mathrm{c}}$ with $t_{\mathrm{c}}$ being sufficiently big enough for the electron to be in the continuum ($t_{\mathrm{c}} >> t'$).\\
 Of course, there is no overlap between $\ket{\Pi(t_{\mathrm{c}})}$ and $\hat{\U}_{\mathrm{XX}}(t,t_0)\ket{\Psi_n(t_0)}$ since the electron did not get ionisaed yet. 

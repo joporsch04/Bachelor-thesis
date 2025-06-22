@@ -173,7 +173,7 @@ class TIPTOEplotterBA:
 
         plt.tight_layout()
         
-        pdf_filename = f'/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/plotsTIPTOE/2plot_SFA-comparison.pdf'
+        pdf_filename = f'/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/plotsTIPTOE/2plot_SFA-comparison_{self.excitedStates}.pdf'
         with PdfPages(pdf_filename) as pdf:
             pdf.savefig(fig, dpi=300, bbox_inches='tight')
 
