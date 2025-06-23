@@ -104,7 +104,6 @@ class HydrogenSolver:
             for n in range(len(self.states)):
                 omega_kn = self.energies[k] - self.energies[n]
                 dc_dt[k] += -1j *np.exp(1j*omega_kn*t) * self.z_matrix[k, n] * E_field * c[n]
-        
         return dc_dt
     
     #@profile
