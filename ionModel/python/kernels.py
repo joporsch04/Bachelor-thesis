@@ -130,7 +130,6 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
     coeffType = params['coeffType']
     gauge = params['gauge']
     get_p_only = params['get_p_only']
-    only_c0_is_1_rest_normal = params['only_c0_is_1_rest_normal']
     delay = params['delay']
     pz=p*np.cos(theta)
     if excitedStates_boolean:
@@ -175,7 +174,7 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                 absleft = np.abs(cLeft)
                 absright = np.abs(cRight)
 
-                if only_c0_is_1_rest_normal and state_idx == 0:
+                if params['only_c0_is_1_rest_normal'] and state_idx == 0:
                     only_absc0_is_1 = True
                     if only_absc0_is_1:
                         absleft, absright = absleft*0+1, absright*0+1

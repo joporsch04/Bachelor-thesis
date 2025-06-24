@@ -1,10 +1,60 @@
-What motivates this thesis? Background: developement of SFA and GASFIR rates that doesnt have to numerically solve Schroedinger equation.
-Comparison of ion rates from tRecX, SFA and GASFIR. When the laser pulse is an even function in time, the SFA rate is that as well. 
-But numerical simulations from tRecX tell us thats not the case and the time symmetry is broken. Idea: because of the neglected excitedt states in SFA.
-This brings up more questions: What role play excited states in ionization? Does the stark effect play an important role?\\
-Why is this so complicated? First, $[\hat{\Hs}(t), \hat{\Hs}(t')] \neq 0$ because $\hat{\Hs_0}$ and $\hat{V}$ dont share same eigenbasis, -> the electron is free. Also the thing with all these gauges.
+Ionization with an intense laser is one of the most fundamental processes in attosecond physics and quantum mechanics in general and has a broad range of applications such as medical physics or .
+Weither you want your system to ionize or not, it may be important to understand, how ionization works.
+However since it is a quantum mechanical process, one has to first ask what information are even experimentally acessible.
+Quantum mechanics at its very fundamental level tells us one can only measure probabilities and how likely the electron get ionized.
+Unfortunately, in an actual experiment thats the only option you got.
+Further one likes to know more about the "path" the electron takes after it gets struck by the laser pulse i.e the response of the electron to the laser pulse.
+Everytime you hear "path" in quantum mechanics, the first name to think of is Heisenberg.
+His uncertainty principle sets the boundaries for these type of questions and does not let measure all the information you wish to had.
+Further to see the electrons path, one has to probe the system just as lightwaves probe the matter around you letting you see.
+However probing a quantum mechanical system effectively changes the quantum mechanical state of the electron so eventually one has to restrict oneself to something different.
+
+The challenge of a theoretical model is now to predict ionization propabilities and further explain the underlying mechanisms and in the best case allowing some insights what happens between initial state of the atom and measured electron.
+A clever way to do this is by establishing the concept of an instantanious ionization rate (IIR) via the propertry $P_{\mathrm{ion}}=\int_{\R}\Gamma (t)\dd t$.
+At first sight, "instantanious" seems to conflict with the energy time uncertainty relation $\Delta E \Delta t \geq \hbar/2$.
+However, instantanious refers to the response of the electron to the laser field, not the and does not contain eny infromation on when exactly does the electron get ionized.
+
+Lets make an example to show how an IIR can be beneficial.
+Suppose a measurement is made, a laser pulse hits an atom and the outcome is measured, so if the electron is ionized or not.
+Suppose the measurement is repeated sufficiently many times, one can define a ionization propability for instance $1\%$.
+An IIR now allows to investigate which parts of the laser pulse causes what effects in the total ionization propability.
+One could say, an IIR tells us how likely the electron gets ionized within a certain time interval but of course averaged over all the measurements made.
+Note that the IIR does not tell us the electron will get ionized at a certain time because this would violate the energy time uncertainty relation, the value of $\Gamma$ at a certain time does not have any physical interpretation.
+
+This concept allows us to investigate the ionization process better and understand more about the underlying mechanisms such as defining different limits and regimes (2.4) or make use of the IIR by sampling a light pulse \cite{Park:18}.
+Due to the challange that the IIR is not really an quantum mechanical observable, it is difficult to have a working notion of it that works for different systems and laser pulses.
+Eventually one has to start from scratch and derive  the IIR from the time dependent schroedinger equation (TDSE) and varios approximations.
+One approximation most used in this context is called Strong field aproximation (SFA) mostly for its simplicity and the capability to derive ionization rates \cite{Theory_NPS}.
+However, SFA has its limitations, especially when it comes to comparing ab initio ionization propabilities, i.e. to numerical solutions of the TDSE using dedicated numerical solver.
+An implicit assumption often made while using SFA is that the laser field has no effect on the atom until the moment of ionization, effectively neglecting excited atomic states.
+In principle this does not have anything to do with the SFA itself, making it a possible solution to the differences between SFA and ab initio ionization propabilities.
+This is one of the main goal of this thesis, investigate if the differences from SFA and ab initio ionization propabilities can be explained by the neglect of excited states.
+Further one would like to investigate the dynamics and effects of the electron before it gets ionized and how they contribute to the ionization dynamics.
+Particulary important would be to know what matters more, the stark shift or the distortion of the ground state wavefunction.
+That could lead to an improvement to existing rates, making them besser applicable in the cases mentioned before.
+
+To achieve this, one has to review how the SFA was made previously and how it can be improved (Chapter 2).
+Later I will implement the extended SFA rate (Chapter 4) and compare the results with existing SFA rates and ab initio ionization propabilities (Chapter 5).
 
 
 
-why so promising? coulomb potential has little effect on ionization dynamics (found manoram)\\
-The only thingmissing is excited states
+
+% What motivates this thesis? Background: developement of SFA and GASFIR rates that doesnt have to numerically solve Schroedinger equation.
+% Comparison of ion rates from tRecX, SFA and GASFIR. When the laser pulse is an even function in time, the SFA rate is that as well. 
+% But numerical simulations from tRecX tell us thats not the case and the time symmetry is broken. Idea: because of the neglected excitedt states in SFA.
+% This brings up more questions: What role play excited states in ionization? Does the stark effect play an important role?\\
+% Why is this so complicated? First, $[\hat{\Hs}(t), \hat{\Hs}(t')] \neq 0$ because $\hat{\Hs_0}$ and $\hat{V}$ dont share same eigenbasis, -> the electron is free. Also the thing with all these gauges.
+
+
+
+% why so promising? coulomb potential has little effect on ionization dynamics (found manoram)\\
+% The only thingmissing is excited states
+
+% This thesis tries to answer the following questions:
+% \begin{itemize}
+%     \item What is the role of excited states in strong field ionization?
+%     \item How does the Stark effect influence ionization rates?
+%     \item Can we improve the accuracy of ionization rate predictions without solving the TDSE?
+% \end{itemize}
+
+% One of the key findings of this thesis is 

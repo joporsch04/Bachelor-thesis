@@ -65,7 +65,7 @@ A typical TIPTOE simulation consist of two linear polarised lase pulses, a "fund
 The drive pulse is the pulse we want to sample at the end just by measuren the ionization yield for a certain medium.
 In the first order we can approximate the ionization rate as
 \begin{equation*}
-    \Gamma(E_{\mathrm{F}}+E_{\mathrm{S}})=\Gamma(E_{\mathrm{F}})+\left.E_{\mathrm{S}}\frac{\dd \Gamma(E_{\mathrm{S}})}{\dd E}\right|_{E=E_{\mathrm{F}}}
+    \Gamma(E_{\mathrm{F}}+E_{\mathrm{S}})\approx\Gamma(E_{\mathrm{F}})+\left.E_{\mathrm{S}}\frac{\dd \Gamma(E_{\mathrm{S}})}{\dd E}\right|_{E=E_{\mathrm{F}}}
 \end{equation*}
 However in this approximation we are going to neglect the depletion of the ground state. 
 Then the total ionisation yield $N$ obtained by the two pulses is given by
@@ -74,9 +74,9 @@ Then the total ionisation yield $N$ obtained by the two pulses is given by
 \end{equation*}
 By changing the delay $\tau$ between the two pulses, the ionization yield of course different values.
 With this we can find that:
-\begin{equation*}
-    \delta N(\tau)\propto E_{\mathrm{S}}(\tau)
-\end{equation*}
+\begin{equation}
+    \delta N(\tau)\propto E_{\mathrm{S}}(\tau)      \label{eq:tiptoeprop}
+\end{equation}
 so we can sample the field amplitude of the signal pulse by measuring the ionization yield for different delays.
 The TIPTOE method can be applied for the broad spectral range of the signal pulse, as long as the fundamental pulse is shorter than $1.5$ optical cycles.\\\\
 Now we have a method to compare both ways and egt insight in the dynamics of the electron. 
