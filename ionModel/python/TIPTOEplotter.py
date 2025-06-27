@@ -257,7 +257,7 @@ class TIPTOEplotter:
 
         fig.add_trace(go.Scatter(x=self.delay*self.AU.fs, y=ion_na_tRecX/(max(ion_na_tRecX)), name=names["tRecX"]), row=1, col=2)
         fig.add_trace(go.Scatter(x=self.delay*self.AU.fs, y=ion_na_GASFIR/(max(ion_na_GASFIR)), name=names["SFA"]), row=1, col=2)
-        fig.add_trace(go.Scatter(x=self.delay*self.AU.fs, y=ion_na_SFA/ion_na_SFA_local_max, name=names["SFA_excited"]), row=1, col=2)
+        fig.add_trace(go.Scatter(x=self.delay*self.AU.fs, y=-ion_na_SFA/ion_na_SFA_local_max, name=names["SFA_excited"]), row=1, col=2)
         fig.update_xaxes(title_text="Delay (fs)", row=1, col=2, range=[-x_lim_ion_yield, x_lim_ion_yield])
         fig.update_yaxes(title_text="Ionization Yield", row=1, col=2)
 

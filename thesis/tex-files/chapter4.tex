@@ -1,11 +1,8 @@
-For retrieving ionisation rates, there are different ways of calculating the rates.\\
-In this chapter I will explain some concepts and methods that are used to calculate the ionisation rates and what to do with them, how to verify them and so on.
-
-
-
-
-%%%%%%%%%%%%%%%%
-\section{SFA Implementation}
+In this chapter I will explain how I implemented formula \eqref{eq:smatrix} in the code.
+Most of the code was already written by the authors of \cite{Theory_NPS}.
+The exact changes I made can be found in the electronic appendix.
+Since I am using git, you can also see the changes in the commit history.
+The main two parts that where new in this implementation now are the coefficients $c_n(t)$ and the dipole matrix elements $\vec{d}_n(\uvec{p})$.
 
 
 
@@ -13,42 +10,87 @@ In this chapter I will explain some concepts and methods that are used to calcul
 
 
 %%%%%%%%%%%%%%%%
-\section{SFA excited Implementation}
-The implementation of formula ?? was being done in python. Most of the implementation was already done by the Authors of \cite{Theory_NPS}.
-The only part missing in the implementation was the extension to excited states. 
-For that, major difficulty arrises from the fact that we now need the coefficients $c_n(t)$ of the state before ionization.
-For the coefficients I used two different ways. The one is the most straight forward way. 
-I solved a system of ordinary differential equations (ODE) to solve for the coefficients.
-Lets do the derivation real quick.\\\\
-We start by splitting the $\hat{\Hs}$ into two parts $\hat{\Hs}_0$ and $\hat{\Hs}_{\mathrm{Pert}}(t)$ where the eigenstates and eigenenergies of $\hat{\Hs}_0$ are known. 
-Note that $\hat{\Hs}_{\mathrm{Pert}}(t)$ has to be small enoguh such that our ansatz really works.
-We write our ansatz for the wavefunction as
+\section{Coefficients}
+As mentioned in chapter 2, there are two ways to write the dyson equation which results in two different expressions for the s-matrix.
+The only difference between both approaches are the coefficients. 
+The ODE coefficients are with respect to the subspace spanned by the bound states, while tRecX coefficients are with respect to the full Hilbert space.
+
+
+
+
+
+
+
+\subsection{ODE}
+To see how to solve for the coefficients,, lets look at the defining equation again:
 \begin{equation*}
-    \ket{\alpha(t)} = \sum_n c_n(t) e^{-i E_n t} \ket{n}
+    \hat{\U}^{\mathrm{ODE}}_0(t',t_0)\ket{\Psi_0(t_0)} = \sum_{n}c_n(t')e^{-iE_nt'}\ket{\Psi_n}
 \end{equation*}
-with $E_n$ being the exact eigenstates of $\hat{\Hs}_0$ so just the hydrogen atom. 
-Note that this ansatz does not represent the full wavefunction, we artificially force the electron to stay in the part of the Hilbert space covered by the bound states.
-In other words this ansatz doesn even allow ionization, there is no notion to describe it.
-The next step is to plug this ansatz into the TDSE and multiply with $\bra{m}$ to get the coefficients $c_n(t)$.
+with
+\begin{equation}
+    i\partial_{t'} \, \hat{\U}^{\mathrm{ODE}}_0(t',t_0) = \hat{X}\hat{\Hs}(t')\hat{X}\,\hat{\U}^{\mathrm{ODE}}_0(t',t_0)    \label{eq:odeU}
+\end{equation}
+One can think of it as the wavefunction is not "allowed" to leave the subspace. 
+Lets do the derivation for the coefficients real quick.
+
+We start by splitting the $\hat{\Hs}(t)$ into two parts $\hat{\Hs}_0$ and $\hat{\Hs}_{\mathrm{I}}(t)$ where the eigenstates of $\hat{\Hs}_0$ are $\{\ket{\Psi_n}\}$ and the eigenenergies $\hat{\Hs}_0$ are $\{E_n\}$. 
+The next step is to plug the ansatz above into \eqref{eq:odeU} and multiply with $\bra{\Psi_m}$ to get the coefficients $c_n(t)$.
 \begin{equation*}
-    i  \dot{c}_m(t) = \sum_n c_n(t) e^{-i \omega_{nm} t} \braket{m|\hat{\Hs}_{\mathrm{Pert}}(t)|n}  \label{eq:ode}
+    i  \dot{c}_m(t) = \sum_n c_n(t) e^{-i \omega_{nm} t} \braket{\Psi_m|\hat{\Hs}_{\mathrm{I}}(t)|\Psi_n}  \label{eq:ode}
 \end{equation*}
 with $\omega_{nm} = E_n - E_m$.
-Now we have two problems.
+
+\bigskip
+Now this has its problems.
 First, $\sum_n$ goes from $0$ to $\infty$, but since we are in numerical simulations we have to limit ourselves to a finite number of states.
-How can we justify the number we chosen?
-How can we make shure that the abrubt end of the sum does not cause any numerical problems (like oszillations at the end)?
-Further, equation \eqref{eq:ode} is gauge dependent because of $\braket{m|\hat{\Hs}_{\mathrm{Pert}}(t)|n}$. 
+How can we justify the number choosen?
+How can we make shure that the abrubt end of the sum does not cause any numerical problems?
+
+One way to think about it is just testing.
+By increasing the number of states used in the sum, the results (i.e. the rates) should converge.
+However, since we forced the electron to stay inside the subspace, going to higher and higher excited states can cause numerical problems as well.
+Especially for higher intensities and longer wavelengths, going to higher states caused unphysical oscillations in the rates. 
+Eventually one has to find a certain number of states that is precise enough but does not cause numerical problems.
+For my simulations later, I used a maximum of $n=3$ for the calculation of the bound states.
+One could justify that by looking at the population; most of the dynamics before ionization is determined by the first few bound states, especially $1s$, $2s$, $2p$ and $3p$ so solving for more doesnt affect the previous coefficients not much.
+
+Note: This was not about how many bound states I include in the final simulations, but how many I even considered when solving the ODE.
+I could have used only the ground state in the SFA rate later on, but there is still the question how many bound states have an effect on the ground state. 
+This number was justified here.
+
+
+\bigskip
+Further, equation \eqref{eq:ode} is gauge dependent because of $\braket{m|\hat{\Hs}_{\mathrm{I}}(t)|n}$. 
+We can either choose length gauge \eqref{eq:dipoleApprox} or velocity gauge \eqref{eq:dipoleApprox_velocity}.
 Which gauge should we use to get the most meaningful results?
-I will discuss these questions later.\\\\
+
+To answer this question, lets think about the scenario again.
+An electron sits in ground state and bevore ionization its behavior is mainly described by the coulomb potential.
+After it gets ionized, SFA tells us it is now described as a plane wave oscillating in the laser pulse.
+
+With this in mind, we can see that both gauges can be usefull.
+During the first part of the process, i.e. the electron being still bounded to the hydrogen atom, the length gauge is more appropiate since most of the behavior of the electron can be described better when knowing more about the position of the electron rather then its momentum.
+That is why in most elementary introductions on light matter interaction (for instance with rabi socillations and so on) length gauge because the system can not ionize.
+On the other hand, after ionization it is better to use velocity gauge since there is no potential anymore (because of SFA) and the elcetron is fully described by its momentum.
+
+This makes length gauge a fitting candidate for the coefficients used in the ODE ansatz.
+
+
+
+
+\subsection{tRecX}
+
+
+
+
+
+
 The coefficients from the ODE are not the only one im using. I used tRecX to calculate solve the entire TDSE and extract the coefficients from the whole wavefunction.
 As mentioned earlier, there are two ways to think about $\hat{\U}(t',t_0)\ket{\Psi}$. 
 First, solve the TDSE in the subspace of the bound states (we did that with the ODE) or solve the TDSE in the full Hilbert space and the project it onto bound states. 
 tRecX does the second one, which is far more complicated than what I did using the ODE.
 However, tRecX results are also gauge dependent, so we need to be careful with the gauge.
 Also it is far more difficult to interpret the rsults from tRecX since many effects can determine the time evolution of the coefficients and therefore the ionization rate but its of course helpfull to have two independent sources of in some sense the same thing.
-
-
 
 
 
@@ -114,18 +156,19 @@ This gives us
 For that I needed to solve the eigenvalueporblem again, and pass the eigenstates down to the function calculating the expectation value.
 There is defenitely a more elegant way to do that, especially efficiency wise, since the eigenstates are already calculated elsewhere, but for now this works.
 
-\subsection{ODE coefficients Implementation}
 
 
 
 
 \subsection{Dipole matrix Elements}
 The dipole matrix elements are an essential part of the formula in \eqref{eq:smatrix}. 
-Calculating it generall can be cumbersome, but in the case of hydrogen its even possible to do it analytically \ref{sec:dipolematrixelements}.
-However, its that easy to calculate because we made a very coarse approximation, since the final state after ionisation is in realtiy a plane wave, but we approximated it with that by using SFA.\\
-Furthermore, our problem is 
+Calculating it generall is difficult, but in the case of hydrogen its even possible to do it analytically \ref{sec:dipolematrixelements}.
+However, its that easy to calculate because we made a very coarse approximation, since the final state after ionisation is not in realtiy a plane wave, but we approximated it with that by using SFA.
 
+Furthermore, our problem is \\\\
 
+For the dipole matrix elements its alsow needed to simplify them as much as possible. 
+Sometimes certain parts cancel out later in the integration (phi integral) but the computer is not good with that, even some small numerical errors will cause it to be not exactl zero and messes up the calculation.
 
 
 

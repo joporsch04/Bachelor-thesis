@@ -149,20 +149,12 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
         eigenEnergy = get_eigenEnergy(excitedStates, get_p_only)
         config = get_hydrogen_states(excitedStates, get_p_only)
         rate = np.zeros(tar.size, dtype=np.cdouble)
-        rates_by_state = []
-
-        # if True:
-        #     laser_pulses.reset()
-        #     laser_pulses.add_pulse(450, 8e13, 0, 450/ AtomicUnits.nm / AtomicUnits.speed_of_light)
-        #     laser_pulses.add_pulse(250, 8e9, -np.pi/2, 250/ AtomicUnits.nm / AtomicUnits.speed_of_light, t0=-264.99)
-        #     t_min, t_max = laser_pulses.get_time_interval()
-        #     coeff_compare = get_coefficientsNumerical(excitedStates, EF_grid, get_p_only, gauge, laser_pulses)
-        #     phaseleft_compare = np.unwrap(np.angle(coeff_compare[0, :]))
-
 
         for state_idx in range(excitedStates):
             for state_range_idx in range(excitedStates):
-                if get_p_only:
+                print(state_idx, state_range_idx)
+
+                if get_p_only and True:
                     if state_idx != state_range_idx:
                         continue
                 f0 = np.zeros((Tar.size, tar.size), dtype=np.cdouble)
@@ -175,11 +167,8 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                 absright = np.abs(cRight)
 
                 if params['only_c0_is_1_rest_normal'] and state_idx == 0:
-                    only_absc0_is_1 = True
-                    if only_absc0_is_1:
-                        absleft, absright = absleft*0+1, absright*0+1
-                    else:
-                        phaseleft, phaseright, absleft, absright = phaseleft*0, phaseright*0, absleft*0+1, absright*0+1
+                    print("only_c0_is_1_rest_normal is set to True")
+                    absleft, absright = absleft*0+1, absright*0+1
 
                 for i in prange(Tar.size):
                     Ti=Ti_ar[i]
@@ -199,36 +188,30 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                             DelA = DelA + 2 * VPt * T
                             phase0[i, j]  = (intA2[tp] - intA2[tm])/2  + T*VPt**2-VPt*DelA +eigenEnergy[state_idx]*tp*dT-eigenEnergy[state_range_idx]*tm*dT -phaseleft[tm]+phaseright[tp]    #eigenEnergy[state_idx]*(T-tar[j])-eigenEnergy[state_range_idx]*(T+tar[j])
                             f0[i, j] = EF[tp]*EF[tm]*G1_T*absleft[tm]*absright[tp]
-                current_state_rate = 2*np.real(IOF(Tar, f0, (phase0)*1j))*4*np.pi       #21.5% is it the phase? or something else? whats causing the bump
-                rate += current_state_rate
+                #current_state_rate = 2*np.real(IOF(Tar, f0, (phase0)*1j))*4*np.pi       #21.5% is it the phase? or something else? whats causing the bump
+                current_state_rate = np.real(IOF(Tar, f0, (phase0)*1j))*4*np.pi
+                if state_range_idx == 0 and state_idx == 1: 
+                    rate -= current_state_rate
+                else:
+                    rate += current_state_rate
                 
                 if params['plotting']:
-                    rates_by_state.append(rate.copy())
+                    config_left_str = f"n={config[state_idx][0]}, l={config[state_idx][1]}, m={config[state_idx][2]}"
+                    config_right_str = f"n={config[state_range_idx][0]}, l={config[state_range_idx][1]}, m={config[state_range_idx][2]}"
                     
-                    config_str = f"n={config[state_idx][0]}, l={config[state_idx][1]}, m={config[state_idx][2]}"
-                    subplot_titles = (f"Rate (state {state_idx}, {config_str})", f"Coeff (state {state_idx}, {config_str})")
-                    fig = make_subplots(
-                        rows=1, cols=2, shared_xaxes=False, 
-                        subplot_titles=subplot_titles,
-                        horizontal_spacing=0.15
-                    )
+                    subplot_titles = (f"Rates for transition {state_idx}→{state_range_idx}", f"Coefficients (state {state_idx}, {config_left_str})")
+                    fig = make_subplots(rows=1, cols=2, shared_xaxes=False, subplot_titles=subplot_titles,horizontal_spacing=0.15)
+                    fig.add_trace(go.Scatter(x=tar, y=np.real(current_state_rate), mode='lines', name=f'Current transition {state_idx}→{state_range_idx} ({config_left_str}→{config_right_str})'), row=1, col=1)
+                    fig.add_trace(go.Scatter(x=tar, y=np.real(rate), mode='lines', name=f'Cumulative rate (all transitions so far)'), row=1, col=1)
+                    fig.add_trace(go.Scatter(x=EF_grid, y=abs(cLeft)**2, mode='lines', name=f'|c_{state_idx}|² ({config_left_str})'), row=1, col=2)
+                    if state_idx != state_range_idx:
+                        fig.add_trace(go.Scatter(x=EF_grid, y=abs(cRight)**2, mode='lines',name=f'|c_{state_range_idx}|² ({config_right_str})'), row=1, col=2)
                     
-                    for i in range(state_idx + 1):
-                        config_i = config[i]
-                        config_str_i = f"n={config_i[0]}, l={config_i[1]}, m={config_i[2]}"
-                        fig.add_trace(go.Scatter(x=tar, y=np.real(rates_by_state[i]), mode='lines', name=f'Rate up to state {i} ({config_str_i})'), row=1, col=1)
-                        fig.add_trace(go.Scatter(x=tar, y=np.real(current_state_rate), mode='lines', name=f'current Rate {i} ({config_str_i})'), row=1, col=1)
-                    
-                    fig.add_trace(
-                        go.Scatter(x=EF_grid, y=abs(cLeft)**2, mode='lines', name='unwrap(angle(cLeft))'), row=1, col=2)
-                    fig.update_layout(
-                        width=1200, height=400, xaxis=dict(range=[-50, 50]),
-                        title_text=f"State {state_idx} ({config_str})"
-                    )
-                    fig.update_xaxes(title_text="Time (a.u.)", row=1, col=1)
+                    fig.update_layout(width=1200, height=400, title_text=f"Transition {state_idx}→{state_range_idx}: {config_left_str}→{config_right_str}")
+                    fig.update_xaxes(title_text="Time (a.u.)", row=1, col=1, range=[-50, 50])
                     fig.update_xaxes(title_text="Time (a.u.)", row=1, col=2)
                     fig.update_yaxes(title_text="Rate", row=1, col=1)
-                    fig.update_yaxes(title_text="Coefficient", row=1, col=2)
+                    fig.update_yaxes(title_text="Coefficient magnitude squared", row=1, col=2)
                     fig.show()
 
         return rate
@@ -329,12 +312,12 @@ def IonRate(t_grid, laser_field, param_dict, dT, kernel_type="GASFIR", excitedSt
     dt=min(np.diff(t_grid))
     t_min, t_max = laser_field.get_time_interval()
     tau_injection=max(abs(t_min), abs(t_max))
-    T_grid=np.arange(0, tau_injection+dT, dT, dtype=np.float64)
+    T_grid=np.arange(-tau_injection, tau_injection+dT, dT, dtype=np.float64)
     if (excitedStates!=0):
         rate=Kernel_jit(t_grid, T_grid, laser_field, param_dict, kernel_type=kernel_type, excitedStates=excitedStates)
     else:
         f, phase=Kernel_jit(t_grid, T_grid, laser_field, param_dict, kernel_type=kernel_type, excitedStates=excitedStates)
-        rate=2*np.real(IOF(T_grid, f, phase))
+        rate=np.real(IOF(T_grid, f, phase))
 
     #rate=2*np.real(np.trapz(f*np.exp(phase), x=T_grid, axis=0))
     # the factor two is to account for the fact that the kernel 

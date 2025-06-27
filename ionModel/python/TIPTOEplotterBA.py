@@ -145,6 +145,10 @@ class TIPTOEplotterBA:
         ion_SFA_excited_tRecX = self.ion_SFA_excited_tRecX - self.ion_SFA_excited_tRecX[10]
         ion_SFA_excited_ODE = self.ion_SFA_excited_ODE - self.ion_SFA_excited_ODE[-1]
 
+        # N =18
+        # ion_SFA_excited_tRecX[:N] = 0
+        # ion_SFA_excited_tRecX[-N:] = 0
+
         ax3.plot(self.delay*self.AU.fs, ion_tRecX/(max(abs(ion_tRecX))), label=r'tRecX (reference)', color='black', linestyle='-')
         ax3.plot(self.delay*self.AU.fs, ion_SFA/(max(abs(ion_SFA))), label=r'Standard SFA', color='blue', linestyle='--', alpha=0.5)
         ax3.set_xlabel(r'Delay $\tau$ (fs)')
@@ -157,7 +161,7 @@ class TIPTOEplotterBA:
         ax4.plot(self.delay*self.AU.fs, ion_tRecX/(max(abs(ion_tRecX))), label=r'tRecX (reference)', color='black', linestyle='-')
         ax4.plot(self.delay*self.AU.fs, ion_SFA/(max(abs(ion_SFA))), label=r'Standard SFA', color='blue', linestyle='--', alpha=0.5)
         ax4.plot(self.delay*self.AU.fs, ion_SFA_excited_ODE/(max(abs(ion_SFA_excited_ODE))), label=r'Extended SFA (ODE coeff.)', color='red', linestyle=':')
-        ax4.plot(self.delay*self.AU.fs, ion_SFA_excited_tRecX/(max(abs(ion_SFA_excited_tRecX))), label=r'Extended SFA (tRecX coeff.)', color='green', linestyle='-.')
+        ax4.plot(self.delay*self.AU.fs, -ion_SFA_excited_tRecX/(max(abs(ion_SFA_excited_tRecX))), label=r'Extended SFA (tRecX coeff.)', color='green', linestyle='-.')
         ax4.set_xlabel(r'Delay $\tau$ (fs)')
         ax4.set_ylabel(r'Normalized Ionization Yield')
         ax4.set_xlim(-2, 2)
@@ -173,7 +177,7 @@ class TIPTOEplotterBA:
 
         plt.tight_layout()
         
-        pdf_filename = f'/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/plotsTIPTOE/2plot_SFA-comparison_{self.excitedStates}.pdf'
+        pdf_filename = f'/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/plotsTIPTOE/2plot_SFA-comparison_{self.excitedStates}_test-not+.pdf'
         with PdfPages(pdf_filename) as pdf:
             pdf.savefig(fig, dpi=300, bbox_inches='tight')
 

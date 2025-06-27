@@ -6,12 +6,12 @@
 \label{sec:dipolematrixelements}
 We want to derive the general transition dipole matrix elements into the continuum for an hydrogen-like atom. The general matrix element in our case is given by:
 \begin{equation*}
-    \uvec{d}(\uvec{p}) = \braket{\Pi|\vec{\hat{d}}|\Psi_{nlm}} \stackrel{\mathrm{a.u.}}{=} \braket{p|\vec{\hat{r}}|\Psi_{nlm}}
+    \uvec{d}_{nlm}(\uvec{p}) = \braket{\Pi|\vec{\hat{d}}|\Psi_{nlm}} \stackrel{\mathrm{a.u.}}{=} \braket{p|\vec{\hat{r}}|\Psi_{nlm}}
 \end{equation*}
 With $\ket{p}$ being a plane wave. By partitioning the $\hat{\vec{1}}$, and using the fact that $\vec{\hat{r}} \rightarrow i\nabla_{\uvec{p}}$ %Interesting because by choosing a certain way to display the operator we also choose a natural basis for the representation of the operator. Therefore I write \nabla_{\uvec{p}} instead of \nabla_{\vec{p}}.
 in momentum representation we find a generel formula for the transition:
 \begin{equation*}
-    \uvec{d}(\uvec{p}) = i\nabla_{\uvec{p}}\int \dd^3\uvec{x}\,\psi_{nlm}(\uvec{x}) e^{-i\uvec{p}\cdot\uvec{x}} = i\nabla_{\uvec{p}}\phi_{nlm}(\uvec{p})
+    \uvec{d}_{nlm}(\uvec{p}) = i\nabla_{\uvec{p}}\int \dd^3\uvec{x}\,\psi_{nlm}(\uvec{x}) e^{-i\uvec{p}\cdot\uvec{x}} = i\nabla_{\uvec{p}}\phi_{nlm}(\uvec{p})
 \end{equation*}
 In principle, this integral or more precise the Fouriertransformation of the wavefunction is all we need to do.
 Because of the structure of $\psi_{nlm}$ we can expect a result simular to (eqref psi=RY).

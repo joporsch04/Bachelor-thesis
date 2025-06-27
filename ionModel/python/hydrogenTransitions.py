@@ -80,7 +80,7 @@ def get_coefficientsNumerical(excitedStates, t_grid, get_only_p_states, Gauge, l
 
 def get_coefficientstRecX_delay(excitedStates, t_grid, get_p_states, params, delay):
 
-    delay_files_path = "/home/user/TIPTOE/new_data/450nm_dense_length_gauge/250nm/I_8.00e+13"
+    delay_files_path = "/home/user/TIPTOE/new_data/450nm_short_length_gauge/250nm/I_8.00e+13"
 
     count_files = [eintrag for eintrag in os.listdir(delay_files_path) if os.path.isdir(os.path.join(delay_files_path, eintrag)) and eintrag.isdigit()]
     files_number = max([int(eintrag) for eintrag in count_files])
@@ -262,37 +262,45 @@ def transitionElementtest(configState, p, pz, Az, Ip):      #first state and nor
         numerator = -432 * 2**(3/4) * np.sqrt(3) * Ip**2 * (44 * Ip**2 - 324 * Ip * (Az + p)**2 + 243 * (Az + p)**4) * (Az + pz)
         denominator = (termsqrtdenom * (2 * Ip + 9 * termsqrt)**5 * np.pi)
         return (numerator / denominator).astype(np.complex128)
+    # elif n == 2 and l == 1:
+    #     thetap = np.arccos(pz/(p+1e-14))
+    #     phi_p = 1
+    #     exp_minus_i_phi = np.exp(-1j * phi_p)
+    #     exp_i_phi = np.exp(1j * phi_p)
+    #     exp_2i_phi = np.exp(2j * phi_p)
+    #     cos_theta = np.cos(thetap)
+    #     sin_theta = np.sin(thetap)
+    #     numerator = (
+    #         32 * exp_minus_i_phi * (
+    #             -2 * exp_i_phi * (-1 + 20 * p**2) * cos_theta**2 +
+    #             np.sqrt(2) * ( -1 + exp_2i_phi ) * ( -1 + p + 4 * p**2 * (5 + p) ) * cos_theta * sin_theta +
+    #             2 * exp_i_phi * p * (1 + 4 * p**2) * sin_theta**2
+    #         )
+    #     )
+    #     denominator = (1 + 4 * p**2)**4 * np.pi
+    #     return (1/3*numerator / denominator).astype(np.complex128)
+    # elif n==3 and l==1:
+    #     thetap = np.arccos(pz/(p+1e-14))
+    #     phi_p = np.pi
+    #     exp_minus_i_phi = np.exp(-1j * phi_p)
+    #     exp_i_phi = np.exp(1j * phi_p)
+    #     exp_2i_phi = np.exp(2j * phi_p)
+    #     cos_theta = np.cos(thetap)
+    #     sin_theta = np.sin(thetap)
+    #     numerator = (
+    #         216 * exp_minus_i_phi * (
+    #             -2 * exp_i_phi * (1 - 90 * p**2 + 405 * p**4) * cos_theta**2 +
+    #             np.sqrt(2) * ( -1 + exp_2i_phi ) * (1 + p * (-1 - 90 * p + 81 * p**3 * (5 + p))) * cos_theta * sin_theta +
+    #             2 * exp_i_phi * p * (-1 + 81 * p**4) * sin_theta**2
+    #         )
+    #     )
+    #     denominator = (1 + 9 * p**2)**5 * np.pi
+    #     return (1/3*numerator / denominator).astype(np.complex128)
     elif n == 2 and l == 1:
-        thetap = np.arccos(pz/(p+1e14))
-        phi_p = 1
-        exp_minus_i_phi = np.exp(-1j * phi_p)
-        exp_i_phi = np.exp(1j * phi_p)
-        exp_2i_phi = np.exp(2j * phi_p)
-        cos_theta = np.cos(thetap)
-        sin_theta = np.sin(thetap)
-        numerator = (
-            32 * exp_minus_i_phi * (
-                -2 * exp_i_phi * (-1 + 20 * p**2) * cos_theta**2 +
-                np.sqrt(2) * ( -1 + exp_2i_phi ) * ( -1 + p + 4 * p**2 * (5 + p) ) * cos_theta * sin_theta +
-                2 * exp_i_phi * p * (1 + 4 * p**2) * sin_theta**2
-            )
-        )
-        denominator = (1 + 4 * p**2)**4 * np.pi
-        return (1/3*numerator / denominator).astype(np.complex128)
-    elif n==3 and l==1:
-        thetap = np.arccos(pz/(p+1e14))
-        phi_p = 1
-        exp_minus_i_phi = np.exp(-1j * phi_p)
-        exp_i_phi = np.exp(1j * phi_p)
-        exp_2i_phi = np.exp(2j * phi_p)
-        cos_theta = np.cos(thetap)
-        sin_theta = np.sin(thetap)
-        numerator = (
-            216 * exp_minus_i_phi * (
-                -2 * exp_i_phi * (1 - 90 * p**2 + 405 * p**4) * cos_theta**2 +
-                np.sqrt(2) * ( -1 + exp_2i_phi ) * (1 + p * (-1 - 90 * p + 81 * p**3 * (5 + p))) * cos_theta * sin_theta +
-                2 * exp_i_phi * p * (-1 + 81 * p**4) * sin_theta**2
-            )
-        )
-        denominator = (1 + 9 * p**2)**5 * np.pi
-        return (1/3*numerator / denominator).astype(np.complex128)
+        Az_plus_p_squared = termsqrt
+        
+        numerator = (16 * 1j * 2**(1/4) * Ip * np.sqrt(Ip**(3/2)) * np.sqrt(2) * (Ip + 2 * (Az_plus_p_squared - 6 * (Az + pz)**2)))
+        
+        denominator = (Ip + 2 * Az_plus_p_squared)**4 * np.pi
+        
+        return 1/3*(numerator / denominator).astype(np.complex128)
