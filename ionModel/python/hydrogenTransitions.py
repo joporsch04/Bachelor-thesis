@@ -262,40 +262,6 @@ def transitionElementtest(configState, p, pz, Az, Ip):      #first state and nor
         numerator = -432 * 2**(3/4) * np.sqrt(3) * Ip**2 * (44 * Ip**2 - 324 * Ip * (Az + p)**2 + 243 * (Az + p)**4) * (Az + pz)
         denominator = (termsqrtdenom * (2 * Ip + 9 * termsqrt)**5 * np.pi)
         return (numerator / denominator).astype(np.complex128)
-    # elif n == 2 and l == 1:
-    #     thetap = np.arccos(pz/(p+1e-14))
-    #     phi_p = 1
-    #     exp_minus_i_phi = np.exp(-1j * phi_p)
-    #     exp_i_phi = np.exp(1j * phi_p)
-    #     exp_2i_phi = np.exp(2j * phi_p)
-    #     cos_theta = np.cos(thetap)
-    #     sin_theta = np.sin(thetap)
-    #     numerator = (
-    #         32 * exp_minus_i_phi * (
-    #             -2 * exp_i_phi * (-1 + 20 * p**2) * cos_theta**2 +
-    #             np.sqrt(2) * ( -1 + exp_2i_phi ) * ( -1 + p + 4 * p**2 * (5 + p) ) * cos_theta * sin_theta +
-    #             2 * exp_i_phi * p * (1 + 4 * p**2) * sin_theta**2
-    #         )
-    #     )
-    #     denominator = (1 + 4 * p**2)**4 * np.pi
-    #     return (1/3*numerator / denominator).astype(np.complex128)
-    # elif n==3 and l==1:
-    #     thetap = np.arccos(pz/(p+1e-14))
-    #     phi_p = np.pi
-    #     exp_minus_i_phi = np.exp(-1j * phi_p)
-    #     exp_i_phi = np.exp(1j * phi_p)
-    #     exp_2i_phi = np.exp(2j * phi_p)
-    #     cos_theta = np.cos(thetap)
-    #     sin_theta = np.sin(thetap)
-    #     numerator = (
-    #         216 * exp_minus_i_phi * (
-    #             -2 * exp_i_phi * (1 - 90 * p**2 + 405 * p**4) * cos_theta**2 +
-    #             np.sqrt(2) * ( -1 + exp_2i_phi ) * (1 + p * (-1 - 90 * p + 81 * p**3 * (5 + p))) * cos_theta * sin_theta +
-    #             2 * exp_i_phi * p * (-1 + 81 * p**4) * sin_theta**2
-    #         )
-    #     )
-    #     denominator = (1 + 9 * p**2)**5 * np.pi
-    #     return (1/3*numerator / denominator).astype(np.complex128)
     elif n == 2 and l == 1:
         Az_plus_p_squared = termsqrt
         
@@ -304,3 +270,116 @@ def transitionElementtest(configState, p, pz, Az, Ip):      #first state and nor
         denominator = (Ip + 2 * Az_plus_p_squared)**4 * np.pi
         
         return 1/3*(numerator / denominator).astype(np.complex128)
+    elif n == 3 and l == 1:
+        Az_plus_p_squared = termsqrt
+        
+        numerator = (864 * 1j * 2**(3/4) * Ip * np.sqrt(Ip**(3/2)) * (-4 * Ip**2 + 180 * Ip * (Az + pz)**2 + 81 * (termsqrt**2 - 6 * termsqrt * (Az + pz)**2)))
+        
+        denominator = (2 * Ip + 9 * Az_plus_p_squared)**5 * np.pi
+        
+        return 1/3*(numerator / denominator).astype(np.complex128)
+    
+@njit(cache=True, fastmath=True)
+def d10(psquared, pz, Ip):
+    numerator = -16 * 2**(3/4) * Ip**2 * pz
+    denominator = np.sqrt(Ip**(3/2)) *(2 * Ip + psquared)**3 * np.pi
+    return (numerator / denominator).astype(np.complex128)
+
+# def d21(psquared, pz, phi_p, Ip):
+#     term1 = np.sqrt(2) * (Ip + 2 * (psquared - 6 * pz**2))
+#     term2 = 24j * np.sqrt(psquared) * pz * np.sqrt(1 - pz**2/psquared) * np.sin(phi_p)
+#     numerator = 16j * 2**(1/4) * Ip * np.sqrt(Ip**(3/2)) * (term1 + term2)
+#     denominator = (Ip + 2 * psquared)**4 * np.pi
+#     return (1j)/3*(numerator / denominator).astype(np.complex128)
+
+# def d31(psquared, pz, phi_p, Ip):
+#     term1 = 1j * np.sqrt(2) * (-4 * Ip**2 + 180 * Ip * pz**2 + 81 * (psquared**2 - 6 * psquared * pz**2))
+#     term2 = 36 * np.sqrt(psquared) * (10 * Ip - 27 * psquared) * pz * np.sqrt(1 - pz**2/psquared) * np.sin(phi_p)
+#     numerator = 864 * 2**(1/4) * Ip * np.sqrt(Ip**(3/2)) * (term1 + term2)
+#     denominator = (2 * Ip + 9 * psquared)**5 * np.pi
+#     return (1j)/3*(numerator / denominator).astype(np.complex128)
+
+@njit(cache=True, fastmath=True)
+def transitionElement_BA(configState, configStateRange, psquared_m, psquared_p, pz_m, pz_p, Ip):      #first state and normal SFA are exactly 4pi apart
+    n, l, m = configState
+    n_range, l_range, m_range = configStateRange
+
+    if n == 1 and l == 0 and n_range == 1 and l_range == 0:
+        return 2*np.pi*np.conjugate(d10(psquared_m, pz_m, Ip)) * d10(psquared_p, pz_p, Ip)
+    
+    elif n == 1 and l == 0 and n_range == 2 and l_range == 1:
+        numerator_1 = 16 * 2**(3/4) * Ip**2 * pz_m
+        denominator_1 = np.sqrt(Ip**(3/2)) *(2 * Ip + psquared_m)**3 * np.pi
+        d10_m = np.conjugate(1/3*(numerator_1 / denominator_1)).astype(np.complex128)
+
+        term1 = np.sqrt(2) * (Ip + 2 * (psquared_p - 6 * pz_p**2))
+        numerator_2 = 16j * 2**(1/4) * Ip * np.sqrt(Ip**(3/2)) * term1
+        denominator_2 = (Ip + 2 * psquared_p)**4 * np.pi
+        d21_p = 1/3*(numerator_2 / denominator_2).astype(np.complex128)
+
+        return 2*np.pi*d10_m * d21_p
+    
+    elif n == 2 and l == 1 and n_range == 1 and l_range == 0:
+        numerator_1 = 16 * 2**(3/4) * Ip**2 * pz_m
+        denominator_1 = np.sqrt(Ip**(3/2)) *(2 * Ip + psquared_m)**3 * np.pi
+        d10_m = 1/3*(numerator_1 / denominator_1).astype(np.complex128)
+
+        term1 = np.sqrt(2) * (Ip + 2 * (psquared_p - 6 * pz_p**2))
+        numerator_2 = 16j * 2**(1/4) * Ip * np.sqrt(Ip**(3/2)) * term1
+        denominator_2 = (Ip + 2 * psquared_p)**4 * np.pi
+        d21_p = np.conjugate(1/3*(numerator_2 / denominator_2)).astype(np.complex128)
+
+        return 2*np.pi*d21_p * d10_m
+
+    # elif n == 2 and l == 1 and n_range == 2 and l_range == 1:
+    #     term1_m = np.sqrt(2) * (Ip + 2 * (psquared_m - 6 * pz_m**2))
+    #     term2_m = 24j * pz_m * np.sqrt(psquared_m - pz_m**2)
+
+    #     term1_p = np.sqrt(2) * (Ip + 2 * (psquared_p - 6 * pz_p**2))
+    #     term2_p = 24j * pz_p * np.sqrt(psquared_p - pz_p**2)
+
+    #     numerator_1_m = np.conjugate(16j * 2**(1/4) * Ip * np.sqrt(Ip**(3/2)) * term1_m)
+    #     numerator_2_m = np.conjugate(16j * 2**(1/4) * Ip * np.sqrt(Ip**(3/2)) * term2_m)
+    #     denominator_m = (Ip + 2 * psquared_m)**4 * np.pi
+
+    #     numerator_1_p = 16j * 2**(1/4) * Ip * np.sqrt(Ip**(3/2)) * term1_p
+    #     numerator_2_p = 16j * 2**(1/4) * Ip * np.sqrt(Ip**(3/2)) * term2_p
+    #     denominator_p = (Ip + 2 * psquared_p)**4 * np.pi
+        
+    #     firstterm = 2*np.pi*np.conjugate(numerator_1_m/denominator_m)*numerator_1_p/denominator_p
+    #     secondterm = np.pi*np.conjugate(numerator_2_m/denominator_m)*numerator_2_p/denominator_p
+
+    #     return 1/9*(firstterm + secondterm).astype(np.complex128)    #+1 because of i*i^*, coming from d=i\nabla_p\phi(p)
+
+    elif n == 2 and l == 1 and n_range == 2 and l_range == 1:
+        term1 = (Ip + 2 * (psquared_m - 6 * pz_m**2)) * (Ip + 2 * (psquared_p - 6 * pz_p**2))
+        term2 = 144 * pz_m * pz_p * np.sqrt(psquared_p - pz_p**2) * np.sqrt(psquared_m - pz_m**2)
+        
+        numerator = 1024 * np.sqrt(2) * Ip**(7/2) * (term1 + term2)
+        denominator = (Ip + 2 * psquared_m)**4 * (Ip + 2 * psquared_p)**4 * np.pi
+        
+        return 1/9*(numerator / denominator).astype(np.complex128)
+    
+    elif n == 3 and l == 1 and n_range == 3 and l_range == 1:
+        # Calculate sqrt term: sqrt[(p1^2 - pz1^2) * (p2^2 - pz2^2)]
+        sqrt_term = np.sqrt((psquared_m - pz_m**2) * (psquared_p - pz_p**2))
+        
+        # Terms with the sqrt factor
+        term1 = 32400 * Ip**2 * pz_m * pz_p * sqrt_term
+        term2 = -87480 * Ip * psquared_m * pz_m * pz_p * sqrt_term
+        term3 = -87480 * Ip * psquared_p * pz_m * pz_p * sqrt_term
+        term4 = 236196 * psquared_m * psquared_p * pz_m * pz_p * sqrt_term
+        
+        # Product of two expressions
+        expr1 = 4 * Ip**2 - 180 * Ip * pz_m**2 - 81 * (psquared_m**2 - 6 * psquared_m * pz_m**2)
+        expr2 = 4 * Ip**2 - 180 * Ip * pz_p**2 - 81 * (psquared_p**2 - 6 * psquared_p * pz_p**2)
+        term5 = expr1 * expr2
+        
+        # Complete numerator
+        numerator = 2985984 * np.sqrt(2) * Ip**(7/2) * (term1 + term2 + term3 + term4 + term5)
+        
+        # Denominator
+        denominator = (2 * Ip + 9 * psquared_m)**5 * (2 * Ip + 9 * psquared_p)**5 * np.pi
+        
+        # Return result with normalization factor
+        return 1/9 * (numerator / denominator).astype(np.complex128)

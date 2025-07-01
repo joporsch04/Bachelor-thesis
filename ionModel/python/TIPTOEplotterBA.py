@@ -164,7 +164,7 @@ class TIPTOEplotterBA:
         ax4.plot(self.delay*self.AU.fs, -ion_SFA_excited_tRecX/(max(abs(ion_SFA_excited_tRecX))), label=r'Extended SFA (tRecX coeff.)', color='green', linestyle='-.')
         ax4.set_xlabel(r'Delay $\tau$ (fs)')
         ax4.set_ylabel(r'Normalized Ionization Yield')
-        ax4.set_xlim(-2, 2)
+        #ax4.set_xlim(-2, 2)
         ax4.legend(loc='upper right')
         ax4.set_title('(b) Extended SFA Models vs Reference')
         ax4.grid(True, alpha=0.3)

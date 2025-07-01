@@ -18,7 +18,7 @@ from numba import njit, typed, types, prange
 import json
 # from numba.core import types
 # from numba.typed import Dict
-from hydrogenTransitions import transitionElement, get_coefficientstRecX, get_eigenEnergy, get_hydrogen_states, transitionElementtest, get_coefficientsNumerical, get_coefficientstRecX_delay
+from hydrogenTransitions import transitionElement, get_coefficientstRecX, get_eigenEnergy, get_hydrogen_states, transitionElementtest, get_coefficientsNumerical, get_coefficientstRecX_delay, transitionElement_BA
 import matplotlib.pyplot as plt
 import csv
 import plotly.graph_objects as go
@@ -153,10 +153,6 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
         for state_idx in range(excitedStates):
             for state_range_idx in range(excitedStates):
                 print(state_idx, state_range_idx)
-
-                if get_p_only and True:
-                    if state_idx != state_range_idx:
-                        continue
                 f0 = np.zeros((Tar.size, tar.size), dtype=np.cdouble)
                 phase0 = np.zeros((Tar.size, tar.size), dtype=np.cdouble)
                 cLeft = coefficients[state_idx, :]
@@ -165,6 +161,12 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                 phaseright = np.unwrap(np.angle(cRight))
                 absleft = np.abs(cLeft)
                 absright = np.abs(cRight)
+
+                if state_idx != state_range_idx:
+                    continue
+
+                # if not (state_idx == state_range_idx and state_idx == 1):
+                #     continue
 
                 if params['only_c0_is_1_rest_normal'] and state_idx == 0:
                     print("only_c0_is_1_rest_normal is set to True")
@@ -182,18 +184,22 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                             DelA = (intA[tp] - intA[tm])-2*VPt*T
                             VP_p=VP[tp]-VPt
                             VP_m=VP[tm]-VPt
-                            f_t_1= np.conjugate(transitionElementtest(config[state_idx], p, pz, VP_m, E_g))*transitionElementtest(config[state_range_idx], p, pz, VP_p, E_g)  #25.9%      #for excitedState=1 use only phase of coefficients to see stark effect
+                            #f_t_1= np.conjugate(transitionElementtest(config[state_idx], p, pz, VP_m, E_g))*transitionElementtest(config[state_range_idx], p, pz, VP_p, E_g)  #25.9%      #for excitedState=1 use only phase of coefficients to see stark effect
+                            psquared_m = p**2 + VP_m**2 + 2*pz*VP_m +1e-12
+                            pzAz_m = pz + VP_m
+                            psquared_p = p**2 + VP_p**2 + 2*pz*VP_p +1e-12
+                            pzAz_p = pz + VP_p
+                            f_t_1 = transitionElement_BA(config[state_idx], config[state_range_idx], psquared_m, psquared_p, pzAz_m, pzAz_p, E_g)   #np.conjugate(transitionElement_BA(config[state_idx], psquared_m, pzAz_m, phi_grid, E_g))*transitionElement_BA(config[state_range_idx], psquared_p, pzAz_p, phi_grid, E_g)
                             G1_T_p=np.trapz(f_t_1*np.exp(1j*pz*DelA)*np.sin(theta), Theta_grid)     #17%
                             G1_T=np.trapz(G1_T_p*window*p_grid**2*np.exp(1j*p_grid**2*T), p_grid)   #11.7%
                             DelA = DelA + 2 * VPt * T
-                            phase0[i, j]  = (intA2[tp] - intA2[tm])/2  + T*VPt**2-VPt*DelA +eigenEnergy[state_idx]*tp*dT-eigenEnergy[state_range_idx]*tm*dT -phaseleft[tm]+phaseright[tp]    #eigenEnergy[state_idx]*(T-tar[j])-eigenEnergy[state_range_idx]*(T+tar[j])
+                            phase0[i, j] = (intA2[tp] - intA2[tm])/2  + T*VPt**2-VPt*DelA +eigenEnergy[state_idx]*tp*dT-eigenEnergy[state_range_idx]*tm*dT -phaseleft[tm]+phaseright[tp]    #eigenEnergy[state_idx]*(T-tar[j])-eigenEnergy[state_range_idx]*(T+tar[j])
                             f0[i, j] = EF[tp]*EF[tm]*G1_T*absleft[tm]*absright[tp]
                 #current_state_rate = 2*np.real(IOF(Tar, f0, (phase0)*1j))*4*np.pi       #21.5% is it the phase? or something else? whats causing the bump
-                current_state_rate = np.real(IOF(Tar, f0, (phase0)*1j))*4*np.pi
-                if state_range_idx == 0 and state_idx == 1: 
-                    rate -= current_state_rate
-                else:
-                    rate += current_state_rate
+                #current_state_rate = np.real(IOF(Tar, f0, (phase0)*1j))*2
+                current_state_rate = np.real(np.trapz(f0*np.exp(phase0*1j), x=Tar, axis=0))*2
+                rate += current_state_rate
+                # rate = current_state_rate = np.real(IOF(Tar, f0, (phase0)*1j))*4*np.pi
                 
                 if params['plotting']:
                     config_left_str = f"n={config[state_idx][0]}, l={config[state_idx][1]}, m={config[state_idx][2]}"
@@ -311,8 +317,8 @@ def IonRate(t_grid, laser_field, param_dict, dT, kernel_type="GASFIR", excitedSt
     t_grid=np.array(t_grid, dtype=np.float64)
     dt=min(np.diff(t_grid))
     t_min, t_max = laser_field.get_time_interval()
-    tau_injection=max(abs(t_min), abs(t_max))
-    T_grid=np.arange(-tau_injection, tau_injection+dT, dT, dtype=np.float64)
+    tau_injection=int(max(abs(t_min), abs(t_max)))
+    T_grid=np.arange(0, tau_injection+dT, dT, dtype=np.float64)
     if (excitedStates!=0):
         rate=Kernel_jit(t_grid, T_grid, laser_field, param_dict, kernel_type=kernel_type, excitedStates=excitedStates)
     else:

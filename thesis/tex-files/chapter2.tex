@@ -458,12 +458,12 @@ Changing variables to $t=\frac{t_2+t_1}{2}$ and $T=\frac{t_2-t_1}{2}$ and using 
 \begin{align*}
     \Gamma_{\mathrm{SFA}}(t) &= \int \dd^3 p \int_{-\infty}^{\infty} \dd T \, e^{\frac{i}{2}\int_{t-T}^{t+T}(\uvec{p}+A_z(t''))^2\dd t''} E_z(t-T) E_z(t+T)\\
     &\times\left(\sum_{n}e^{i(t-T)E_n}c_n^*(t-T)d_{z,n}^*(\uvec{p}+A_z(t-T))\right)\left(\sum_{n}e^{-i(t+T)E_n}c_n(t+T)d_{z,n}(\uvec{p}+A_z(t+T))\right)\\
-    &= \sum_{n_1}\sum_{n_2} \int_{-\infty}^{\infty} \dd p\,p^2\int_0^{\pi} \dd\theta\,\sin\theta \int_0^{2\pi}\dd \phi\int_{-\infty}^{\infty} \dd T \, e^{\frac{i}{2}\int_{t-T}^{t+T}(\uvec{p}+A_z(t''))^2\dd t''} e^{i(t-T)E_{n_1}-i(t+T)E_{n_2}}\\
+    &= \sum_{n_1}\sum_{n_2} \int_0^{\infty} \dd p\,p^2\int_0^{\pi} \dd\theta\,\sin\theta \int_0^{2\pi}\dd \phi\int_{-\infty}^{\infty} \dd T \, e^{\frac{i}{2}\int_{t-T}^{t+T}(\uvec{p}+A_z(t''))^2\dd t''} e^{i(t-T)E_{n_1}-i(t+T)E_{n_2}}\\
     &\times E_z(t-T) E_z(t+T)c_{n_1}^*(t-T)c_{n_2}(t+T) d_{z,n_1}^*(\uvec{p}+A_z(t-T))d_{z,n_2}(\uvec{p}+A_z(t+T))
 \end{align*}
 Now we change the integration from $\vec{p}$ to $\vec{p}+\vec{A}$ and defining $\vec{\Delta}(t') = \vec{A}(t+t') - \vec{A}(t)$ gives us:
 \begin{align*}
-    &\sum_{n_1}\sum_{n_2} \int_{-\infty}^{\infty} \dd p\,p^2\int_0^{\pi} \dd\theta\,\sin\theta \int_0^{2\pi}\dd \phi\int_{-\infty}^{\infty} \dd T \, e^{\frac{i}{2}\int_{-T}^{T}(\uvec{p}+\Delta_z(t''))^2\dd t''} e^{i(t-T)E_{n_1}-i(t+T)E_{n_2}}\\
+    &\sum_{n_1}\sum_{n_2} \int_0^{\infty} \dd p\,p^2\int_0^{\pi} \dd\theta\,\sin\theta \int_0^{2\pi}\dd \phi\int_{-\infty}^{\infty} \dd T \, e^{\frac{i}{2}\int_{-T}^{T}(\uvec{p}+\Delta_z(t''))^2\dd t''} e^{i(t-T)E_{n_1}-i(t+T)E_{n_2}}\\
     &\times E_z(t-T) E_z(t+T)c_{n_1}^*(t-T)c_{n_2}(t+T) d_{z,n_1}^*(\uvec{p}+\Delta_z(-T))d_{z,n_2}(\uvec{p}+\Delta_z(T))
 \end{align*}
 Also the integrand in the exponential function can be further simplifyed:
@@ -477,7 +477,7 @@ Because in the code as well as in \cite{Theory_NPS} the notation
 \end{equation*}
 was used, we can write the final SFA rate thats later being implemented as
 \begin{align*}
-    \Gamma_{\mathrm{SFA}}(t) &= \sum_{n_1}\sum_{n_2} \int_{-\infty}^{\infty} \dd p\,p^2\int_0^{\pi} \dd\theta\,\sin\theta \int_0^{2\pi}\dd \phi\int_{-\infty}^{\infty} \dd T\\
+    \Gamma_{\mathrm{SFA}}(t) &= \sum_{n_1}\sum_{n_2} \int_0^{\infty} \dd p\,p^2\int_0^{\pi} \dd\theta\,\sin\theta \int_0^{2\pi}\dd \phi\int_{-\infty}^{\infty} \dd T\\
     &\times \exp\left(i\vec{p}^2T + ip\cos\theta\bar{\Delta}_z^k +  \frac{i}{2}\bar{\Delta}_z^2  + i(t-T)E_{n_1}-i(t+T)E_{n_2}\right)\\
     &\times E_z(t-T) E_z(t+T)c_{n_1}^*(t-T)c_{n_2}(t+T) d_{z,n_1}^*(\uvec{p}+\Delta_z(-T))d_{z,n_2}(\uvec{p}+\Delta_z(T))
 \end{align*}

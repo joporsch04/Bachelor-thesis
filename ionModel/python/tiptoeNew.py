@@ -44,12 +44,12 @@ def main(excitedstates):
         'excitedStates': excitedstates, 
         'coeffType': 'trecx', 
         'gauge': 'length', 
-        'get_p_only': False, 
+        'get_p_only': True, 
         'only_c0_is_1_rest_normal': False, 
         'delay': -224.97,
         'plotting': False
     }
-    REDO_comp = False
+    REDO_comp = True
     for file_name, lam0_pump, I_pump, lam0_probe, I_probe, FWHM_probe, cep_pump, cep_probe in file_params:
 
         # delaydf = pd.read_csv("/home/user/TIPTOE-Hydrogen/plot_ion_tau_calc_output_data/ionProb_450nm_250nm_8e+13.csv")
@@ -76,6 +76,13 @@ def main(excitedstates):
             na_grad_SFA=np.gradient(ion_na_rate_SFA, laser_pulses.Electric_Field(time_recon))
             laser_pulses.reset()
             for tau in delay:
+                if abs(tau) > 100:
+                    ion_qs.append(0)
+                    ion_na_GASFIR.append(0)
+                    ion_na_SFA.append(0)
+                    ion_na_reconstructed_GASFIR.append(0)
+                    ion_na_reconstructed_SFA.append(0)
+                    continue
                 params['delay'] = -tau
                 print(tau)
                 laser_pulses.add_pulse(lam0_pump, I_pump, cep_pump, lam0_pump/ AtomicUnits.nm / AtomicUnits.speed_of_light)
@@ -146,14 +153,14 @@ def main(excitedstates):
         # output_path = f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/plot_{file_name}_{excitedstates}_maxnhigh.html"
         # fig.write_html(output_path)
         # print(f"Plot saved to: {output_path}")
-        # fig.show()
+        fig.show()
 
         ion_SFA_excited_tRecX = ion_na_SFA
         ion_SFA_excited_ODE = np.zeros(len(delay))#ion_SFA_ODE_new
 
         plotterBA = TIPTOEplotterBA(excitedstates, ion_tRecX, ion_na_GASFIR, ion_SFA_excited_tRecX, ion_SFA_excited_ODE, delay, time, AU, lam0_pump, I_pump, lam0_probe, I_probe, FWHM_probe)
-        plotterBA.plot2SFA()
+        #plotterBA.plot2SFA()
 
 
 if __name__ == "__main__":
-    main(2)
+    main(3)
