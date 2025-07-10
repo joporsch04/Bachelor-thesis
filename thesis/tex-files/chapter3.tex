@@ -1,3 +1,6 @@
+This chapter is about introducing the methods used in the thesis.
+This includes numerical methods for solving or implementing some type of equation as well as more physical methods that are used for comparing results or get more meaning to the data.
+
 The main reason for making these ionization models is because one want to avoid solveng the schroedinger equation numerically because its time consuming and contains numerical difficulties.
 However, for comparing and verifying the models, one needs to solve it numerically.\\
 Furthermore, numerically solving the TDSE is just good for ionization propabilities and not rates.\\
@@ -44,53 +47,51 @@ For more details about the implementation, see chapter 4.
 
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%
-\section{TIPTOE}
-This mostly follows \cite{Park:18} and \cite{manorammasterthesis}.
-\paragraph{Why do we need TIPTOE?} 
-In order to verify the ionization rates determined by the models, we need to compare it with something that is experimentally accessible.
-However an ionization rate is not a quantum mechanical observable, we can only measure the ionization yield so $\int \Gamma(t) \dd t$.
 
-In some way, TIPTOE motivates this thesis, since TIPTOE's results showed us the break in time reversal symmetrie mentioned earlier.
-But what is TIPTOE? TIPTOE \cite{Park:18} is short for tunneling ionization with a perturbation for the time-domain observation of an electric field. 
-It is used for direct sampling an electric pulse in the femtosecond to attosecond regime using quasistatic subcycle tunneling ionization in a gaseous medium or air.
-Tunneling ionization differes from multiphoton ionization in the sense that the laser field is so strong that it deforms the coulomb barrier of the atom, allowing the electron to tunnel through it.
-However, our motivation to establish an instantanious ionization rate remains promising, especially because in the models that describe tunneling ionization, the ionization rate only depends on the field strength of the laser pulse.
-% 16. M. V. Ammosov, N. B. Delone, and V. P. Krainov, “Tunnel ionization of
-% complex atoms and of atomic ions in an alternating electromagnetic
-% field,” Sov. Phys. JETP 64, 1191–1194 (1986).
-% 17. L. V. Keldysh, “Ionization in the field of a strong electromagnetic wave,”
-% Sov. Phys. JETP 20, 1307 (1965).
-A typical TIPTOE simulation consist of two linear polarised lase pulses, a "fundamental" and a "signal" pulse, similar to common pump-probe experiments. 
-The drive pulse is the pulse we want to sample at the end just by measuren the ionization yield for a certain medium.
-In the first order we can approximate the ionization rate as
-\begin{equation*}
-    \Gamma(E_{\mathrm{F}}+E_{\mathrm{S}})\approx\Gamma(E_{\mathrm{F}})+\left.E_{\mathrm{S}}\frac{\dd \Gamma(E_{\mathrm{S}})}{\dd E}\right|_{E=E_{\mathrm{F}}}
-\end{equation*}
-However in this approximation we are going to neglect the depletion of the ground state. 
-Then the total ionisation yield $N$ obtained by the two pulses is given by
-\begin{equation*}
-    N_{\mathrm{total}}=N_0+\delta N = \int \dd t\,\Gamma(E_{\mathrm{F}}(t))+\int \dd t\,E_{\mathrm{S}}(t)\left.\frac{\dd \Gamma(E_{\mathrm{S}}(t))}{\dd E}\right|_{E=E_{\mathrm{F}}(t)}
-\end{equation*}
-By changing the delay $\tau$ between the two pulses, the ionization yield of course different values.
-With this we can find that:
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{TIPTOE}
+This section mostly follows \cite{Park:18} and \cite{manorammasterthesis}.
+To verify the ionization rates determined by the models, a comparison with experimentally accessible quantities is necessary.
+However, since an ionization rate is not a quantum mechanical observable, only the ionization yield $\int \Gamma(t) \dd t$ can be measured.
+
+TIPTOE \cite{Park:18} (Tunneling Ionization with a Perturbation for the Time-domain Observation of an Electric field) is a method for direct sampling of an electric pulse in the femtosecond to attosecond regime using quasistatic subcycle tunneling ionization in a gaseous medium or air.
+Tunneling ionization differs from multiphoton ionization in that the laser field is strong enough to deform the Coulomb barrier of the atom, allowing the electron to tunnel through it.
+
+A typical TIPTOE simulation consists of two linearly polarized laser pulses: a "fundamental" and a "signal" pulse, similar to common pump-probe experiments.
+The drive pulse is the pulse to be sampled, with the ionization yield of a certain medium providing the measurement.
+In first order, the ionization rate can be approximated as
 \begin{equation}
-    \delta N(\tau)\propto E_{\mathrm{S}}(\tau)      \label{eq:tiptoeprop}
+\Gamma(E_{\mathrm{F}}+E_{\mathrm{S}})\approx\Gamma(E_{\mathrm{F}})+\left.E_{\mathrm{S}}\frac{\dd \Gamma(E_{\mathrm{S}})}{\dd E}\right|{E=E{\mathrm{F}}}
 \end{equation}
-so we can sample the field amplitude of the signal pulse by measuring the ionization yield for different delays.
-The TIPTOE method can be applied for the broad spectral range of the signal pulse, as long as the fundamental pulse is shorter than $1.5$ optical cycles.\\\\
-Now we have a method to compare both ways and egt insight in the dynamics of the electron. 
-This method is very usefull because the problem of numerical simulations giving good predicitons about ionization propabilities and analytical models about ionization rates.
-Making a TIPTOE simulation can help to "reconstruct" the ionization dynamics which is particulary usefull in the context of this thesis.
-We will later integrate the ionization rate of $E_{\mathrm{F}}+E_{\mathrm{S}}$ over the full time domain and compare the ionization yield for different delay with the resluts from the numerical solution of the TDSE.
-The results of the TIPTOE simulation from the numerical solution of the TDSE (tRecX) compared to the approximative methods (variations of SFA) are shown in the figures in chapter 5.
-To have a better view on the actual physics in TIPTOE I subtracted the "background" ionization from $E_F(t)$ and normalized the ionization yield so the formula in plot ???? reads
+In this approximation, depletion of the ground state is neglected.
+The total ionization yield $N$ obtained by the two pulses is given by
 \begin{equation*}
-    \frac{N_{\mathrm{total}}-N_0}{N_{\mathrm{max}}}=\frac{\delta N(\tau)}{N_{\mathrm{max}}}
+N_{\mathrm{total}}=N_0+\delta N = \int \dd t,\Gamma(E_{\mathrm{F}}(t))+\int \dd t,E_{\mathrm{S}}(t)\left.\frac{\dd \Gamma(E_{\mathrm{S}}(t))}{\dd E}\right|{E=E{\mathrm{F}}(t)}
 \end{equation*}
-Nevertheless, one can also find some interesting physics by just comparing the net ionization yield $N_{\mathrm{total}}$ but later in chapter 5.\\\\
-Usually TIPTOE is not used for this kind of analysis, rather for the sampling aspect.
-This makes instantanious ionization rates are so usefull because with TIPTOE it allows to sample the electric field of a laser pulse in the femtosecond to attosecond regime which has of course a broad range of applications for instance in laser spectroskopy or medical physics.
+By varying the delay $\tau$ between the two pulses, the ionization yield takes on different values.
+From this, it follows that:
+\begin{equation}
+\delta N(\tau)\propto E_{\mathrm{S}}(\tau) \label{eq:tiptoeprop}
+\end{equation}
+Thus, the field amplitude of the signal pulse can be sampled by measuring the ionization yield for different delays.
+The TIPTOE method can be applied across a broad spectral range of the signal pulse, as long as the fundamental pulse is shorter than $1.5$ optical cycles.
+
+This method provides a way to compare both approaches and gain insight into the dynamics of the electron.
+TIPTOE is particularly useful because numerical simulations can provide good predictions about ionization probabilities, while analytical models describe ionization rates.
+A TIPTOE simulation can help reconstruct the ionization dynamics, which is especially relevant in the context of this thesis.
+Later, the ionization rate of $E_{\mathrm{F}}+E_{\mathrm{S}}$ will be integrated over the full time domain, and the ionization yield for different delays will be compared with the results from the numerical solution of the TDSE.
+The results of the TIPTOE simulation from the numerical solution of the TDSE (tRecX) compared to the approximate methods (variations of SFA) are shown in the figures in Chapter 5.
+
+For better visualization of the underlying physics in TIPTOE, the "background" ionization from $E_F(t)$ is subtracted, and the ionization yield is normalized, so the formula in plot ???? reads
+\begin{equation*}
+\frac{N_{\mathrm{total}}-N_0}{N_{\mathrm{max}}}=\frac{\delta N(\tau)}{N_{\mathrm{max}}}
+\end{equation*}
+However, interesting physics can also be observed by comparing the net ionization yield $N_{\mathrm{total}}$, as discussed later in Chapter 5.
+
+Typically, TIPTOE is not used for this kind of analysis but rather for its sampling capabilities.
+Instantaneous ionization rates are highly useful because TIPTOE enables sampling of the electric field of a laser pulse in the femtosecond to attosecond regime, which has broad applications in fields such as laser spectroscopy and medical physics.
+
 
 
 

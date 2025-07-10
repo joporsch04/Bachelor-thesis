@@ -78,9 +78,46 @@ The final formula $\phi_{nlm}(\uvec{p})$ that can be also found in [atoms and mo
 
 
 
+%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{Improved rate}
+Usually all thats left is to differentiate \eqref{eq:phi_nlm} with respect to $\uvec{p}$.
+However, before that it is possible to directly improve the SFA rate by doing the integration over $\theta_p$ and $\phi_p$ analytically.
+The rate according to chapter 2 is given by:
+\begin{align*}
+    \Gamma_{\mathrm{SFA}}(t) &= \sum_{n_1}\sum_{n_2} \int_0^{\infty} \dd p\,p^2\int_0^{\pi} \dd\theta_p\,\sin\theta_p \int_0^{2\pi}\dd \phi_p\int_{-\infty}^{\infty} \dd T\\
+    &\times \exp\left(i\vec{p}^2T + ip\cos\theta_p\bar{\Delta}_z^k +  \frac{i}{2}\bar{\Delta}_z^2  + i(t-T)E_{n_1}-i(t+T)E_{n_2}\right)\\
+    &\times E_z(t-T) E_z(t+T)c_{n_1}^*(t-T)c_{n_2}(t+T) d_{z,n_1}^*(\uvec{p}+\Delta_z(-T))d_{z,n_2}(\uvec{p}+\Delta_z(T))
+\end{align*}
+As mentioned before the dipole transition matrix element can be written in the following form convenient form:
+\begin{equation*}
+    d_{z,nlm}(\uvec{p}) = \left[i\nabla_{\uvec{p}}\phi_{nlm}(\uvec{p})\right]_z = iY_{lm}(\theta_p, \phi_p)\left(\cos\theta_p\frac{\partial F_{nl}}{\partial p}-\frac{\sin\theta_p}{p}\frac{\partial F_{nl}}{\partial p}\right)
+\end{equation*}
+Note that here the $z$ component of a gradient in spherical coordinates was taken. The exact formula can be easily computed using the transformation between cartesian and spherical coordinates.
 
+The integration over $\theta_p$ is difficult and might be not possible to do analytically.
+However for the integral over $\phi_p$ we only have to solve the following:
+\begin{align*}
+    \int_{0}^{2\pi}\dd \phi_p\, Y_{l'm'}^*(\theta_p, \phi_p) Y_{lm}(\theta_p, \phi_p) &= \frac{1}{4\pi}\sqrt{(2l+1)(2l'+1)\frac{(l-m)!(l'-m')}{(l+m)!(l'+m')!}}\int_{0}^{2\pi}\dd \phi_p\, \e^{i(m-m')\phi_p}\\
+    &= \frac{1}{2}\sqrt{(2l+1)(2l'+1)\frac{(l-m)!(l'-m)}{(l+m)!(l'+m)!}}
+\end{align*}
 
+Further since only the $z$ component of the gradient is important only the partial derivative of $\phi_{nlm}(\uvec{p})$ with respect to $p$ is needed.
+This can be also done analytically.
+\begin{align*}
+    \frac{\partial F_{nl}(p)}{\partial p} = \sum_{\iota=0}^{2l+1} \;
+        & \frac{(-1)^{\iota} \; 2^{\iota + \frac{1}{2}} \; n \; (i n)^l \; \; Z^{-l-3} \; \Gamma(2l+\iota+3)}{\iota!} \nonumber \\
+        & \times \binom{l+n}{-l+n-\iota-1} 
+        \sqrt{\frac{Z^3 \Gamma(n-l)}{\Gamma(l+n+1)}} \nonumber \\
+        & \times  \,
+        (lp^{l-1}{}_2\tilde{F}_1\left(l+\frac{\iota}{2}+2, \frac{1}{2}(2l+\iota+3); l+\frac{3}{2}; -\frac{n^2 p^2}{Z^2}\right)\\
+        &\times\frac{p^ln^2}{Z^2}{}_2\tilde{F}_1\left(l+\frac{\iota}{2}+1, \frac{1}{2}(2l+\iota+1); l+\frac{1}{2}; -\frac{n^2 p^2}{Z^2}\right))
+\end{align*}
 
+% Now lets see what the integral over $\theta$ and $\phi$ will look like:
+% \begin{equation*}
+%     \frac{\partial F_{n'l'}^*}{\partial p}\frac{\partial F_{nl}}{\partial p}\int_0^{\pi}\int_0^{2\pi}\sin\theta_p \e^{ip\cos\theta_p\bar{\Delta}_z^k} Y_{l'm'}^* Y_{lm}(\theta_p, \phi_p)\left(\cos\theta_p - \frac{\sin\theta_p}{p}\right)^2\,\dd\theta_p\dd \phi_p
+% \end{equation*}
+% The rest is independent of $\theta$ and $\phi$.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%

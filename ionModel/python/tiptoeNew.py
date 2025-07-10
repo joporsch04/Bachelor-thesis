@@ -36,8 +36,8 @@ def main(excitedstates):
     params = {
         'E_g': 0.5, 
         'αPol': 4.51, 
-        'div_p':2**-4*8, 
-        'div_theta':1,
+        'div_p':2**-4*16, 
+        'div_theta':1*4,
         'lam0': 450, 
         'intensity': 8e13, 
         'cep': 0,
@@ -49,14 +49,14 @@ def main(excitedstates):
         'delay': -224.97,
         'plotting': False
     }
-    REDO_comp = True
+    REDO_comp = False
     for file_name, lam0_pump, I_pump, lam0_probe, I_probe, FWHM_probe, cep_pump, cep_probe in file_params:
 
         # delaydf = pd.read_csv("/home/user/TIPTOE-Hydrogen/plot_ion_tau_calc_output_data/ionProb_450nm_250nm_8e+13.csv")
 
         # delay = np.array(delaydf["delay"].values)
         # ion_tRecX = readtRecX_ion(f"/home/user/TIPTOE-Hydrogen/plot_ion_tau_calc_output_data/ionProb_450nm_250nm_8e+13.csv")
-        delay, ion_tRecX = read_ion_Prob_data("/home/user/TIPTOE/process_all_files_output/ionProb_450nm_short_length_gauge_250nm_8e+13.csv")
+        delay, ion_tRecX = read_ion_Prob_data("/home/user/TIPTOE/process_all_files_output/ionProb_450nm_dense_length_gauge_250nm_8e+13.csv")
 
         if REDO_comp:
             laser_pulses = LaserField(cache_results=True)
@@ -67,44 +67,43 @@ def main(excitedstates):
             ion_na_reconstructed_SFA = []
             laser_pulses.add_pulse(lam0_pump, I_pump, cep_pump, lam0_pump/ AtomicUnits.nm / AtomicUnits.speed_of_light)
             t_min, t_max = laser_pulses.get_time_interval()
-            time_recon= np.arange(t_min, t_max+1, 1.)
-            ion_na_rate_GASFIR = IonRate(time_recon, laser_pulses, params, dT=0.5, kernel_type='exact_SFA')
-            ion_na_rate_SFA = IonRate(time_recon, laser_pulses, params, dT=0.5/2, kernel_type='exact_SFA', excitedStates=True)
+            time_recon= np.arange(t_min, t_max+1, 0.5)
+            ion_na_rate_GASFIR = IonRate(time_recon, laser_pulses, params, dT=0.5/2, kernel_type='exact_SFA')
+            ion_na_rate_SFA = IonRate(time_recon, laser_pulses, params, dT=0.5/8, kernel_type='exact_SFA', excitedStates=True)
             na_background_GASFIR=np.trapz(ion_na_rate_GASFIR, time_recon)
             na_background_SFA=np.trapz(ion_na_rate_SFA, time_recon)
             na_grad_GASFIR=np.gradient(ion_na_rate_GASFIR, laser_pulses.Electric_Field(time_recon))
             na_grad_SFA=np.gradient(ion_na_rate_SFA, laser_pulses.Electric_Field(time_recon))
             laser_pulses.reset()
             for tau in delay:
-                if abs(tau) > 100:
-                    ion_qs.append(0)
-                    ion_na_GASFIR.append(0)
-                    ion_na_SFA.append(0)
-                    ion_na_reconstructed_GASFIR.append(0)
-                    ion_na_reconstructed_SFA.append(0)
-                    continue
+                # if abs(tau) > 60 or tau < -60:
+                #     ion_qs.append(0)
+                #     ion_na_GASFIR.append(0)
+                #     ion_na_SFA.append(0)
+                #     ion_na_reconstructed_GASFIR.append(0)
+                #     ion_na_reconstructed_SFA.append(0)
+                #     continue
                 params['delay'] = -tau
                 print(tau)
                 laser_pulses.add_pulse(lam0_pump, I_pump, cep_pump, lam0_pump/ AtomicUnits.nm / AtomicUnits.speed_of_light)
                 laser_pulses.add_pulse(lam0_probe, I_probe, cep_probe, FWHM_probe/AtomicUnits.fs, t0=-tau)
                 t_min, t_max = laser_pulses.get_time_interval()
-                time=np.arange(t_min, t_max+1, 1.)
+                time=np.arange(t_min, t_max+1, 0.5)
                 ion_qs.append(0)
-                ion_na_rate_GASFIR_probe = IonRate(time_recon, laser_pulses, params, dT=0.5, kernel_type='exact_SFA')
-                ion_na_GASFIR.append(1-np.exp(-np.double(simpson(ion_na_rate_GASFIR_probe, x=time_recon, axis=-1, even='simpson'))))
-                #ion_na_SFA.append(1-np.exp(-IonProb(laser_pulses, params, dt=2, dT=0.5, kernel_type='exact_SFA')))
-                ion_na_rate_SFA_probe = IonRate(time_recon, laser_pulses, params, dT=0.5/2, kernel_type='exact_SFA', excitedStates=True)
-                print(np.real(np.trapz(ion_na_rate_SFA_probe, time_recon)))
-                ion_na_SFA.append(1-np.exp(-np.double(simpson(ion_na_rate_SFA_probe, x=time_recon, axis=-1, even='simpson'))))
+                #ion_na_rate_GASFIR_probe = IonRate(time_recon, laser_pulses, params, dT=0.5, kernel_type='exact_SFA')
+                ion_na_GASFIR.append(0)#1-np.exp(-np.double(simpson(ion_na_rate_GASFIR_probe, x=time_recon, axis=-1, even='simpson'))))
+                #ion_na_rate_SFA_probe = IonRate(time_recon, laser_pulses, params, dT=0.5/2, kernel_type='exact_SFA', excitedStates=True)
+                #print(np.real(np.trapz(ion_na_rate_SFA_probe, time_recon)))
+                ion_na_SFA.append(0)#1-np.exp(-np.double(simpson(ion_na_rate_SFA_probe, x=time_recon, axis=-1, even='simpson'))))
                 laser_pulses.reset()
                 laser_pulses.add_pulse(lam0_probe, I_probe, cep_probe, FWHM_probe/AtomicUnits.fs, t0=-tau)
                 ion_na_reconstructed_GASFIR.append(1-np.exp(-na_background_GASFIR-np.trapz(na_grad_GASFIR*laser_pulses.Electric_Field(time_recon), time_recon)))
                 ion_na_reconstructed_SFA.append(1-np.exp(-na_background_SFA-np.trapz(na_grad_SFA*laser_pulses.Electric_Field(time_recon), time_recon))) #+na_grad2*laser_pulses.Electric_Field(time_recon)**2/2
                 laser_pulses.reset()
-            output_file = f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/ionProb_{file_name}_{excitedstates}_tRecX_length_test-not+.csv"
+            output_file = f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/ionProb_{file_name}_{excitedstates}_tRecX_length_test_newfieldfukt_recon.csv"
             writecsv_prob(output_file, delay, ion_tRecX, ion_qs, ion_na_GASFIR, ion_na_SFA, ion_na_reconstructed_GASFIR, ion_na_reconstructed_SFA)
 
-        data_rate_delay = pd.read_csv(f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/ionProb_{file_name}_{excitedstates}_tRecX_length_test-not+.csv")
+        data_rate_delay = pd.read_csv(f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/ionProb_450nm_dense_8e+13_1_trecx_length.csv")
         delay=np.array(data_rate_delay['delay'].values)
         ion_tRecX=np.array(data_rate_delay['ion_tRecX'].values)
         ion_na_GASFIR=np.array(data_rate_delay['ion_NA_GASFIR'].values)
@@ -136,8 +135,18 @@ def main(excitedstates):
                                             #ion_tRecX before was just for the rates that the coefficients are in length gauge
         ion_tRecX = interp1d(delay_dummy, ion_tRecX_dummy, fill_value="extrapolate")(delay)
 
-        ion_na_reconstructed_GASFIR=np.array(pd.to_numeric(data_rate_delay['ion_NA_reconstructed_GASFIR'].values))
-        ion_na_reconstructed_SFA=np.array(pd.to_numeric(0*data_rate_delay['ion_NA_reconstructed_SFA'].values))
+        def parse_and_real(values):
+            result = []
+            for val in values:
+                if isinstance(val, str) and ('j' in val or '+' in val):
+                    val = val.strip('()')
+                    result.append(complex(val).real)
+                else:
+                    result.append(float(val))
+            return np.array(result)
+        
+        ion_na_reconstructed_GASFIR = parse_and_real(data_rate_delay['ion_NA_reconstructed_GASFIR'].values)
+        ion_na_reconstructed_SFA = parse_and_real(data_rate_delay['ion_NA_reconstructed_SFA'].values)
 
 
 
@@ -150,10 +159,11 @@ def main(excitedstates):
         plotter = TIPTOEplotter(ion_tRecX, ion_QS, ion_na_GASFIR, ion_na_SFA, ion_na_reconstructed_GASFIR, ion_na_reconstructed_SFA, delay, field_probe_fourier_time, time, AU, lam0_pump, I_pump, lam0_probe, I_probe, FWHM_probe)
         fig = go.Figure()
         fig = plotter.plotly4()
+        plotter.matplot4()
         # output_path = f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/plot_{file_name}_{excitedstates}_maxnhigh.html"
         # fig.write_html(output_path)
         # print(f"Plot saved to: {output_path}")
-        fig.show()
+        #fig.show()
 
         ion_SFA_excited_tRecX = ion_na_SFA
         ion_SFA_excited_ODE = np.zeros(len(delay))#ion_SFA_ODE_new
@@ -163,4 +173,4 @@ def main(excitedstates):
 
 
 if __name__ == "__main__":
-    main(3)
+    main(2)

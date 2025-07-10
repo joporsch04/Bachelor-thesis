@@ -162,8 +162,8 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                 absleft = np.abs(cLeft)
                 absright = np.abs(cRight)
 
-                if state_idx != state_range_idx:
-                    continue
+                # if state_idx != state_range_idx:
+                #     continue
 
                 # if not (state_idx == state_range_idx and state_idx == 1):
                 #     continue
