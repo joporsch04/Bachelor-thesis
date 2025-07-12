@@ -1,9 +1,8 @@
-This chapter is about introducing the methods used in the thesis.
+This chapter is about introducing the methods used throughout the thesis.
 This includes numerical methods for solving or implementing some type of equation as well as more physical methods that are used for comparing results or get more meaning to the data.
 
-The main reason for making these ionization models is because one want to avoid solveng the schroedinger equation numerically because its time consuming and contains numerical difficulties.
-However, for comparing and verifying the models, one needs to solve it numerically.\\
-Furthermore, numerically solving the TDSE is just good for ionization propabilities and not rates.\\
+For comparing and verifying the ionization rate from chapter 2, one needs to solve the TDSE numerically without any approximations.
+A reliable choice for comparing is by using the sampling method called TIPTOE \cite{Park:18} and comparing the ionization yield from both approaches.
 Especially for expanding an already existing model, it is important to compare and see if the changes of the model are going into the right direction.
 
 
@@ -11,8 +10,10 @@ Especially for expanding an already existing model, it is important to compare a
 %%%%%%%%%%%%%%%%%%%%%%%
 \section{Numerical Methods}
 To implement formula \ref{eq:smatrix} we need to solve the TDSE in two different ways numerically in order to obtain the coefficients $c_n(t)$. 
-For that I used two different methods (tRecX and ODE) each with its own advantages and disadvantages.
-Further, there is this dilemma with ionization rates not being quantum mechaincal observables, so we need to have trustfull ionization propabilities to compare my results.
+For that I used two different methods (numerical/direct and ODE) each with its own advantages and disadvantages.
+
+For numerically solving the TDSE without any approximations I used a solver called tRecX.
+
 
 
 
@@ -20,9 +21,26 @@ Further, there is this dilemma with ionization rates not being quantum mechainca
 tRecX is a C++ code for solving generalized inhomogeneous time-dependent
 Schroedinger-type equations in arbitrary dimensions and in a variety of coordinate systems \cite{Scrinzi_trecx}.
 Usually ionization is difficult for an numerical solver because the electron "leaves" the subspace of the bound states, making the calculations very time consuming.
-tRecX uses different techniques (irECS and tSURFF) making it especially suitable for light atom interaction. 
+Further, the coulomb potential only decays as $1/r$ so there is the question of how to discretize the space and set the boundary conditions.
+
+tRecX uses different techniques making it especially suitable for light atom interaction. 
+For instance, with the method called "Infinite-range exterior complex scaling" after a certan distance from the nucleus the space gets complex scaled via a unitary transformation.
+One could imagine this the same way as an function can be analytically continued into the complex plane.
+Further the wavefunction gets also "damped" by the complex scaled region so there is reflection at the boundary which could cause numerical problems \cite{scrinzi_irecs}. 
+
 Further, tRecX allows to specify the gauge in which the TDSE is solved, making it more flexible. 
-This will be important later.
+This will be important later. 
+
+\medskip
+Throughout this thesis, tRecX was used for two things. 
+First, the for solving the TDSE in the whole hilbertspace to obtain the coefficients $c_n(t)$ that are needed for the imporved SFA rate.
+For this, the sourcecode had to be modified to calculate the coefficients and store them in an appropiate format.
+For more details about the implementation, see chapter 4.
+
+Second, as a reference within the TIPTOE experiment to evaluate the performance of the SFA rate with excited states \eqref{eq:sfa_rate_improved}.
+
+
+
 
 % \paragraph{\textcolor{red}{irECS}}
 % Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
@@ -38,9 +56,8 @@ This will be important later.
 
 
 \subsection{ODE}
-To acess the coefficients of the wavefunction inside the subspace of the bound states I used the interaction picture and the coupled system of differential equations. 
-To implement the calculation I used Python and the ODE solver from SciPy integrate called \texttt{solve\_ivp}.
-For initial values I choosed \texttt{c\_n(0) = 1} for the ground state and \texttt{c\_n(0) = 0} for all other states.
+To acess the coefficients of the wavefunction inside the subspace of the bound states I used the interaction picture and solved the resulting coupled system of differential equations. 
+To implement the calculation, Python and the ODE solver from SciPy integrate called \texttt{solve\_ivp} was used.
 The code can be found in the electronic appendix in the class \texttt{HydrogenSolver}.
 For more details about the implementation, see chapter 4.
 
@@ -52,22 +69,19 @@ For more details about the implementation, see chapter 4.
 %%%%%%%%%%%%%%%%%%%%%%%%%
 \section{TIPTOE}
 This section mostly follows \cite{Park:18} and \cite{manorammasterthesis}.
-To verify the ionization rates determined by the models, a comparison with experimentally accessible quantities is necessary.
-However, since an ionization rate is not a quantum mechanical observable, only the ionization yield $\int \Gamma(t) \dd t$ can be measured.
 
-TIPTOE \cite{Park:18} (Tunneling Ionization with a Perturbation for the Time-domain Observation of an Electric field) is a method for direct sampling of an electric pulse in the femtosecond to attosecond regime using quasistatic subcycle tunneling ionization in a gaseous medium or air.
-Tunneling ionization differs from multiphoton ionization in that the laser field is strong enough to deform the Coulomb barrier of the atom, allowing the electron to tunnel through it.
+TIPTOE (Tunneling Ionization with a Perturbation for the Time-domain Observation of an Electric field) is a method for direct sampling of an electric pulse in the femtosecond to attosecond regime using quasistatic subcycle tunneling ionization in a gaseous medium or air.
 
 A typical TIPTOE simulation consists of two linearly polarized laser pulses: a "fundamental" and a "signal" pulse, similar to common pump-probe experiments.
 The drive pulse is the pulse to be sampled, with the ionization yield of a certain medium providing the measurement.
 In first order, the ionization rate can be approximated as
 \begin{equation}
-\Gamma(E_{\mathrm{F}}+E_{\mathrm{S}})\approx\Gamma(E_{\mathrm{F}})+\left.E_{\mathrm{S}}\frac{\dd \Gamma(E_{\mathrm{S}})}{\dd E}\right|{E=E{\mathrm{F}}}
+\Gamma(E_{\mathrm{F}}+E_{\mathrm{S}})\approx\Gamma(E_{\mathrm{F}})+\left.E_{\mathrm{S}}\frac{\dd \Gamma(E_{\mathrm{S}})}{\dd E}\right|_{E=E_{\mathrm{F}}}
 \end{equation}
 In this approximation, depletion of the ground state is neglected.
 The total ionization yield $N$ obtained by the two pulses is given by
 \begin{equation*}
-N_{\mathrm{total}}=N_0+\delta N = \int \dd t,\Gamma(E_{\mathrm{F}}(t))+\int \dd t,E_{\mathrm{S}}(t)\left.\frac{\dd \Gamma(E_{\mathrm{S}}(t))}{\dd E}\right|{E=E{\mathrm{F}}(t)}
+N_{\mathrm{total}}=N_0+\delta N = \int \dd t,\Gamma(E_{\mathrm{F}}(t))+\int \dd t,E_{\mathrm{S}}(t)\left.\frac{\dd \Gamma(E_{\mathrm{S}}(t))}{\dd E}\right|_{E=E_{\mathrm{F}}(t)}
 \end{equation*}
 By varying the delay $\tau$ between the two pulses, the ionization yield takes on different values.
 From this, it follows that:
@@ -77,13 +91,14 @@ From this, it follows that:
 Thus, the field amplitude of the signal pulse can be sampled by measuring the ionization yield for different delays.
 The TIPTOE method can be applied across a broad spectral range of the signal pulse, as long as the fundamental pulse is shorter than $1.5$ optical cycles.
 
-This method provides a way to compare both approaches and gain insight into the dynamics of the electron.
+\bigskip
+This method provides a way to compare ionization dynamics predicted by a numerical solver and by the SFA rate \eqref{eq:sfa_rate_improved}.
 TIPTOE is particularly useful because numerical simulations can provide good predictions about ionization probabilities, while analytical models describe ionization rates.
 A TIPTOE simulation can help reconstruct the ionization dynamics, which is especially relevant in the context of this thesis.
-Later, the ionization rate of $E_{\mathrm{F}}+E_{\mathrm{S}}$ will be integrated over the full time domain, and the ionization yield for different delays will be compared with the results from the numerical solution of the TDSE.
-The results of the TIPTOE simulation from the numerical solution of the TDSE (tRecX) compared to the approximate methods (variations of SFA) are shown in the figures in Chapter 5.
+Later, the ionization rate $\Gamma(E_{\mathrm{F}}+E_{\mathrm{S}})$ will be integrated over the full time domain, and the ionization yield for different delays will be compared with the results from the numerical solution of the TDSE.
+The results are shown in chapter 5.
 
-For better visualization of the underlying physics in TIPTOE, the "background" ionization from $E_F(t)$ is subtracted, and the ionization yield is normalized, so the formula in plot ???? reads
+For better visualization of the underlying physics in TIPTOE, the "background" ionization from $E_\mathrm{F}(t)$ is subtracted, and the ionization yield is normalized, so the formula in plot ???? reads
 \begin{equation*}
 \frac{N_{\mathrm{total}}-N_0}{N_{\mathrm{max}}}=\frac{\delta N(\tau)}{N_{\mathrm{max}}}
 \end{equation*}
@@ -101,12 +116,12 @@ Instantaneous ionization rates are highly useful because TIPTOE enables sampling
 \section{GASFIR}
 GASFIR is short for general approximator for strong field ionization rates.
 It is an analytical retrieval tool for reconstructing data obtaned from numerical solutions of the TDSE. 
-It was validated for hydrogen and shows good agreement with existing theories in the quasi static limit of tunneling ionization not only for Hydrogen, also for Helim and Neon [cite GASFIR].
+It was validated for hydrogen and shows good agreement with existing theories in the quasi static limit of tunneling ionization not only for Hydrogen, also for Helim and Neon \cite{agarwal2025generalapproximatorstrongfieldionization}.
 The way how GASFIR works is that it uses ionization probabilities to retrieve ionization rates. 
 It uses the idea from SFA that the rates can be written as $\int \dd T K(t,T)$ with $K(t,T)$ being a kernel function.
 Later in the code you see also the kernel function, where the modifications happened. 
-Its not really part of this thesis, but motivates it.
-Goal: make GASFIRs predictions better by improving SFA rates
+GASFIR is not a part of this thesis, it was motivated by the idea that an improvement of the SFA formalism could benefit the GASFIR approach.
+
 
 
 

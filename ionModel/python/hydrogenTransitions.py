@@ -248,20 +248,20 @@ def transitionElement(n, l, m, p, pz, Az, Ip):
 #@profile
 def transitionElementtest(configState, p, pz, Az, Ip):      #first state and normal SFA are exactly 4pi apart
     n, l, m = configState
-    termsqrt = Az**2 + p**2 + 2*Az*pz + 1e-14       #(Az+p)^2
+    termsqrt = Az**2 + p**2 + 2*Az*pz + 1e-20       #(Az+p)^2
     termsqrtdenom = np.sqrt(Ip**(3/2))
     if n == 1 and l == 0:
         numerator = 16 * 2**(3/4) * Ip**2 * (Az + pz)
         denominator = (termsqrtdenom *(2 * Ip + termsqrt)**3 * np.pi)
-        return (numerator / denominator).astype(np.complex128)
+        return 1j*(numerator / denominator).astype(np.complex128)
     elif n == 2 and l == 0:
         numerator = 128 * 2**(1/4) * Ip**2 * (Ip - termsqrt) * (Az + pz)
         denominator = (termsqrtdenom * (Ip + 2 * termsqrt)**4 * np.pi)
-        return (numerator / denominator).astype(np.complex128)
+        return 1j*(numerator / denominator).astype(np.complex128)
     elif n == 3 and l == 0:
         numerator = -432 * 2**(3/4) * np.sqrt(3) * Ip**2 * (44 * Ip**2 - 324 * Ip * (Az + p)**2 + 243 * (Az + p)**4) * (Az + pz)
         denominator = (termsqrtdenom * (2 * Ip + 9 * termsqrt)**5 * np.pi)
-        return (numerator / denominator).astype(np.complex128)
+        return 1j*(numerator / denominator).astype(np.complex128)
     elif n == 2 and l == 1:
         Az_plus_p_squared = termsqrt
         
@@ -269,7 +269,7 @@ def transitionElementtest(configState, p, pz, Az, Ip):      #first state and nor
         
         denominator = (Ip + 2 * Az_plus_p_squared)**4 * np.pi
         
-        return 1/3*(numerator / denominator).astype(np.complex128)
+        return 1j*(numerator / denominator).astype(np.complex128)
     elif n == 3 and l == 1:
         Az_plus_p_squared = termsqrt
         
@@ -277,7 +277,7 @@ def transitionElementtest(configState, p, pz, Az, Ip):      #first state and nor
         
         denominator = (2 * Ip + 9 * Az_plus_p_squared)**5 * np.pi
         
-        return 1/3*(numerator / denominator).astype(np.complex128)
+        return 1j*(numerator / denominator).astype(np.complex128)
     
 @njit(cache=True, fastmath=True)
 def d10(psquared, pz, Ip):

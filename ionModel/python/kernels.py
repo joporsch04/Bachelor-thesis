@@ -157,10 +157,10 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                 phase0 = np.zeros((Tar.size, tar.size), dtype=np.cdouble)
                 cLeft = coefficients[state_idx, :]
                 cRight = coefficients[state_range_idx, :]
-                phaseleft = np.unwrap(np.angle(cLeft))
-                phaseright = np.unwrap(np.angle(cRight))
-                absleft = np.abs(cLeft)
-                absright = np.abs(cRight)
+                phaseleft = np.unwrap(np.angle(cLeft))*0
+                phaseright = np.unwrap(np.angle(cRight))*0
+                absleft = np.abs(cLeft)*0+1
+                absright = np.abs(cRight)*0+1
 
                 # if state_idx != state_range_idx:
                 #     continue
@@ -184,12 +184,12 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                             DelA = (intA[tp] - intA[tm])-2*VPt*T
                             VP_p=VP[tp]-VPt
                             VP_m=VP[tm]-VPt
-                            #f_t_1= np.conjugate(transitionElementtest(config[state_idx], p, pz, VP_m, E_g))*transitionElementtest(config[state_range_idx], p, pz, VP_p, E_g)  #25.9%      #for excitedState=1 use only phase of coefficients to see stark effect
+                            f_t_1= 2*np.pi*np.conjugate(transitionElementtest(config[state_idx], p, pz, VP_m, E_g))*transitionElementtest(config[state_range_idx], p, pz, VP_p, E_g)  #25.9%      #for excitedState=1 use only phase of coefficients to see stark effect
                             psquared_m = p**2 + VP_m**2 + 2*pz*VP_m +1e-12
                             pzAz_m = pz + VP_m
                             psquared_p = p**2 + VP_p**2 + 2*pz*VP_p +1e-12
                             pzAz_p = pz + VP_p
-                            f_t_1 = transitionElement_BA(config[state_idx], config[state_range_idx], psquared_m, psquared_p, pzAz_m, pzAz_p, E_g)   #np.conjugate(transitionElement_BA(config[state_idx], psquared_m, pzAz_m, phi_grid, E_g))*transitionElement_BA(config[state_range_idx], psquared_p, pzAz_p, phi_grid, E_g)
+                            #f_t_1 = transitionElement_BA(config[state_idx], config[state_range_idx], psquared_m, psquared_p, pzAz_m, pzAz_p, E_g)   #np.conjugate(transitionElement_BA(config[state_idx], psquared_m, pzAz_m, phi_grid, E_g))*transitionElement_BA(config[state_range_idx], psquared_p, pzAz_p, phi_grid, E_g)
                             G1_T_p=np.trapz(f_t_1*np.exp(1j*pz*DelA)*np.sin(theta), Theta_grid)     #17%
                             G1_T=np.trapz(G1_T_p*window*p_grid**2*np.exp(1j*p_grid**2*T), p_grid)   #11.7%
                             DelA = DelA + 2 * VPt * T
