@@ -1,7 +1,7 @@
 # Bachelor Thesis
 
 ## ⚠️Thesis in progress
-This Bachelor's thesis is still in progress, expected to be completed by July 2025.
+This Bachelor's thesis is still in progress, expected to be completed by September 2025.
 
 ## Author
 Johannes Porsch (Jo.Porsch@campus.lmu.de, joporsch04@gmail.com)

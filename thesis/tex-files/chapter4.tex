@@ -1,8 +1,7 @@
-In this chapter I will explain how I implemented formula \eqref{eq:smatrix} in the code.
+This chapter is dedicated to the implementation of the formula \eqref{eq:sfa_rate_improved} and the resulting challenges.
 Most of the code was already written by the authors of \cite{Theory_NPS}.
-The exact changes I made can be found in the electronic appendix.
-Since I am using git, you can also see the changes in the commit history.
-The main two parts that where new in this implementation now are the coefficients $c_n(t)$ and the dipole matrix elements $\vec{d}_n(\uvec{p})$.
+The detailed changes made to both the tRecX source code as well as the SFA rate can be found in the electronic appendix [github zenodo].
+The main two parts that where new in this implementation now are the coefficients $c_n(t)$ and the dipole matrix elements $d_{z,n}(\uvec{p})$ the rest was very straight forward.
 
 
 
@@ -22,7 +21,7 @@ The ODE coefficients are with respect to the subspace spanned by the bound state
 
 
 \subsection{ODE}
-To see how to solve for the coefficients,, lets look at the defining equation again:
+To see how to solve for the coefficients, lets look at the defining equation again:
 \begin{equation*}
     \hat{\U}^{\mathrm{ODE}}_0(t',t_0)\ket{\Psi_0(t_0)} = \sum_{n}c_n(t')e^{-iE_nt'}\ket{\Psi_n}
 \end{equation*}
@@ -40,26 +39,31 @@ The next step is to plug the ansatz above into \eqref{eq:odeU} and multiply with
 \end{equation*}
 with $\omega_{nm} = E_n - E_m$.
 
-\bigskip
-Now this has its problems.
-First, $\sum_n$ goes from $0$ to $\infty$, but since we are in numerical simulations we have to limit ourselves to a finite number of states.
+\medskip
+Now implementing this leads to some challenges.
+First, $\sum_n$ goes from $0$ to $\infty$, but in numerical simulations we have to limit ourselves to a finite number of states.
 How can we justify the number choosen?
 How can we make shure that the abrubt end of the sum does not cause any numerical problems?
 
-One way to think about it is just testing.
-By increasing the number of states used in the sum, the results (i.e. the rates) should converge.
+Of course, solving for more coefficients will also affect the previos calculated coefficients.
+For instance, just solving for the ground state $c_0(t)$ will lead to $|c_0(t)|^2$ being $1$.
+However, the occupation for the ground state will decrease, the more states are being included in the sum.
+Thats why its called a \emph{coupled} system of ODEs.
+
+By increasing the number of states used in the sum, the results (i.e. the rates) should converge to a certain rate.
 However, since we forced the electron to stay inside the subspace, going to higher and higher excited states can cause numerical problems as well.
-Especially for higher intensities and longer wavelengths, going to higher states caused unphysical oscillations in the rates. 
+Especially for intensities around $10^{14}\frac{\mathrm{W}}{\mathrm{cm}^2}$ and longer wavelengths ($800\mathrm{nm}-1200\mathrm{nm}$), allowing the electron to occupy higher states caused unphysical oscillations in the rates. 
+"Normally" the electron would be ionized but since the ionisation is "turned off" in approach, the electron gets excited to a high excited state, causing the model to break apart.
 Eventually one has to find a certain number of states that is precise enough but does not cause numerical problems.
 For my simulations later, I used a maximum of $n=3$ for the calculation of the bound states.
-One could justify that by looking at the population; most of the dynamics before ionization is determined by the first few bound states, especially $1s$, $2s$, $2p$ and $3p$ so solving for more doesnt affect the previous coefficients not much.
+One could justify that by looking at the population of the hydrogen atom over time; most of the dynamics before ionization is determined by the first few bound states, especially $1s$, $2s$, $2p$ and $3p$ so solving for more doesnt affect the previous coefficients too much.
 
 Note: This was not about how many bound states I include in the final simulations, but how many I even considered when solving the ODE.
 I could have used only the ground state in the SFA rate later on, but there is still the question how many bound states have an effect on the ground state. 
 This number was justified here.
 
 
-\bigskip
+\medskip
 Further, equation \eqref{eq:ode} is gauge dependent because of $\braket{m|\hat{\Hs}_{\mathrm{I}}(t)|n}$. 
 We can either choose length gauge \eqref{eq:dipoleApprox} or velocity gauge \eqref{eq:dipoleApprox_velocity}.
 Which gauge should we use to get the most meaningful results?
@@ -77,6 +81,14 @@ This makes length gauge a fitting candidate for the coefficients used in the ODE
 
 
 
+\bigskip
+In my implementation I neglected transitions to states that are forbidden via the dipole selection rules. 
+However this is an approximation, since in reality two-photon processes can occur, effectively allowing transitions between $1s$ and $2s$ for instance. 
+I numerically solved the schroedinger equation with tRecX and modyfied the code to print out the coefficients $c_n(t)$ allowing me to get insight in the "real" dynamics of the electron.
+% the dont differ???? why??? i thoguht im negecting that in ODE c_ns but it seems not, |2,0,0> is still there, why?
+% i think im not neglecting these transitions, its the normal dynamic of the electron without neglecting 1s->2s transitions
+% its jsut that the angular integral is 0 but thats just mathematics
+
 
 \subsection{tRecX}
 
@@ -85,28 +97,31 @@ This makes length gauge a fitting candidate for the coefficients used in the ODE
 
 
 
-The coefficients from the ODE are not the only one im using. I used tRecX to calculate solve the entire TDSE and extract the coefficients from the whole wavefunction.
+The coefficients from the ODE are not the only one im using. I used a numerical solver (in this case tRecX) to solve the entire TDSE and extract the coefficients from the wavefunction.
 As mentioned earlier, there are two ways to think about $\hat{\U}(t',t_0)\ket{\Psi}$. 
 First, solve the TDSE in the subspace of the bound states (we did that with the ODE) or solve the TDSE in the full Hilbert space and the project it onto bound states. 
-tRecX does the second one, which is far more complicated than what I did using the ODE.
-However, tRecX results are also gauge dependent, so we need to be careful with the gauge.
-Also it is far more difficult to interpret the rsults from tRecX since many effects can determine the time evolution of the coefficients and therefore the ionization rate but its of course helpfull to have two independent sources of in some sense the same thing.
+tRecX does the second one, which is far more complicated than what the ODE is doing.
+However, tRecX results are also gauge dependent but the problem with the sum of all the bound states we faced earlier in the ODE approach does not matter here.
+Also it is far more difficult to interpret the results from tRecX since many effects can determine the time evolution of the coefficients and therefore the ionization rate.
+Nonetheless its of course helpfull to have two independent sources of in some sense the same thing.
+
+For extracting the coefficients from tRecX so solving the full TDSE and then projecting onto bound states I modifyed the code as following:
+Already implemented was the Occupation propability of specified bound states, so the code prints out $\braket{\Psi(t)|\hat{P}_{\mathrm{Occ\{H0:n\}}}\footnote{The notation here is the same as in the code for better reference}|\Psi(t)}=|\braket{\Psi(t)|n}|^2$
+In principle all I did was changing implementing a new function that changes the left bra $\bra{\Psi(t)}$ to the eigenstate used in $\hat{P}_{\mathrm{Occ\{H0:n\}}}$ and verifying that the eigenstates are normalized.
+This gives us 
+\begin{equation*}
+    \braket{\Psi(t)|\hat{P}_{\mathrm{Occ\{H0:n\}}}|\Psi(t)} \rightarrow \braket{n|\hat{P}_{\mathrm{Occ\{H0:n\}}}|\Psi(t)} = \braket{n|n}\times\braket{n|\Psi(t)} = c_n(t)
+\end{equation*}
+For that I needed to solve the eigenvalueporblem again, and pass the eigenstates down to the function calculating the expectation value.
+There is defenitely a more elegant way to do that, especially efficiency wise, since the eigenstates are already calculated elsewhere, but for now this works.
 
 
 
-
+\bigskip
 
 
 
 %%%%%%%%%%%%%%%%
-\subsection{Coefficients}
-For initial values \texttt{c\_n(0) = 1} for the ground state and \texttt{c\_n(0) = 0} for all other states were choosen.
-In theory, $|c_n(t)|^2$ or the amplitude of the coefficients is observable quantity and can be measured in experiment.
-It tells us how propable the system is to be in a certain state $n$ at time $t$.
-Furthermore, and most importantly, they are gauge independent.
-But since SFA is gauge dependent theory, and now we are not even dealing with the amplitude instead the complex coefficients, we need to be extremely careful with the gauge.\\
-In my thesis there are mostly two gauges used, the length gauge and the velocity gauge. 
-In the following plot you see that the amplitudes are indeed not gauge independent. But why is that the case?\\\\
 
 % When field-free states are used as part of the basis, they retain their intended physical meaning only when
 % length gauge is used. On the other hand, for computational efficiency we want velocity gauge where the electron
@@ -131,37 +146,19 @@ Also the numerical issue that we need to have infinitely many bound states for c
 First this seems like a big problem, but we will see that most of the dynamics inside the electron before ionisation is in my simulations only determined by a few bound states.
 But one still need to be carefull with the number of used bound states, but because of numerical reasons.\\\\
 
-For my numerica solution I used a system of ordinary differential equations (ODEs) to calculate the coefficients $c_n(t)$ using the interaction picture.
-In my implementation I neglected transitions to states that are forbidden via the dipole selection rules. 
-However this is an approximation, since in reality two-photon processes can occur, effectively allowing transitions between $1s$ and $2s$ for instance. 
-I numerically solved the schroedinger equation with tRecX and modyfied the code to print out the coefficients $c_n(t)$ allowing me to get insight in the "real" dynamics of the electron.
-% the dont differ???? why??? i thoguht im negecting that in ODE c_ns but it seems not, |2,0,0> is still there, why?
-% i think im not neglecting these transitions, its the normal dynamic of the electron without neglecting 1s->2s transitions
-% its jsut that the angular integral is 0 but thats just mathematics
-\\\\
-Question: how many cound states do we nodd (mentioned earlier)?\\
 
 in E4 it was easy because laser had cosine shape. attosecond physics not the case, more a lase pulse, cos8 envelope so it doesnt make much sense to speak of rabi oszillations.\\
 I also need to check how often I have to write the coefficients to the expec file. That depends on the characterisitc time of the state and on the frequency of the laser of course.\\
 Naiv: as much as possible to be precise as possible. 
 But: we dont want to exceed the length gauge regime, are best described in length not velocity gauge.
 Further: more phenomenological but most of the dynamics is int the first few bound states, like 2s, 2p, 3p thats mostly it. 
-For that just look at the $|c_n(t)|^2$ which has the highest amplitudes.\\\\ %ask vlad if this is correct????
-For extracting the coefficients from tRecX so solving the full TDSE and then projecting onto bound states I modifyed the code as following:
-Already implemented was the Occupation propability of specified bound states, so the code prints out $\braket{\Psi(t)|\hat{P}_{\mathrm{Occ\{H0:n\}}}\footnote{The notation here is the same as in the code for better reference}|\Psi(t)}=|\braket{\Psi(t)|n}|^2$
-In principle all I did was changing implementing a new function that changes the left bra $\bra{\Psi(t)}$ to the eigenstate used in $\hat{P}_{\mathrm{Occ\{H0:n\}}}$ and verifying that the eigenstates are normalized.
-This gives us 
-\begin{equation*}
-    \braket{\Psi(t)|\hat{P}_{\mathrm{Occ\{H0:n\}}}|\Psi(t)} \rightarrow \braket{n|\hat{P}_{\mathrm{Occ\{H0:n\}}}|\Psi(t)} = \braket{n|n}\times\braket{n|\Psi(t)} = c_n(t)
-\end{equation*}
-For that I needed to solve the eigenvalueporblem again, and pass the eigenstates down to the function calculating the expectation value.
-There is defenitely a more elegant way to do that, especially efficiency wise, since the eigenstates are already calculated elsewhere, but for now this works.
+For that just look at the $|c_n(t)|^2$ which has the highest amplitudes. %ask vlad if this is correct????
 
 
 
 
 
-\subsection{Dipole matrix Elements}
+\section{Dipole matrix Elements}
 $m=4$ because light linear polarized!!!!
 The dipole matrix elements are an essential part of the formula in \eqref{eq:smatrix}. 
 Calculating it generall is difficult, but in the case of hydrogen its even possible to do it analytically \ref{sec:dipolematrixelements}.
@@ -177,13 +174,6 @@ Sometimes certain parts cancel out later in the integration (phi integral) but t
 
 %%%%%%%%%%%%%%%%
 \section{\textcolor{red}{tRecX TIPTOE Simulations}}
-\subsection{TIPTOE}
-TIPTOE \cite{Park:18} is a sampling method used for sub femtosecond processes. It is relevant for this thesis because it was used to verify the results from the Ionization model. 
-TIPTOE is great because its fundamentals are very simple but it can tell you a lot about the dynamics in attosecond regime. \\\\
-
-Now i used length gauge for the coefficients but velocity gauge for the ionization propabilities
-
-
-
-
+trecx for reference to compare SFA and excited SFA
+How to implement trecx tiptoe scan?
 
