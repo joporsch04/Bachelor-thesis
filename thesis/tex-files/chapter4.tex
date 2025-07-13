@@ -1,22 +1,16 @@
-This chapter is dedicated to the implementation of the formula \eqref{eq:sfa_rate_improved} and the resulting challenges.
-Most of the code was already written by the authors of \cite{Theory_NPS}.
-The detailed changes made to both the tRecX source code as well as the SFA rate can be found in the electronic appendix [github zenodo].
-The main two parts that where new in this implementation now are the coefficients $c_n(t)$ and the dipole matrix elements $d_{z,n}(\uvec{p})$ the rest was very straight forward.
-
-
+This chapter describes the implementation of the formula \eqref{eq:sfa_rate_improved} and the associated challenges.
+The majority of the code was originally developed by the authors of \cite{Theory_NPS}.
+Detailed modifications made to both the tRecX source code and the SFA rate are documented in the electronic appendix [github zenodo].
+The two main new components in this implementation are the coefficients $c_n(t)$ and the dipole matrix elements $d_{z,n}(\uvec{p})$, while the remaining parts were straightforward.
 
 
 
 
 %%%%%%%%%%%%%%%%
 \section{Coefficients}
-As mentioned in chapter 2, there are two ways to write the dyson equation which results in two different expressions for the s-matrix.
-The only difference between both approaches are the coefficients. 
-The ODE coefficients are with respect to the subspace spanned by the bound states, while tRecX coefficients are with respect to the full Hilbert space.
-
-
-
-
+As mentioned in chapter 2, the Dyson equation can be written in two ways, resulting in two different expressions for the S-matrix.
+The difference between the two approaches lies only in the coefficients.
+The ODE coefficients are defined with respect to the subspace spanned by the bound states, whereas the tRecX coefficients are defined with respect to the full Hilbert space.
 
 
 
