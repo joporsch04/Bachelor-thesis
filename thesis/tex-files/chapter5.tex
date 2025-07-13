@@ -1,37 +1,14 @@
 Before discussing the results, first we have to formulate what we want to learn from this kind of generalisation. 
-The main difference form previous literatuee was the use of transition to excited states before ionisation. 
-In principle we want to investigate how this tranistion influeces the ionisation process or in general the ionisation rate.
+The main difference from previous approaches was to also account the dynamics before ionization.
+In principle we want to investigate how this transition influences the ionisation process or in general.
 
-Previously: time reversal symmetry, what causes it? 
+We want to investigate what influences the ionization dynamics more, the stark shift or the distortion of the ground state.
 
-Also we want to know what influences the ionization rate more, the stark shift or the distortion of the ground state.
-
-Also we want to get closer to the tRecX TIPTOE results because thats all we really got (quantum mechanics fundamentals) maybe including excited states will help us.
-
-All results are stored in a github repository and can be reproduced.
-
-\section{Stark Shift}
-The Stark effect is the shift of the energy levels of an atom or molecule due to the presence of an external electric field.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{figures/rate4_850_1.00e+14_onlystark.pdf}
-    \caption{stark effect}
-    \label{fig:starkeffect}
-\end{figure}
-
-Naiv: Stark effect changes energy in electron so its "harder" to ionise, thats why blue curve goes down (when excitedStates=1). 
-But thats not certainly the case because of stark effect, thats why only set absc0 to 1 and phase remains. 
-Example with oszillations with time dependent resonance frequency, and external force not at resonance but coincidence with oszillator resonance frequency so this may cause it.
-
-
-%%%%%%%%%%%%%%%%%%%%
-\section{Rates}
-Stark shift doesnt seem to have much contribution (sadly) but at least more than the polarisation of the ground state.
-
-Lets investigate the influence of first coefficient, nothing more. Only the phase has a contribution, the amplitude is not important.
-Thats because the amplitude determines something occupation propabilitiy, but the phase is $e^{-iEt}$ and if $E$ is shifted by a bit you can isolate it by just using purely the phase.\\
-Top right is the isolated stark effect
+Further there is quite a big difference between the results from SFA and tRecX within TIPTOE simulations. 
+An extended version of the SFA model can tell, if the discrpancy is due to the simplification of the first hilbertspace or the second hilbertspace.
+In other words, by including the dynamics before ionization, the difference between the SFA and tRecX will likely be because of the strong field approximation itself.
+If one would simplify both processes, the only shure information is that both results dont match but one dont know what causes it, the neglection of excited states, SFA or something in between.
+The following tries to investigate this.
 
 
 
@@ -43,7 +20,7 @@ From the TIPTOE results we want to learn, weither the tRecX coefficients or the 
 
 \begin{figure}
     \centering
-    \includegraphics[width=1\textwidth]{../ionModel/python/plotsTIPTOE/2plot_SFA-comparison_3.pdf}
+    \includegraphics[width=1\textwidth]{../ionModel/python/plotsTIPTOE/2plot_SFA-comparison_1.pdf}
     \caption{Comparison of ionization yields from TIPTOE simulations between different SFA models and reference data from tRecX. 
             (a) Standart SFA overall does a good job reconstructing the ionization dynamics, but some parts it does not capture at all 
             (b) Extended SFA to excited states indeed shows some improvements in the reconstructing }
@@ -71,6 +48,30 @@ But its difficult to test that because if I increase the laser intensity, the ap
 Looking at not normalized results, tRecX is much more sensitive to the shift of probe and pump pulse, while excited SFA coefficients are not
 Maybe because tRecX takes into account all the dynamics and effects inside an atom, while excited SFA coefficients does not care that much.
 I would expect with tRecX coefficients more sensitive than with ODE coefficients???
+
+\section{Stark Shift}
+The Stark effect is the shift of the energy levels of an atom or molecule due to the presence of an external electric field.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/rate4_850_1.00e+14_onlystark.pdf}
+    \caption{stark effect}
+    \label{fig:starkeffect}
+\end{figure}
+
+Naiv: Stark effect changes energy in electron so its "harder" to ionise, thats why blue curve goes down (when excitedStates=1). 
+But thats not certainly the case because of stark effect, thats why only set absc0 to 1 and phase remains. 
+Example with oszillations with time dependent resonance frequency, and external force not at resonance but coincidence with oszillator resonance frequency so this may cause it.
+
+
+%%%%%%%%%%%%%%%%%%%%
+\section{Rates}
+Stark shift doesnt seem to have much contribution (sadly) but at least more than the polarisation of the ground state.
+
+Lets investigate the influence of first coefficient, nothing more. Only the phase has a contribution, the amplitude is not important.
+Thats because the amplitude determines something occupation propabilitiy, but the phase is $e^{-iEt}$ and if $E$ is shifted by a bit you can isolate it by just using purely the phase.\\
+Top right is the isolated stark effect
+
 
 
 

@@ -90,31 +90,31 @@ I numerically solved the schroedinger equation with tRecX and modyfied the code 
 % its jsut that the angular integral is 0 but thats just mathematics
 
 
+
+
+
+
+
 \subsection{tRecX}
-
-
-
-
-
-
 The coefficients from the ODE are not the only one im using. I used a numerical solver (in this case tRecX) to solve the entire TDSE and extract the coefficients from the wavefunction.
 As mentioned earlier, there are two ways to think about $\hat{\U}(t',t_0)\ket{\Psi}$. 
 First, solve the TDSE in the subspace of the bound states (we did that with the ODE) or solve the TDSE in the full Hilbert space and the project it onto bound states. 
 tRecX does the second one, which is far more complicated than what the ODE is doing.
-However, tRecX results are also gauge dependent but the problem with the sum of all the bound states we faced earlier in the ODE approach does not matter here.
+However, tRecX results are also gauge dependent but the problem with the sum of all the bound states we faced earlier in the ODE approach is not relevant here.
+That is a problem of the developers of the numerical solver.
 Also it is far more difficult to interpret the results from tRecX since many effects can determine the time evolution of the coefficients and therefore the ionization rate.
 Nonetheless its of course helpfull to have two independent sources of in some sense the same thing.
 
-For extracting the coefficients from tRecX so solving the full TDSE and then projecting onto bound states I modifyed the code as following:
+For extracting the coefficients from tRecX so solving the full TDSE and then projecting onto bound states I modifyed the source code as following:
 Already implemented was the Occupation propability of specified bound states, so the code prints out $\braket{\Psi(t)|\hat{P}_{\mathrm{Occ\{H0:n\}}}\footnote{The notation here is the same as in the code for better reference}|\Psi(t)}=|\braket{\Psi(t)|n}|^2$
 In principle all I did was changing implementing a new function that changes the left bra $\bra{\Psi(t)}$ to the eigenstate used in $\hat{P}_{\mathrm{Occ\{H0:n\}}}$ and verifying that the eigenstates are normalized.
 This gives us 
 \begin{equation*}
     \braket{\Psi(t)|\hat{P}_{\mathrm{Occ\{H0:n\}}}|\Psi(t)} \rightarrow \braket{n|\hat{P}_{\mathrm{Occ\{H0:n\}}}|\Psi(t)} = \braket{n|n}\times\braket{n|\Psi(t)} = c_n(t)
 \end{equation*}
-For that I needed to solve the eigenvalueporblem again, and pass the eigenstates down to the function calculating the expectation value.
+For that I needed to solve the eigenvalue problem again, and pass the eigenstates down to the function calculating the expectation value.
 There is defenitely a more elegant way to do that, especially efficiency wise, since the eigenstates are already calculated elsewhere, but for now this works.
-
+A detailed description of the changes made to tRecX can be found in the appendix [github zenodo].
 
 
 \bigskip
@@ -138,37 +138,45 @@ There is defenitely a more elegant way to do that, especially efficiency wise, s
 % # note: there is a frequent desire to see the populations
 % # BUT physical meaning can only be attached to it after the pulse is over
 % # during the pulse, the values are gauge-dependent
+%% this is from trecx manual
+
+% The gauge is a very fundamental problem. Not so fundamental is our ansatz, as mentioned erlier we artificially force the electron to stay in the part of the Hilbert space covered by the bound state.
+% This restricts us to small ionization propabilities, and may also cause some numerical problems as will discussed later.\\ %for 850nm weird sozillations for max_n > 3
+% Also the numerical issue that we need to have infinitely many bound states for covering the aprt of the Hilbert space completely is not possible, so we have to limit ourselves.
+% First this seems like a big problem, but we will see that most of the dynamics inside the electron before ionisation is in my simulations only determined by a few bound states.
+% But one still need to be carefull with the number of used bound states, but because of numerical reasons.
 
 
-The gauge is a very fundamental problem. Not so fundamental is our ansatz, as mentioned erlier we artificially force the electron to stay in the part of the Hilbert space covered by the bound state.
-This restricts us to small ionization propabilities, and may also cause some numerical problems as will discussed later.\\ %for 850nm weird sozillations for max_n > 3
-Also the numerical issue that we need to have infinitely many bound states for covering the aprt of the Hilbert space completely is not possible, so we have to limit ourselves.
-First this seems like a big problem, but we will see that most of the dynamics inside the electron before ionisation is in my simulations only determined by a few bound states.
-But one still need to be carefull with the number of used bound states, but because of numerical reasons.\\\\
+% in E4 it was easy because laser had cosine shape. attosecond physics not the case, more a lase pulse, cos8 envelope so it doesnt make much sense to speak of rabi oszillations.\\
+% I also need to check how often I have to write the coefficients to the expec file. That depends on the characterisitc time of the state and on the frequency of the laser of course.\\
+% Naiv: as much as possible to be precise as possible. 
+% But: we dont want to exceed the length gauge regime, are best described in length not velocity gauge.
+% Further: more phenomenological but most of the dynamics is int the first few bound states, like 2s, 2p, 3p thats mostly it. 
+% For that just look at the $|c_n(t)|^2$ which has the highest amplitudes. %ask vlad if this is correct????
 
 
-in E4 it was easy because laser had cosine shape. attosecond physics not the case, more a lase pulse, cos8 envelope so it doesnt make much sense to speak of rabi oszillations.\\
-I also need to check how often I have to write the coefficients to the expec file. That depends on the characterisitc time of the state and on the frequency of the laser of course.\\
-Naiv: as much as possible to be precise as possible. 
-But: we dont want to exceed the length gauge regime, are best described in length not velocity gauge.
-Further: more phenomenological but most of the dynamics is int the first few bound states, like 2s, 2p, 3p thats mostly it. 
-For that just look at the $|c_n(t)|^2$ which has the highest amplitudes. %ask vlad if this is correct????
-
-
-
+\bigskip
+How many coefficients will i be using later? only a few? actually only 1s 2p 3p not more
 
 
 \section{Dipole matrix Elements}
-$m=4$ because light linear polarized!!!!
-The dipole matrix elements are an essential part of the formula in \eqref{eq:smatrix}. 
-Calculating it generall is difficult, but in the case of hydrogen its even possible to do it analytically \ref{sec:dipolematrixelements}.
-However, its that easy to calculate because we made a very coarse approximation, since the final state after ionisation is not in realtiy a plane wave, but we approximated it with that by using SFA.
+The dipole transition matrix elements $\vec{d}_{nlm}(\uvec{p})$ from a certain bound state to the volkov states are a bit less ambigous than the coefficients.
+Calculating them generall is difficult, but in the case of hydrogen its even possible to do it analytically.
+A detailed derivation can be found in the appendix \ref{sec:dipolematrixelements}.
 
-Furthermore, our problem is \\\\
 
-For the dipole matrix elements its alsow needed to simplify them as much as possible. 
-Sometimes certain parts cancel out later in the integration (phi integral) but the computer is not good with that, even some small numerical errors will cause it to be not exactl zero and messes up the calculation.
+As mentioned in the theory section, its only that easy to calculate because with SFA we made a very coarse approximation about the dipole matrix elements.
+The final state after ionisation is not in reality a plane wave, but we approximated it with that by using SFA.
 
+As mentioned in the coefficients section, not all states have equal amount of influence on the ionization dynamics.
+Besides the ground state $1s$, this thesis restricts its calculation to the states $2p$ and $3p$.
+Most of the dynamics before ionization is determined by these states, including more and more states will just make the final ionization rate more precise, but not include much "new" physics.
+
+It is also essential to simplify the matrix elements as much as possible to avoid numerical problems.
+Especially when integrating over the azimutal angle $\phi$ in the final rate and things are supposed to cancel out, this can lead to worng results since of course values are only until certain accuracy.
+
+To simplify the dipole matrix elements, one can use the fact that the ground state is the $1s$ state, and the light wave is linearly polarized.
+$m=0$ because light linear polarized!!!!
 
 
 

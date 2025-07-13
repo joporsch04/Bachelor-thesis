@@ -174,7 +174,7 @@ def get_coefficientstRecX(excitedStates, t_grid, get_p_states, params):
         interp_real = interp1d(unique_time, c_unique.real, kind='cubic', fill_value="extrapolate")
         interp_imag = interp1d(unique_time, c_unique.imag, kind='cubic', fill_value="extrapolate")
 
-        c_interp = (interp_real(t_grid) + 1j * interp_imag(t_grid))*np.exp(-1j*eigenEnergy[state_idx]*t_grid)        #*np.exp(+1j*eigenEnergy[i]*t_grid)
+        c_interp = (interp_real(t_grid) + 1j * interp_imag(t_grid))*np.exp(-1j*eigenEnergy[state_idx]*t_grid)     #ATTENTION for 3p state is state_idx set to 4 but eigenenergy so doesnt work!!!!
         c_list.append(c_interp)
 
     return np.vstack(c_list)

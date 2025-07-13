@@ -8,13 +8,20 @@ We want to derive the general transition dipole matrix elements into the continu
 \begin{equation*}
     \uvec{d}_{nlm}(\uvec{p}) = \braket{\Pi|\vec{\hat{d}}|\Psi_{nlm}} \stackrel{\mathrm{a.u.}}{=} \braket{p|\vec{\hat{r}}|\Psi_{nlm}}
 \end{equation*}
-With $\ket{p}$ being a plane wave. By partitioning the $\hat{\vec{1}}$, and using the fact that $\vec{\hat{r}} \rightarrow i\nabla_{\uvec{p}}$ %Interesting because by choosing a certain way to display the operator we also choose a natural basis for the representation of the operator. Therefore I write \nabla_{\uvec{p}} instead of \nabla_{\vec{p}}.
+With $\ket{p}$ being a plane wave. 
+The formula for the wave function for hydrogen atom is well known:
+\begin{equation}
+    \Psi_{nlm}(\uvec{x}) = \braket{\uvec{x}|\Psi_{nlm}} = R_{nl}(r)Y_{lm}(\theta, \phi) \label{eq:psi_position_hydrogen}
+\end{equation}
+with $R_{nl}(r)$ being the radial part of the wavefunction and $Y_{lm}(\theta, \phi)$ being the spherical harmonics.
+
+By partitioning the $\hat{\vec{1}}$, and using the fact that $\vec{\hat{r}} \rightarrow i\nabla_{\uvec{p}}$ %Interesting because by choosing a certain way to display the operator we also choose a natural basis for the representation of the operator. Therefore I write \nabla_{\uvec{p}} instead of \nabla_{\vec{p}}.
 in momentum representation we find a generel formula for the transition:
 \begin{equation*}
     \uvec{d}_{nlm}(\uvec{p}) = i\nabla_{\uvec{p}}\int \dd^3\uvec{x}\,\psi_{nlm}(\uvec{x}) e^{-i\uvec{p}\cdot\uvec{x}} = i\nabla_{\uvec{p}}\phi_{nlm}(\uvec{p})
 \end{equation*}
 In principle, this integral or more precise the Fouriertransformation of the wavefunction is all we need to do.
-Because of the structure of $\psi_{nlm}$ we can expect a result simular to (eqref psi=RY).
+Because of the structure of $\psi_{nlm}$ we can expect a result simular to \eqref{eq:psi_position_hydrogen}.
 A posteriori we will see that:
 \begin{equation*}
     \F\{\psi_{nlm}(\uvec{x})\} = \phi_{nlm}(\uvec{p}) = F_{nl}(p)Y_{lm}(\theta_p, \phi_p)
@@ -52,10 +59,13 @@ Before we can solve the Integral using caomputational methods, we need to transf
     j_l(pr) = \sqrt{\frac{\pi}{2pr}}J_{l+\frac{1}{2}}(pr)
 \end{equation*}
 Now it is a good time to write all the prefactors and summations in one expression and look at the integral as a whole:
-\begin{align*}
+\begin{equation}
+\label{eq:phi_nlm_momentum}
+\begin{aligned}
     \phi_{nlm}(\uvec{p}) =\ & \frac{\pi^{3/2}}{\sqrt{2p}}\sqrt{\left(\frac{2}{n}\right)^3\frac{(n-l-1)!}{n(n+1)!}}\\
     & \times \sum_{m=-l}^{l}\sum_{\iota=0}^{n-l-1}i^l\frac{(-1)^{\iota}}{\iota!}\left(\frac{2}{n}\right)^{l+\iota}\binom{n+l}{n-l-1}\underbrace{\int_{0}^{\infty}\dd r\,r^{l+\iota+\frac{3}{2}}e^{-\frac{Zr}{n}}J_{l+\frac{1}{2}}(pr)}_{(*)} Y_{lm}(\theta_p,\phi_p)
-\end{align*}
+\end{aligned}
+\end{equation}
 To calculate the remaining Integral, I used mathematica, so I can not give a detailed explanation of that. Interestingly, there is an analytical solution for that. 
 The result for $(*)$ is:
 \begin{equation*}
@@ -65,7 +75,7 @@ With ${}_2\tilde{F}_1$ being the regularized hypergeometric function defined by:
 \begin{equation*}
     {}_2\tilde{F}_1(a,b;c;z) = \frac{{}_2F_1(a,b;c;z)}{\Gamma(c)} = \frac{1}{\Gamma(a)\,\Gamma(b)} \sum_{n=0}^{\infty} \frac{\Gamma(a+n)\,\Gamma(b+n)}{\Gamma(c+n)} \frac{z^n}{n!}
 \end{equation*}
-The final formula $\phi_{nlm}(\uvec{p})$ that can be also found in [atoms and molekulse] in slightely different form, can then be expressed as:
+The final formula $\phi_{nlm}(\uvec{p})$ that can be also found in \cite{Bransdenatomsmolecules} in slightely different form, can then be expressed as:
 \begin{align}
     \label{eq:phi_nlm}
     \phi_{nlm}(\uvec{p}) = \sum_{\iota=0}^{2l+1} \;
@@ -120,58 +130,58 @@ This can be also done analytically.
 % The rest is independent of $\theta$ and $\phi$.
 
 
-%%%%%%%%%%%%%%%%%%%%%%%
-\subsection*{\textcolor{red}{Transition Element}}
-Now all thats left is to differentiate \eqref{eq:phi_nlm} with respect to $\uvec{p}$. 
+% %%%%%%%%%%%%%%%%%%%%%%%
+% \subsection*{\textcolor{red}{Transition Element}}
+% Now all thats left is to differentiate \eqref{eq:phi_nlm} with respect to $\uvec{p}$. 
 
 
-new eq
-\begin{align}
-    \sum _{\iota =0}^{2 l+1} \left(-\frac{(-1)^{\iota } n \text{Ip}^{-l-3} 2^{\iota -l-1} (i n)^l \left(p^2\right)^{l/2}
-   \left(\frac{1}{\sqrt{p^2}}-\frac{\text{pz}^2}{\left(p^2\right)^{3/2}}\right) \Gamma (2 l+\iota +3) \binom{l+n}{-l+n-\iota -1} \sqrt{\frac{\text{Ip}^3 \Gamma
-   (n-l)}{\Gamma (l+n+1)}} \, _2\tilde{F}_1\left(l+\frac{\iota }{2}+2,\frac{1}{2} (2 l+\iota +3);l+\frac{3}{2};-\frac{n^2 p^2}{4 \text{Ip}^2}\right) \left(\frac{m
-   \text{pz} Y_l^m\left(\cos ^{-1}\left(\frac{\text{pz}}{\sqrt{p^2}}\right),\tan ^{-1}(\text{px},\text{py})\right)}{\sqrt{p^2}
-   \sqrt{1-\frac{\text{pz}^2}{p^2}}}+\frac{\sqrt{\Gamma (l-m+1)} \sqrt{\Gamma (l+m+2)} e^{-i \tan ^{-1}(\text{px},\text{py})} Y_l^{m+1}\left(\cos
-   ^{-1}\left(\frac{\text{pz}}{\sqrt{p^2}}\right),\tan ^{-1}(\text{px},\text{py})\right)}{\sqrt{\Gamma (l-m)} \sqrt{\Gamma (l+m+1)}}\right)}{\iota !
-   \sqrt{1-\frac{\text{pz}^2}{p^2}}}+\frac{(-1)^{\iota } l n \text{pz} \text{Ip}^{-l-3} 2^{\iota -l-1} (i n)^l \left(p^2\right)^{\frac{l}{2}-1} \Gamma (2 l+\iota +3)
-   \binom{l+n}{-l+n-\iota -1} \sqrt{\frac{\text{Ip}^3 \Gamma (n-l)}{\Gamma (l+n+1)}} \, _2\tilde{F}_1\left(l+\frac{\iota }{2}+2,\frac{1}{2} (2 l+\iota
-   +3);l+\frac{3}{2};-\frac{n^2 p^2}{4 \text{Ip}^2}\right) Y_l^m\left(\cos ^{-1}\left(\frac{\text{pz}}{\sqrt{p^2}}\right),\tan
-   ^{-1}(\text{px},\text{py})\right)}{\iota !}-\frac{(-1)^{\iota } n^3 \text{pz} \text{Ip}^{-l-5} 2^{\iota -l-3} \left(\frac{\iota }{2}+l+2\right) (\iota +2 l+3) (i
-   n)^l \left(p^2\right)^{l/2} \Gamma (2 l+\iota +3) \binom{l+n}{-l+n-\iota -1} \sqrt{\frac{\text{Ip}^3 \Gamma (n-l)}{\Gamma (l+n+1)}} \,
-   _2\tilde{F}_1\left(l+\frac{\iota }{2}+3,\frac{1}{2} (2 l+\iota +3)+1;l+\frac{5}{2};-\frac{n^2 p^2}{4 \text{Ip}^2}\right) Y_l^m\left(\cos
-   ^{-1}\left(\frac{\text{pz}}{\sqrt{p^2}}\right),\tan ^{-1}(\text{px},\text{py})\right)}{\iota !}\right)
-\end{align}
-\begin{align}
-    \sum_{\iota=0}^{2l+1} \Bigg(
-        & -\frac{(-1)^{\iota} n\, \text{Ip}^{-l-3} 2^{\iota-l-1} (i n)^l (p^2)^{l/2}
-        \left(\frac{1}{\sqrt{p^2}} - \frac{\text{pz}^2}{(p^2)^{3/2}}\right) \Gamma(2l+\iota+3)
-        \binom{l+n}{-l+n-\iota-1}
-        \sqrt{\frac{\text{Ip}^3 \Gamma(n-l)}{\Gamma(l+n+1)}} }{\iota! \sqrt{1-\frac{\text{pz}^2}{p^2}}} \nonumber \\
-        & \times {}_2\tilde{F}_1\left(l+\frac{\iota}{2}+2, \frac{1}{2}(2l+\iota+3); l+\frac{3}{2}; -\frac{n^2 p^2}{4 \text{Ip}^2}\right)
-        \left(
-            \frac{m\, \text{pz}\, Y_l^m\left(\cos^{-1}\left(\frac{\text{pz}}{\sqrt{p^2}}\right), \tan^{-1}(\text{px},\text{py})\right)}
-            {\sqrt{p^2} \sqrt{1-\frac{\text{pz}^2}{p^2}}}
-        \right. \nonumber \\
-        & \qquad \left.
-            + \frac{
-                \sqrt{\Gamma(l-m+1)} \sqrt{\Gamma(l+m+2)} e^{-i \tan^{-1}(\text{px},\text{py})}
-                Y_l^{m+1}\left(\cos^{-1}\left(\frac{\text{pz}}{\sqrt{p^2}}\right), \tan^{-1}(\text{px},\text{py})\right)
-            }{
-                \sqrt{\Gamma(l-m)} \sqrt{\Gamma(l+m+1)}
-            }
-        \right) \nonumber \\
-        & + \frac{(-1)^{\iota} l n\, \text{pz}\, \text{Ip}^{-l-3} 2^{\iota-l-1} (i n)^l (p^2)^{\frac{l}{2}-1}
-            \Gamma(2l+\iota+3) \binom{l+n}{-l+n-\iota-1}
-            \sqrt{\frac{\text{Ip}^3 \Gamma(n-l)}{\Gamma(l+n+1)}} }{\iota!}
-        {}_2\tilde{F}_1\left(l+\frac{\iota}{2}+2, \frac{1}{2}(2l+\iota+3); l+\frac{3}{2}; -\frac{n^2 p^2}{4 \text{Ip}^2}\right)
-        Y_l^m\left(\cos^{-1}\left(\frac{\text{pz}}{\sqrt{p^2}}\right), \tan^{-1}(\text{px},\text{py})\right) \nonumber \\
-        & - \frac{(-1)^{\iota} n^3 \text{pz} \text{Ip}^{-l-5} 2^{\iota-l-3} \left(\frac{\iota}{2}+l+2\right) (\iota+2l+3) (i n)^l (p^2)^{l/2}
-            \Gamma(2l+\iota+3) \binom{l+n}{-l+n-\iota-1}
-            \sqrt{\frac{\text{Ip}^3 \Gamma(n-l)}{\Gamma(l+n+1)}} }{\iota!}
-        {}_2\tilde{F}_1\left(l+\frac{\iota}{2}+3, \frac{1}{2}(2l+\iota+3)+1; l+\frac{5}{2}; -\frac{n^2 p^2}{4 \text{Ip}^2}\right)
-        Y_l^m\left(\cos^{-1}\left(\frac{\text{pz}}{\sqrt{p^2}}\right), \tan^{-1}(\text{px},\text{py})\right)
-    \Bigg)
-\end{align}
+% new eq
+% \begin{align}
+%     \sum _{\iota =0}^{2 l+1} \left(-\frac{(-1)^{\iota } n \text{Ip}^{-l-3} 2^{\iota -l-1} (i n)^l \left(p^2\right)^{l/2}
+%    \left(\frac{1}{\sqrt{p^2}}-\frac{\text{pz}^2}{\left(p^2\right)^{3/2}}\right) \Gamma (2 l+\iota +3) \binom{l+n}{-l+n-\iota -1} \sqrt{\frac{\text{Ip}^3 \Gamma
+%    (n-l)}{\Gamma (l+n+1)}} \, _2\tilde{F}_1\left(l+\frac{\iota }{2}+2,\frac{1}{2} (2 l+\iota +3);l+\frac{3}{2};-\frac{n^2 p^2}{4 \text{Ip}^2}\right) \left(\frac{m
+%    \text{pz} Y_l^m\left(\cos ^{-1}\left(\frac{\text{pz}}{\sqrt{p^2}}\right),\tan ^{-1}(\text{px},\text{py})\right)}{\sqrt{p^2}
+%    \sqrt{1-\frac{\text{pz}^2}{p^2}}}+\frac{\sqrt{\Gamma (l-m+1)} \sqrt{\Gamma (l+m+2)} e^{-i \tan ^{-1}(\text{px},\text{py})} Y_l^{m+1}\left(\cos
+%    ^{-1}\left(\frac{\text{pz}}{\sqrt{p^2}}\right),\tan ^{-1}(\text{px},\text{py})\right)}{\sqrt{\Gamma (l-m)} \sqrt{\Gamma (l+m+1)}}\right)}{\iota !
+%    \sqrt{1-\frac{\text{pz}^2}{p^2}}}+\frac{(-1)^{\iota } l n \text{pz} \text{Ip}^{-l-3} 2^{\iota -l-1} (i n)^l \left(p^2\right)^{\frac{l}{2}-1} \Gamma (2 l+\iota +3)
+%    \binom{l+n}{-l+n-\iota -1} \sqrt{\frac{\text{Ip}^3 \Gamma (n-l)}{\Gamma (l+n+1)}} \, _2\tilde{F}_1\left(l+\frac{\iota }{2}+2,\frac{1}{2} (2 l+\iota
+%    +3);l+\frac{3}{2};-\frac{n^2 p^2}{4 \text{Ip}^2}\right) Y_l^m\left(\cos ^{-1}\left(\frac{\text{pz}}{\sqrt{p^2}}\right),\tan
+%    ^{-1}(\text{px},\text{py})\right)}{\iota !}-\frac{(-1)^{\iota } n^3 \text{pz} \text{Ip}^{-l-5} 2^{\iota -l-3} \left(\frac{\iota }{2}+l+2\right) (\iota +2 l+3) (i
+%    n)^l \left(p^2\right)^{l/2} \Gamma (2 l+\iota +3) \binom{l+n}{-l+n-\iota -1} \sqrt{\frac{\text{Ip}^3 \Gamma (n-l)}{\Gamma (l+n+1)}} \,
+%    _2\tilde{F}_1\left(l+\frac{\iota }{2}+3,\frac{1}{2} (2 l+\iota +3)+1;l+\frac{5}{2};-\frac{n^2 p^2}{4 \text{Ip}^2}\right) Y_l^m\left(\cos
+%    ^{-1}\left(\frac{\text{pz}}{\sqrt{p^2}}\right),\tan ^{-1}(\text{px},\text{py})\right)}{\iota !}\right)
+% \end{align}
+% \begin{align}
+%     \sum_{\iota=0}^{2l+1} \Bigg(
+%         & -\frac{(-1)^{\iota} n\, \text{Ip}^{-l-3} 2^{\iota-l-1} (i n)^l (p^2)^{l/2}
+%         \left(\frac{1}{\sqrt{p^2}} - \frac{\text{pz}^2}{(p^2)^{3/2}}\right) \Gamma(2l+\iota+3)
+%         \binom{l+n}{-l+n-\iota-1}
+%         \sqrt{\frac{\text{Ip}^3 \Gamma(n-l)}{\Gamma(l+n+1)}} }{\iota! \sqrt{1-\frac{\text{pz}^2}{p^2}}} \nonumber \\
+%         & \times {}_2\tilde{F}_1\left(l+\frac{\iota}{2}+2, \frac{1}{2}(2l+\iota+3); l+\frac{3}{2}; -\frac{n^2 p^2}{4 \text{Ip}^2}\right)
+%         \left(
+%             \frac{m\, \text{pz}\, Y_l^m\left(\cos^{-1}\left(\frac{\text{pz}}{\sqrt{p^2}}\right), \tan^{-1}(\text{px},\text{py})\right)}
+%             {\sqrt{p^2} \sqrt{1-\frac{\text{pz}^2}{p^2}}}
+%         \right. \nonumber \\
+%         & \qquad \left.
+%             + \frac{
+%                 \sqrt{\Gamma(l-m+1)} \sqrt{\Gamma(l+m+2)} e^{-i \tan^{-1}(\text{px},\text{py})}
+%                 Y_l^{m+1}\left(\cos^{-1}\left(\frac{\text{pz}}{\sqrt{p^2}}\right), \tan^{-1}(\text{px},\text{py})\right)
+%             }{
+%                 \sqrt{\Gamma(l-m)} \sqrt{\Gamma(l+m+1)}
+%             }
+%         \right) \nonumber \\
+%         & + \frac{(-1)^{\iota} l n\, \text{pz}\, \text{Ip}^{-l-3} 2^{\iota-l-1} (i n)^l (p^2)^{\frac{l}{2}-1}
+%             \Gamma(2l+\iota+3) \binom{l+n}{-l+n-\iota-1}
+%             \sqrt{\frac{\text{Ip}^3 \Gamma(n-l)}{\Gamma(l+n+1)}} }{\iota!}
+%         {}_2\tilde{F}_1\left(l+\frac{\iota}{2}+2, \frac{1}{2}(2l+\iota+3); l+\frac{3}{2}; -\frac{n^2 p^2}{4 \text{Ip}^2}\right)
+%         Y_l^m\left(\cos^{-1}\left(\frac{\text{pz}}{\sqrt{p^2}}\right), \tan^{-1}(\text{px},\text{py})\right) \nonumber \\
+%         & - \frac{(-1)^{\iota} n^3 \text{pz} \text{Ip}^{-l-5} 2^{\iota-l-3} \left(\frac{\iota}{2}+l+2\right) (\iota+2l+3) (i n)^l (p^2)^{l/2}
+%             \Gamma(2l+\iota+3) \binom{l+n}{-l+n-\iota-1}
+%             \sqrt{\frac{\text{Ip}^3 \Gamma(n-l)}{\Gamma(l+n+1)}} }{\iota!}
+%         {}_2\tilde{F}_1\left(l+\frac{\iota}{2}+3, \frac{1}{2}(2l+\iota+3)+1; l+\frac{5}{2}; -\frac{n^2 p^2}{4 \text{Ip}^2}\right)
+%         Y_l^m\left(\cos^{-1}\left(\frac{\text{pz}}{\sqrt{p^2}}\right), \tan^{-1}(\text{px},\text{py})\right)
+%     \Bigg)
+% \end{align}
 
 
 % \phi_{nlm}(\uvec{p}) =\ & \sqrt{2} \left(\frac{1}{n}\right)^{-2 l-3} 
