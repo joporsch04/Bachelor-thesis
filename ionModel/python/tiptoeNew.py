@@ -49,7 +49,7 @@ def main(excitedstates):
         'delay': -224.97,
         'plotting': False
     }
-    REDO_comp = False
+    REDO_comp = True
     for file_name, lam0_pump, I_pump, lam0_probe, I_probe, FWHM_probe, cep_pump, cep_probe in file_params:
 
         # delaydf = pd.read_csv("/home/user/TIPTOE-Hydrogen/plot_ion_tau_calc_output_data/ionProb_450nm_250nm_8e+13.csv")
@@ -92,7 +92,7 @@ def main(excitedstates):
                 ion_qs.append(0)
                 ion_na_rate_GASFIR_probe = IonRate(time_recon, laser_pulses, params, dT=0.5, kernel_type='exact_SFA')
                 ion_na_GASFIR.append(1-np.exp(-np.double(simpson(ion_na_rate_GASFIR_probe, x=time_recon, axis=-1, even='simpson'))))
-                ion_na_rate_SFA_probe = IonRate(time_recon, laser_pulses, params, dT=0.5/4, kernel_type='exact_SFA', excitedStates=True)
+                ion_na_rate_SFA_probe = IonRate(time_recon, laser_pulses, params, dT=0.5/2, kernel_type='exact_SFA', excitedStates=True)
                 print(np.real(np.trapz(ion_na_rate_SFA_probe, time_recon)))
                 ion_na_SFA.append(1-np.exp(-np.double(simpson(ion_na_rate_SFA_probe, x=time_recon, axis=-1, even='simpson'))))
                 laser_pulses.reset()
@@ -100,10 +100,10 @@ def main(excitedstates):
                 ion_na_reconstructed_GASFIR.append(0)#1-np.exp(-na_background_GASFIR-np.trapz(na_grad_GASFIR*laser_pulses.Electric_Field(time_recon), time_recon)))
                 ion_na_reconstructed_SFA.append(0)#1-np.exp(-na_background_SFA-np.trapz(na_grad_SFA*laser_pulses.Electric_Field(time_recon), time_recon))) #+na_grad2*laser_pulses.Electric_Field(time_recon)**2/2
                 laser_pulses.reset()
-            output_file = f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/ionProb_{file_name}_{excitedstates}_tRecX_length_test_newfieldfukt_nosum-m.csv"
+            output_file = f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/ionProb_{file_name}_{excitedstates}_tRecX_length_test_newfieldfukt_nosum-m_minusA.csv"
             writecsv_prob(output_file, delay, ion_tRecX, ion_qs, ion_na_GASFIR, ion_na_SFA, ion_na_reconstructed_GASFIR, ion_na_reconstructed_SFA)
 
-        data_rate_delay = pd.read_csv(f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/ionProb_{file_name}_{excitedstates}_tRecX_length_test_newfieldfukt_nosum-m.csv")
+        data_rate_delay = pd.read_csv(f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/ionProb_{file_name}_{excitedstates}_tRecX_length_test_newfieldfukt_nosum-m_minusA.csv")
         delay=np.array(data_rate_delay['delay'].values)
         ion_tRecX=np.array(data_rate_delay['ion_tRecX'].values)
         ion_na_GASFIR=np.array(data_rate_delay['ion_NA_GASFIR'].values)
@@ -163,7 +163,7 @@ def main(excitedstates):
         output_path = f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/plot_{file_name}_{excitedstates}_maxnhigh_nosumm.html"
         fig.write_html(output_path)
         # print(f"Plot saved to: {output_path}")
-        #fig.show()
+        fig.show()
 
         ion_SFA_excited_tRecX = ion_na_SFA
         ion_SFA_excited_ODE = np.zeros(len(delay))#ion_SFA_ODE_new

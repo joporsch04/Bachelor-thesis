@@ -37,44 +37,14 @@ where $F_{nl}(p)$ is the Fourier transform of the radial part of the wavefunctio
 
 
 
-%%%%%%%%%%%%%%%%%%%%%%%
-% \subsection*{Momentum space}
-% We start with the so called plane wave expansion \cite{Jackson:1998nia} of the exponential part of the integral:
-
-% With  being the spherical bessel functions. Also note that we are integrating over spherical kordinates now. At first it looks messy but we can use the orthogonality of the spherical harmonics we can reduce the integral to:
-
-% This is the structure we were hoping for. Lets focus on the radial part  of the integral.
-% The term  represents the radial function of the hydrogen atom in position space and is independent of the magnetic bumber $m$. 
-% An exponential term dependent of $r$, a polynomial term dependent of $r$, the generalized Laguerre polynomials and the normalization constant. 
-% It would be convenient to have a closed expression for the generalzied Laguerre polynomials. 
-% I choose to represent them as following:
-
-% The Laguerre polynomials are therefore only dependent on and exponential term and finitely many polynomial terms. 
-% $\tilde{R}_{nl}(p)$ can be expressed (without prefactors and summation over $\iota$) as:
-
-% Before we can solve the Integral using caomputational methods, we need to transform the spherical bessel function into the ordinary ones:
-
-% Now it is a good time to write all the prefactors and summations in one expression and look at the integral as a whole:
-
-% To calculate the remaining Integral, I used mathematica, so I can not give a detailed explanation of that. Interestingly, there is an analytical solution for that. 
-% The result for  is:
-
-% With  being the regularized hypergeometric function defined by:
-
-% The final formula  that can be also found in \cite{Bransdenatomsmolecules} in slightely different form, can then be expressed as:
-
-
-
-
-
-
-
+%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{Momentum space}
 The so-called plane wave expansion \cite{Jackson:1998nia} of the exponential part of the integral is given by:
 \begin{equation*}
     e^{i\uvec{p}\cdot\uvec{x}} = \sum_{l'=0}^\infty (2l'+1)i^{l'} j_{l'}(pr) P_{l'}(\uvec{p}\cdot\uvec{x}) = 4\pi\sum_{l'=0}^\infty \sum_{m'=-l'}^{l'} i^{l'} j_{l'}(pr) Y_{l'm'}(\theta_p, \phi_p) Y_{l'm'}^*(\theta_x, \phi_x)
 \end{equation*}
-Here, $j_l(pr)$ represents the spherical Bessel functions, and the integration is performed over spherical coordinates. While the expression initially appears complex, the orthogonality of the spherical harmonics can be used to simplify the integral to:
+Here, $j_l(pr)$ represents the spherical Bessel functions, and the integration is performed over spherical coordinates. 
+While the expression initially appears complex, the orthogonality of the spherical harmonics can be used to simplify the integral to:
 \begin{equation*}
     \phi_{nlm}(\uvec{p}) = 4\pi \sum_{m=-l}^{l}Y_{lm}(\theta_p,\phi_p)i^l\underbrace{\int_{0}^{\infty}\dd r\,r^2j_l(pr)R_{nl}(r)}_{\tilde{R}_{nl}(p)}
 \end{equation*}
@@ -86,7 +56,7 @@ A closed expression for the generalized Laguerre polynomials would be convenient
     L_n^l(r) = \sum_{\iota=0}^{n} \frac{(-1)^{\iota}}{\iota!}\binom{n+l}{n-\iota}r^{\iota}
 \end{equation*}
 Thus, the Laguerre polynomials depend only on an exponential term and finitely many polynomial terms.
-$\tilde{R}{nl}(p)$ can be expressed (without prefactors and summation over $\iota$) as:
+$\tilde{R}_{nl}(p)$ can be expressed (without prefactors and summation over $\iota$) as:
 \begin{equation*}
     \int_{0}^{\infty}\dd r\,r^{2+l+\iota} e^{-\frac{Zr}{n}} j_l(pr)
 \end{equation*}
@@ -129,38 +99,46 @@ The final expression for $\phi_{nlm}(\uvec{p})$, which can also be found in \cit
 
 %%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{Improved rate}
-Usually all thats left is to differentiate \eqref{eq:phi_nlm} with respect to $\uvec{p}$.
-However, before that it is possible to directly improve the SFA rate by doing the integration over $\theta_p$ and $\phi_p$ analytically.
+Usually all that remains is to differentiate \eqref{eq:phi_nlm} with respect to $\uvec{p}$.
+However, before that, the SFA rate can be improved directly by performing the integration over $\phi_p$ analytically.
 The rate according to chapter 2 is given by:
 \begin{align*}
     \Gamma_{\mathrm{SFA}}(t) &= \sum_{n_1}\sum_{n_2} \int_0^{\infty} \dd p\,p^2\int_0^{\pi} \dd\theta_p\,\sin\theta_p \int_0^{2\pi}\dd \phi_p\int_{-\infty}^{\infty} \dd T\\
     &\times \exp\left(i\vec{p}^2T + ip\cos\theta_p\bar{\Delta}_z^k +  \frac{i}{2}\bar{\Delta}_z^2  + i(t-T)E_{n_1}-i(t+T)E_{n_2}\right)\\
     &\times E_z(t-T) E_z(t+T)c_{n_1}^*(t-T)c_{n_2}(t+T) d_{z,n_1}^*(\uvec{p}+\Delta_z(-T))d_{z,n_2}(\uvec{p}+\Delta_z(T))
 \end{align*}
-As mentioned before the dipole transition matrix element can be written in the following form convenient form:
+As mentioned before, the dipole transition matrix element can be written in the following convenient form:
 \begin{equation*}
     d_{z,nlm}(\uvec{p}) = \left[i\nabla_{\uvec{p}}\phi_{nlm}(\uvec{p})\right]_z = iY_{lm}(\theta_p, \phi_p)\left(\cos\theta_p\frac{\partial F_{nl}}{\partial p}-\frac{\sin\theta_p}{p}\frac{\partial F_{nl}}{\partial p}\right)
 \end{equation*}
-Note that here the $z$ component of a gradient in spherical coordinates was taken. The exact formula can be easily computed using the transformation between cartesian and spherical coordinates.
+Note that here the $z$ component of a gradient in spherical coordinates was taken. The exact formula can be easily computed using the transformation between Cartesian and spherical coordinates.
 
-The integration over $\theta_p$ is difficult and might be not possible to do analytically.
-However for the integral over $\phi_p$ we only have to solve the following:
+The integration over $\theta_p$ is difficult and might not be possible to perform analytically.
+However, for the integral over $\phi_p$, only the following needs to be solved:
 \begin{align*}
     \int_{0}^{2\pi}\dd \phi_p\, Y_{l'm'}^*(\theta_p, \phi_p) Y_{lm}(\theta_p, \phi_p) &= \frac{1}{4\pi}\sqrt{(2l+1)(2l'+1)\frac{(l-m)!(l'-m')}{(l+m)!(l'+m')!}}\int_{0}^{2\pi}\dd \phi_p\, \e^{i(m-m')\phi_p}\\
     &= \frac{1}{2}\sqrt{(2l+1)(2l'+1)\frac{(l-m)!(l'-m)}{(l+m)!(l'+m)!}}
 \end{align*}
+This means that the magnetic quantum number is conserved during the transition between two arbitrary states.
+Since the initial state is the ground state $1s$, $m$ is zero here and therefore everywhere.
+This significantly simplifies the expression.
 
-Further since only the $z$ component of the gradient is important only the partial derivative of $\phi_{nlm}(\uvec{p})$ with respect to $p$ is needed.
-This can be also done analytically.
-\begin{align*}
-    \frac{\partial F_{nl}(p)}{\partial p} = \sum_{\iota=0}^{2l+1} \;
-        & \frac{(-1)^{\iota} \; 2^{\iota + \frac{1}{2}} \; n \; (i n)^l \; \; Z^{-l-3} \; \Gamma(2l+\iota+3)}{\iota!} \nonumber \\
-        & \times \binom{l+n}{-l+n-\iota-1} 
-        \sqrt{\frac{Z^3 \Gamma(n-l)}{\Gamma(l+n+1)}} \nonumber \\
-        & \times  \,
-        (lp^{l-1}{}_2\tilde{F}_1\left(l+\frac{\iota}{2}+2, \frac{1}{2}(2l+\iota+3); l+\frac{3}{2}; -\frac{n^2 p^2}{Z^2}\right)\\
-        &\times\frac{p^ln^2}{Z^2}{}_2\tilde{F}_1\left(l+\frac{\iota}{2}+1, \frac{1}{2}(2l+\iota+1); l+\frac{1}{2}; -\frac{n^2 p^2}{Z^2}\right))
-\end{align*}
+
+
+
+
+
+% Further since only the $z$ component of the gradient is important only the partial derivative of $\phi_{nlm}(\uvec{p})$ with respect to $p$ is needed.
+% This can be also done analytically.
+% \begin{align*}
+%     \frac{\partial F_{nl}(p)}{\partial p} = \sum_{\iota=0}^{2l+1} \;
+%         & \frac{(-1)^{\iota} \; 2^{\iota + \frac{1}{2}} \; n \; (i n)^l \; \; Z^{-l-3} \; \Gamma(2l+\iota+3)}{\iota!} \nonumber \\
+%         & \times \binom{l+n}{-l+n-\iota-1} 
+%         \sqrt{\frac{Z^3 \Gamma(n-l)}{\Gamma(l+n+1)}} \nonumber \\
+%         & \times  \,
+%         (lp^{l-1}{}_2\tilde{F}_1\left(l+\frac{\iota}{2}+2, \frac{1}{2}(2l+\iota+3); l+\frac{3}{2}; -\frac{n^2 p^2}{Z^2}\right)\\
+%         &\times\frac{p^ln^2}{Z^2}{}_2\tilde{F}_1\left(l+\frac{\iota}{2}+1, \frac{1}{2}(2l+\iota+1); l+\frac{1}{2}; -\frac{n^2 p^2}{Z^2}\right))
+% \end{align*}
 
 % Now lets see what the integral over $\theta$ and $\phi$ will look like:
 % \begin{equation*}

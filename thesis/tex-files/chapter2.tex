@@ -1,7 +1,7 @@
 % Convention: \\
 % $\Psi$ wavefunction for the whole system  \\
 % $\psi(\uvec{x})$ for a wavefunction in position space without choosing explicit coordinates, \\
-% $\phi(\uvec{p})$  for a wavefunction in momentum space, \\
+% $\phi(\vec{P})$  for a wavefunction in momentum space, \\
 % $\vec{A}$ for abstract vector as element in vector space, \\
 % $\uvec{x}$ for vector in $\R^n$ \\
 % $\ket{\Psi}$ an abstract element in Hilbert space $\Hc$, \\
@@ -10,7 +10,7 @@
 % $\psi_{n, l, m}(r, \theta, \phi)$ for the wavefunction of hydrogen in spherical coordinates, with $\uvec{x}=(r, \theta, \phi)$ \\
 % I use underlined vectors when they are the coordinates and bold vectors when they are abstract elements in a vector space. \\
 % Its the concept of a manifold. $\vec{A}$ could be in a manifold and not easy acessible but with a basis $\uvec{x}$ it has a physical meaning.\\
-% The canonical momentum $\uvec{P}$ parametrises the phase space but the kinetic momentum does not so kinetic momentum $\hat{=} \vec{p}$.\\
+% The canonical momentum $\vec{P}$ parametrises the phase space but the kinetic momentum does not so kinetic momentum $\hat{=} \vec{p}$.\\
 % The position and momentum operator are in boldface $\hat{\vec{x}}$ because they do not choose any kind of basis not even a representation in which they are displayed.\\
 % When i use $\ket{\vec{k}}$ I mean a plane wave solution so "special" a continuum state.\\
 % A $\cdot$ denotes a scalar product between two vectors, $\times$ is just normal multiplication. \\
@@ -19,7 +19,7 @@
 
 The structure of this chapter largely follows \cite{Ivanov20012005}, with several modifications and adaptations to the context of this thesis.
 
-The aim of this chapter is to derive an expression for the instantaneous ionization rate (IIR) by solving the time-dependent Schrödinger equation (TDSE) within the framework of the strong-field approximation (SFA).
+The aim of this chapter is to derive an expression for the instantaneous ionization rate (IIR) by analytically solving the time-dependent Schrödinger equation (TDSE) within the framework of the strong-field approximation (SFA).
 
 
 
@@ -46,20 +46,25 @@ In the general case where the Hamiltonian does not commute with itself at differ
 \begin{equation}
     \ket{\Psi(t)} = \hat{\U}(t,t_0)\ket{\Psi(t_0)} = \hat{1} + \sum_{n=1}^{\infty} (-i)^n \int_{t_0}^{t} \dd t_1 \int_{t_0}^{t_1} \dd t_2 \cdots \int_{t_0}^{t_{n-1}} \dd t_n \hat{\Hs}(t_n) \hat{\Hs}(t_{n-1})\cdots\hat{\Hs}(t_1) \ket{\Psi(t_0)}. \label{eq:dyson}
 \end{equation}
-\paragraph{\textcolor{red}{Physical setting}}
-The physical setting is a Hydrogen atom in the ground state that is impinged with a high energetic femtosecond laser pulse. 
-The coulomn potential is gi en by 
+
+
+
+
+
+\paragraph{Physical setting}
+This thesis focuses only on the ionization dynamics of a hydrogen atom exposed to an ultrashort and intense laser pulse.
+The Coulomb potential in atomic units is given by
 \begin{equation*}
-    \hat{\Hs}_{\mathrm{C}}=\frac{1}{|x-x_0|}.
+    \hat{\Hs}_{\mathrm{C}} \stackrel{\mathrm{a.u.}}{=} \frac{1}{|\hat{\vec{r}}-\hat{\vec{r}}_0|}.
 \end{equation*}
-Further the hamiltonian can be partitioned into seperate parts since the TDSE is linear.
-For instance in the the ground state part and the interaction part:
+Since the TDSE is a \emph{linear} PDE, the Hamiltonian can be partitioned into separate parts.
+This partitioning can be performed in various ways, all of which are mathematically equivalent.
+For instance, a division into the unpertubed part and the interaction part yields:
 \begin{equation*}
-    \hat{\Hs}(t) = \frac{\hat{\vec{P}}^2}{2m}+\hat{\Hs}_{\mathrm{C}} + \hat{\Hs}_{\mathrm{I}}(t).
+    \hat{\Hs}(t) \stackrel{\mathrm{a.u.}}{=} \underbrace{\frac{\hat{\vec{P}}^2}{2}+\frac{1}{|\hat{\vec{r}}-\hat{\vec{r}}_0|}}_{\hat{\Hs}_0} + \hat{\Hs}_{\mathrm{I}}(t).
 \end{equation*}
-
-
-
+Solving the TDSE with $\hat{\Hs}_0$ provides the bound states of the hydrogen atom.
+The calculation can be found, for instance, in \cite{sakurai} and will not be discussed here.
 
 
 
@@ -120,13 +125,15 @@ This gauge choice is achieved by solving the inhomogeneous wave equation for $\c
 \end{equation*}
 The second equation is of particular interest, as it is a wave equation describing plane-wave solutions for $\vec{A}$:
 \begin{equation*}
-    \vec{A}(\uvec{x}, t) = \vec{A}_0 \e^{\pm i (\uvec{k} \cdot \uvec{x} - \omega t)}.
+    \vec{A}(\uvec{x}, t) = \vec{A}_0 \e^{\pm i (\vec{k} \cdot \vec{r} - \omega t)}.
 \end{equation*}
-Mathematically, the dipole approximation corresponds to the leading-order term in the Taylor expansion of $\e^{i\uvec{k} \cdot \uvec{x}}$. Consequently, the vector potential becomes spatially independent and can be approximated as \cite{bosmandipoleapprox}:
+Mathematically, the dipole approximation corresponds to the leading-order term in the Taylor expansion of $\e^{i\vec{k} \cdot \vec{r}}$. 
+Consequently, the vector potential becomes spatially independent and can be approximated as \cite{bosmandipoleapprox}:
 \begin{equation*}
-    \vec{A}(\uvec{x}, t) = \vec{A}_0\e^{\mp i \omega t}\mathrm{exp}\left\{\pm2\pi i\frac{|\uvec{x}|}{\lambda}\uvec{e}_k \cdot \uvec{e}_x\right\} \approx \vec{A}_0 \e^{\mp i \omega t}\left(1+\Os\left(\frac{|\uvec{x}|}{\lambda}\right)\right) = \vec{A}(t)
+    \vec{A}(\uvec{x}, t) = \vec{A}_0\e^{\mp i \omega t}\mathrm{exp}\left\{\pm2\pi i\frac{|\vec{r}|}{\lambda}\vec{e}_{\vec{k}} \cdot \vec{e}_{\vec{r}}\right\} \approx \vec{A}_0 \e^{\mp i \omega t}\left(1+\Os\left(\frac{|\vec{r}|}{\lambda}\right)\right) = \vec{A}(t)
 \end{equation*}
-This approximation holds as long as the wavelength is sufficiently large. Under these conditions, the magnetic field simplifies to:
+This approximation holds as long as the wavelength is sufficiently large. 
+Under these conditions, the magnetic field simplifies to:
 \begin{equation*}
     \vec{B} = \nabla \times \vec{A} \approx 0.
 \end{equation*}
@@ -172,7 +179,7 @@ This transformation sets $\vec{A}$ to zero, modifying $\varphi$ as follows:%r=(x
 \begin{equation}
     \nabla \varphi \to \nabla \cdot (\varphi + \vec{x} \cdot \frac{\partial \vec{A}}{\partial t}) = \nabla \varphi + \frac{\partial \vec{A}}{\partial t} = - \vec{E}
 \end{equation}
-Integrating this equation from the origin to $\vec{x}$ yields the electric potential in the length gauge. 
+Integrating this equation from the origin to $\vec{x}$ yields the electric potential in the length gauge. %WHAT IS ALL THIS x AND r THING? DOES IT MAKE EVEN SENSE?
 With $\vec{r}$ now quantized, the Hamiltonian becomes:
 \begin{equation*}%i think E is still dependent on x so i cant just integrate it :( becasue phi is still dependent on x but i think i can solve it by just setting phi to zero
     \hat{\Hs}(\uvec{x}, t) = \frac{\hat{\vec{P}}^2}{2m} - e \hat{\vec{x}} \cdot \vec{E}%+ V(x)
@@ -222,7 +229,8 @@ As with any gauge transformation, certain scenarios favor one gauge over another
 The difficulty with ionization arises from the existence of in some sense two Hilbert spaces: 
 one for the bound states in the Hydrogen atom that accounts for distortion of the wavefunction due to the laser field, and another for the continuum states that are primarily affected by the laser field but also influenced by the binding potential.
 
-It will be shown that SFA provides a treatment for the second Hilbert space, simplifying its description. However, previous SFA formulations oversimplify the first Hilbert subspace to such an extent that there remains one Hilbert space for eigenstates unaffected by the laser field and another for continuum states unaffected by the binding potential.
+It will be shown that SFA provides a treatment for the second Hilbert space, simplifying its description. 
+However, previous SFA formulations oversimplify the first Hilbert subspace to such an extent that there remains one Hilbert space for eigenstates unaffected by the laser field and another for continuum states unaffected by the binding potential.
 
 SFA, in principle, concerns only the second part; neglecting the dynamics before ionization is not truly part of it.
 This section derives an expression that avoids excessive simplification of the first Hilbert space.
@@ -250,31 +258,30 @@ This property can be considered as the defining characteristic of projection ope
 Here, $\ket{\Psi_n}$ represents the bound states of the atom. Using $\hat{X}+\hat{Y}=\hat{1}$, any partition of the Hamiltonian can be chosen.
 The most natural partitioning is first written as:
 \begin{equation*}
-    \hat{\Hs}(t) = \underbrace{\hat{X}\hat{\Hs}(t)\hat{X}}_{\hat{\Hs}^{\mathrm{XX}}(t)=\hat{\Hs}^{\mathrm{ODE}}_0(t)} + \underbrace{\hat{Y}\hat{\Hs}(t)\hat{Y} + \hat{X}\hat{\Hs}(t)\hat{Y} + \hat{Y}\hat{\Hs}(t)\hat{X}}_{\hat{\Hs}^{\mathrm{YY}}(t)+\hat{\Hs}^{\mathrm{XY}}(t)+\hat{\Hs}^{\mathrm{YX}}(t)=\hat{\Hs}^{\mathrm{ODE}}_{\mathrm{I}}(t)} = \hat{\Hs}^{\mathrm{ODE}}_0(t)+\hat{\Hs}^{\mathrm{ODE}}_{\mathrm{I}}(t)
+    \hat{\Hs}(t) = \underbrace{\hat{X}\hat{\Hs}(t)\hat{X}}_{\hat{\Hs}_{\mathrm{Bound}}(t)=\hat{\Hs}^{\mathrm{Sub}}_0(t)} + \underbrace{\hat{Y}\hat{\Hs}(t)\hat{Y} + \hat{X}\hat{\Hs}(t)\hat{Y} + \hat{Y}\hat{\Hs}(t)\hat{X}}_{\hat{\Hs}_{\mathrm{Cont}}(t)+\hat{\Hs}_{\mathrm{Rec}}(t)+\hat{\Hs}_{\mathrm{Ion}}(t)=\hat{\Hs}^{\mathrm{Sub}}_{\mathrm{I}}(t)} = \hat{\Hs}^{\mathrm{Sub}}_0(t)+\hat{\Hs}^{\mathrm{Sub}}_{\mathrm{I}}(t)
 \end{equation*}
 Similar to $\hat{\Hs}(t)=\hat{\Hs}_0(t)+\hat{\Hs}_\mathrm{I}(t)$, where $\hat{\Hs}_\mathrm{I}(t)$ represents the interacting perturbation (for instance, in the length gauge \eqref{eq:dipoleApprox}), but now applied to the full Hamiltonian projected onto subspaces.
-For reasons that will be explained later, this is referred to as the ODE partition.
-The acronym ODE (Ordinary Differential Equation) reflects its later use in solving for the coefficients that weight the wavefunction.
+For reasons that will be explained later, this is referred to as the Subspace partition.
 While the notation may appear arbitrary now, its significance will become clear later.
 
-The Hamiltonian can alternatively be partitioned into a different form:
+The Hamiltonian can alternatively be partitioned into a different form, the full partition:
 \begin{equation*}
-    \hat{\Hs}(t) = \underbrace{\hat{X}\hat{\Hs}(t)\hat{X} + \hat{Y}\hat{\Hs}(t)\hat{Y} + \hat{X}\hat{\Hs}(t)\hat{Y}}_{\hat{\Hs}^{\mathrm{XX}}(t)+\hat{\Hs}^{\mathrm{YY}}(t)+\hat{\Hs}^{\mathrm{XY}}(t)=\hat{\Hs}^{\mathrm{tRecX}}_0(t)} + \underbrace{\hat{Y}\hat{\Hs}(t)\hat{X}}_{\hat{\Hs}^{\mathrm{YX}}(t) = \hat{\Hs}^{\mathrm{tRecX}}_{\mathrm{I}}(t)} = \hat{\Hs}^{\mathrm{tRecX}}_0(t)+\hat{\Hs}^{\mathrm{tRecX}}_{\mathrm{I}}(t)
+    \hat{\Hs}(t) = \underbrace{\hat{X}\hat{\Hs}(t)\hat{X} + \hat{Y}\hat{\Hs}(t)\hat{Y} + \hat{X}\hat{\Hs}(t)\hat{Y}}_{\hat{\Hs}_{\mathrm{Bound}}(t)+\hat{\Hs}_{\mathrm{Cont}}(t)+\hat{\Hs}_{\mathrm{Rec}}(t)=\hat{\Hs}^{\mathrm{Full}}_0(t)} + \underbrace{\hat{Y}\hat{\Hs}(t)\hat{X}}_{\hat{\Hs}_{\mathrm{Ion}}(t) = \hat{\Hs}^{\mathrm{Full}}_{\mathrm{I}}(t)} = \hat{\Hs}^{\mathrm{Full}}_0(t)+\hat{\Hs}^{\mathrm{Full}}_{\mathrm{I}}(t)
 \end{equation*}
 
 The physical meaning of these terms can be interpreted as follows:
-In $\hat{\Hs}^{\mathrm{XX}}(t)$, the electron remains within the subspace and can always be described by a superposition of bound states.
+In $\hat{\Hs}_{\mathrm{Bound}}(t)$, the electron remains within the subspace and can always be described by a superposition of bound states.
 Without ionization, this would be the only term governing the time evolution.
 In previous work, this part of the Hamiltonian was often simplified to the extent that effects like Stark shift or coupling to excited states were neglected.
 
-$\hat{\Hs}^{\mathrm{YY}}(t)$ describes similar dynamics, but in the subspace of continuum states rather than bound states.
+$\hat{\Hs}_{\mathrm{Cont}}(t)$ describes similar dynamics, but in the subspace of continuum states rather than bound states.
 While in reality these two spaces cannot be completely separated, this distinction provides conceptual clarity.
 This is the part where the SFA will later be applied.
 
 The remaining terms describe different physical processes.
 Two processes can occur: ionization of the electron or recombination with the atom.
-These processes are governed by the terms $\hat{\Hs}^{\mathrm{XY}}(t)$ and $\hat{\Hs}^{\mathrm{YX}}(t)$.
-In the present case, only one of these terms is relevant, and it will be shown later that $\hat{\Hs}^{\mathrm{YX}}(t)$ is responsible for ionization, effectively "kicking" the electron out of the atom \cite{Ivanov20012005}.
+These processes are governed by the terms $\hat{\Hs}_{\mathrm{Rec}}(t)$ and $\hat{\Hs}_{\mathrm{Ion}}(t)$.
+In the present case, only one of these terms is relevant, and it will be shown later that $\hat{\Hs}_{\mathrm{Ion}}(t)$ is responsible for ionization, effectively "kicking" the electron out of the atom \cite{Ivanov20012005}.
 
 While this approach may initially appear unnecessary, it establishes boundaries for the electron's behavior and provides useful intuition.
 
@@ -298,9 +305,9 @@ It can be written in two forms that are equivalent in their raw formulation but 
 
 The more intuitive form of the Dyson equation for this physical setting is given by:
 \begin{equation}
-    \hat{\U}(t,t_0)=\hat{\U}^{\mathrm{ODE}}_0(t,t_0)-i\int_{t_0}^{t} \hat{\U}(t,t')\hat{\Hs}^{\mathrm{ODE}}_{\mathrm{I}}(t')\hat{\U}^{\mathrm{ODE}}_0(t',t_0) \dd t'       \label{eq:dysonAnsatzODE}
+    \hat{\U}(t,t_0)=\hat{\U}^{\mathrm{Sub}}_0(t,t_0)-i\int_{t_0}^{t} \hat{\U}(t,t')\hat{\Hs}^{\mathrm{Sub}}_{\mathrm{I}}(t')\hat{\U}^{\mathrm{Sub}}_0(t',t_0) \dd t'       \label{eq:dysonAnsatzODE}
 \end{equation}
-Note that the ODE propagators are not identical to the tRecX propagators \eqref{eq:dysonAnsatztRecX}, but within the Dyson ansatz, the full propagator $\hat{\U}$ remains unchanged.
+Note that the ``Sub'' propagators are not identical to the ``Full'' propagators \eqref{eq:dysonAnsatztRecX}, but within the Dyson ansatz, the full propagator $\hat{\U}$ remains unchanged.
 This will change later when SFA is introduced.
 Most formulas in this thesis can be best read from right to left, such as this one.
 The time evolution starts with the Hamiltonian projected onto the bound states.
@@ -309,24 +316,25 @@ For more insights, refer to \cite{Ivanov20012005}.
 
 The Dyson equation can also be expressed in a slightly different form:
 \begin{equation}
-    \hat{\U}(t,t_0)=\hat{\U}^{\mathrm{tRecX}}_0(t,t_0)-i\int_{t_0}^{t} \hat{\U}^{\mathrm{tRecX}}_0(t,t')\hat{\Hs}^{\mathrm{tRecX}}_{\mathrm{I}}(t')\hat{\U}(t',t_0) \dd t'       \label{eq:dysonAnsatztRecX}
+    \hat{\U}(t,t_0)=\hat{\U}^{\mathrm{Full}}_0(t,t_0)-i\int_{t_0}^{t} \hat{\U}^{\mathrm{Full}}_0(t,t')\hat{\Hs}^{\mathrm{Full}}_{\mathrm{I}}(t')\hat{\U}(t',t_0) \dd t'       \label{eq:dysonAnsatztRecX}
 \end{equation}
 It can be verified that both equations satisfy the TDSE by direct substitution of $\hat{\U}(t,t_0)$.
-The main difference between the tRecX and ODE formulations is that the "initial" propagator on the right side is now the full time propagator instead of a reduced one.
+The main difference between the ``Full'' and ``Sub'' formulations is that the "initial" propagator on the right side is now the full time propagator instead of a reduced one.
+That motivates the acronym for both variants.
 
 To simplify the analysis, the physical setting is further specified.
 Starting from the ground state of the atom, the time evolution is given by $\hat{\U}(t,t_0)\ket{\Psi_0(t_0)}$.
 For additional simplification, a projection onto a continuum state $\ket{\Pi(t_{\mathrm{c}})}$ at time $t_{\mathrm{c}}$ is considered.
 $\ket{\Pi(t_{\mathrm{c}})}$ does not represent a plane wave but rather an abstract state characterized by its momentum.
-Naturally, there is no overlap between $\ket{\Pi(t_{\mathrm{c}})}$ and $\hat{\U}^{\mathrm{ODE}}_0(t,t_0)\ket{\Psi_0(t_0)}$ or with $\hat{\U}^{\mathrm{tRecX}}_0(t,t_0)\ket{\Psi_0(t_0)}$, as the electron has not yet been ionized and no initial population in the continuum is assumed \cite{Ivanov20012005}.
-Furthermore, when $\hat{\Hs}^{\mathrm{ODE}}_{\mathrm{I}}(t')$ and $\hat{\Hs}^{\mathrm{tRecX}}_{\mathrm{I}}(t')$ are expanded, and the orthogonality of bound states and continuum states is taken into account, most terms of $\hat{\Hs}_{\mathrm{I}}(t')$ vanish.
+Naturally, there is no overlap between $\ket{\Pi(t_{\mathrm{c}})}$ and $\hat{\U}^{\mathrm{Sub}}_0(t,t_0)\ket{\Psi_0(t_0)}$ or with $\hat{\U}^{\mathrm{Full}}_0(t,t_0)\ket{\Psi_0(t_0)}$, as the electron has not yet been ionized and no initial population in the continuum is assumed \cite{Ivanov20012005}.
+Furthermore, when $\hat{\Hs}^{\mathrm{Sub}}_{\mathrm{I}}(t')$ and $\hat{\Hs}^{\mathrm{Full}}_{\mathrm{I}}(t')$ are expanded, and the orthogonality of bound states and continuum states is taken into account, most terms of $\hat{\Hs}_{\mathrm{I}}(t')$ vanish.
 The remaining expressions are:
 \begin{equation}
-    \braket{\Pi(t_{\mathrm{c}})|\,\hat{\U}^{\mathrm{ODE}}_0(t,t_0)\ket{\Psi_0(t_0)}} = -i \int_{t_0}^{t} \bra{\Pi(t_{\mathrm{c}})} \hat{\U}(t,t')\hat{Y}\hat{\Hs}(t')\hat{X} \hat{\U}^{\mathrm{ODE}}_0(t',t_0)\ket{\Psi_0(t_0)} \dd t' \label{eq:smatrixlike1_withoutsfa}
+    \braket{\Pi(t_{\mathrm{c}})|\,\hat{\U}(t,t_0)\ket{\Psi_0(t_0)}} = -i \int_{t_0}^{t} \bra{\Pi(t_{\mathrm{c}})} \hat{\U}(t,t')\hat{Y}\hat{\Hs}(t')\hat{X} \hat{\U}^{\mathrm{Sub}}_0(t',t_0)\ket{\Psi_0(t_0)} \dd t' \label{eq:smatrixlike1_withoutsfa}
 \end{equation}
 and
 \begin{equation}
-    \braket{\Pi(t_{\mathrm{c}})|\,\hat{\U}^{\mathrm{tRecX}}_0(t,t_0)\ket{\Psi_0(t_0)}} = -i \int_{t_0}^{t} \bra{\Pi(t_{\mathrm{c}})} \hat{\U}^{\mathrm{tRecX}}_0(t,t')\hat{Y}\hat{\Hs}(t')\hat{X} \hat{\U}(t',t_0)\ket{\Psi_0(t_0)} \dd t' \label{eq:smatrixlike2_withoutsfa}
+    \braket{\Pi(t_{\mathrm{c}})|\,\hat{\U}(t,t_0)\ket{\Psi_0(t_0)}} = -i \int_{t_0}^{t} \bra{\Pi(t_{\mathrm{c}})} \hat{\U}^{\mathrm{Full}}_0(t,t')\hat{Y}\hat{\Hs}(t')\hat{X} \hat{\U}(t',t_0)\ket{\Psi_0(t_0)} \dd t' \label{eq:smatrixlike2_withoutsfa}
 \end{equation}
 Note: No approximations have been made; \eqref{eq:smatrixlike1_withoutsfa} and \eqref{eq:smatrixlike2_withoutsfa} are exact.
 
@@ -346,18 +354,18 @@ Note: No approximations have been made; \eqref{eq:smatrixlike1_withoutsfa} and \
 \subsection{Strong Field Approximation}
 In principle, the strong field approximation (SFA) involves neglecting the binding potential after ionization.
 This approximation is intuitively reasonable because the laser field becomes the dominant force acting on the electron, exerting significantly greater influence on the ionization dynamics than the Coulomb potential.
-It should be noted that SFA is not restricted to high-intensity laser pulses; even for small ionization probabilities (e.g., <0.01), SFA implies that once ionization occurs, the laser pulse dominates the subsequent dynamics.
+It should be noted that SFA is not restricted to high-intensity laser pulses; even for arbitrary small ionization probabilities, SFA implies that once ionization occurs, the laser pulse dominates the subsequent dynamics.
 
-First, the ODE partitioning must be addressed.
+First, the ``Sub'' partitioning must be addressed.
 The time evolution operator after ionization can be expressed as:
 \begin{equation*}
     %\hat{\Hs}(t) &= \hat{\Hs}_0 + \hat{V}_I(t) = \hat{\Hs}_p + \hat{V}_C + \hat{V}_I(t) 
-    %e^{-i \int_{t'}^{t} \hat{\Hs}(t'') \dd t''} &\approx e^{-i \int_{t'}^{t} \hat{\Hs}_{SFA}(t'') \dd t''} \quad \text{with} \quad \hat{\Hs}_{SFA}(t) &= \hat{\Hs}(t) - \hat{V}_C
-    \hat{\U}(t,t') \approx \hat{\U}_{\mathrm{SFA}}(t,t')=e^{-i \int_{t'}^{t} \hat{\Hs}_{SFA}(t'') \dd t''} \quad \text{and} \quad \Hs_{\mathrm{SFA}}(t') = \hat{\Hs}(t) - \hat{\Hs}_{\mathrm{C}}      \label{eq:sfa_formula}
+    %e^{-i \int_{t'}^{t} \hat{\Hs}(t'') \dd t''} &\approx e^{-i \int_{t'}^{t} \hat{\Hs}_{\mathrm{SFA}}(t'') \dd t''} \quad \text{with} \quad \hat{\Hs}_{\mathrm{SFA}}(t) &= \hat{\Hs}(t) - \hat{V}_C
+    \hat{\U}(t,t') \approx \hat{\U}_{\mathrm{SFA}}(t,t')=e^{-i \int_{t'}^{t} \hat{\Hs}_{\mathrm{SFA}}(t'') \dd t''} \quad \text{and} \quad \Hs_{\mathrm{SFA}}(t') = \hat{\Hs}(t) - \hat{\Hs}_{\mathrm{C}}      \label{eq:sfa_formula}
 \end{equation*}
-Similarly, for the tRecX partitioning:
+Similarly, for the ``Full'' partitioning:
 \begin{equation*}
-    \hat{\U}^{\mathrm{tRecX}}_0(t,t') \approx \hat{\U}_{\mathrm{SFA}}(t,t')=e^{-i \int_{t'}^{t} \hat{\Hs}_{SFA}(t'') \dd t''} \quad \text{and} \quad \Hs_{\mathrm{SFA}}(t') = \hat{\Hs}(t) - \hat{\Hs}_{\mathrm{C}}      \label{eq:sfa_formula}
+    \hat{\U}^{\mathrm{Full}}_0(t,t') \approx \hat{\U}_{\mathrm{SFA}}(t,t')=e^{-i \int_{t'}^{t} \hat{\Hs}_{\mathrm{SFA}}(t'') \dd t''} \quad \text{and} \quad \Hs_{\mathrm{SFA}}(t') = \hat{\Hs}(t) - \hat{\Hs}_{\mathrm{C}}      \label{eq:sfa_formula}
 \end{equation*}
 An exact expression for the SFA time evolution operator can be written, as it now commutes with itself at different times.
 
@@ -366,7 +374,7 @@ To see this, consider the semiclassical Hamiltonian in \eqref{eq:semiClassicalHa
 
 Classically, the physics driven by the momentum operator $\hat{\vec{P}}$ is known as the canonical momentum, given by:
 \begin{equation}
-    \frac{\partial \Ls}{\partial \dot{\uvec{x}}} = \uvec{P} = m\uvec{\dot{x}} + \frac{e}{c}\vec{A} \stackrel{\mathrm{a.u.}}{=} \vec{p} + \vec{A}    \label{eq:canonicalMomentum}
+    \frac{\partial \Ls}{\partial \dot{\uvec{x}}} = \vec{P} = m\uvec{\dot{x}} + \frac{e}{c}\vec{A} \stackrel{\mathrm{a.u.}}{=} \vec{p} + \vec{A}    \label{eq:canonicalMomentum}
 \end{equation}
 where $\mathcal{L}$ is the Lagrangian of the system.
 
@@ -384,40 +392,40 @@ And also the energy of the system is clear:
 \end{equation}
 Note that the energy is not conserved, as the previous argument holds only for the canonical momentum, not the kinetic momentum.
 
-The key observation is that $\bra{\Pi(t_{\mathrm{c}})}$ (not $\bra{\vec{p}(t_{\mathrm{c}})}$!) is an eigenstate of $e^{-i \int_{t'}^{t} \hat{H}{\mathrm{SFA}}(t'') \dd t''}$. 
+The key observation is that $\bra{\Pi(t_{\mathrm{c}})}$ (not $\bra{\vec{p}(t_{\mathrm{c}})}$!) is an eigenstate of $e^{-i \int_{t'}^{t} \hat{H}_{\mathrm{SFA}}(t'') \dd t''}$. 
 Combining \eqref{eq:canonicalMomentum} and \eqref{eq:energy} yields:
 \begin{equation*}
-    \bra{\Pi(t_c)}e^{-i \int_{t'}^{t} \hat{\Hs}_{SFA}(t'') \dd t''} = \bra{\Pi(t_c)}e^{-i \int_{t'}^{t} (\uvec{P} - \vec{A}(t''))^2 \dd t''}
+    \bra{\Pi(t_c)}e^{-i \int_{t'}^{t} \hat{\Hs}_{\mathrm{SFA}}(t'') \dd t''} = \bra{\Pi(t_c)}e^{-i \int_{t'}^{t} (\vec{p} + \vec{A}(t''))^2 \dd t''}
 \end{equation*}
 Here, $\vec{P}$ is time-independent, while $\vec{A}$ is not.
+ATTENTION!!! WITH p+A or P-A what is it???
 
 Using the conservation of canonical momentum, the momentum at other times can be calculated. 
 Of particular interest is the asymptotic limit when the laser field vanishes:
 \begin{equation*}
-    \uvec{P} = \vec{p}(t'') + \vec{A}(t'') = \vec{p}(t\rightarrow \infty) + \vec{A}(t\rightarrow \infty) = \vec{p}
+    \vec{P} = \vec{p}(t'') + \vec{A}(t'') = \vec{p}(t\rightarrow \infty) + \vec{A}(t\rightarrow \infty) = \vec{p}
 \end{equation*}
-Furthermore \textcolor{red}{(how??)},
+Furthermore, $\ket{\Pi}$ represents now a plane wave solution\textcolor{red}{(how??)},
 \begin{equation*}
-    \ket{\Pi} = \ket{\uvec{P}} = \ket{\vec{p}+\vec{A}}
+    \ket{\Pi} = \ket{\vec{p}+\vec{A}}
 \end{equation*}
-
-Combining these results leads to the following expressions for both tRecX and ODE:
+Combining these results leads to the following expressions for both ``Full'' and ``Sub'':
 \begin{equation}
-    \braket{\Pi(t_{\mathrm{c}})|\,\hat{\U}^{\mathrm{ODE}}_0(t,t_0)\ket{\Psi_0(t_0)}} = -i \int_{t_0}^{t} e^{-i \int_{t'}^{t} (\uvec{P} - \vec{A}(t''))^2 \dd t''}\bra{\vec{p}+\vec{A}}\hat{\Hs}(t')\hat{X} \hat{\U}^{\mathrm{ODE}}_0(t',t_0)\ket{\Psi_0(t_0)} \dd t' \label{eq:smatrixlike1}
+    \braket{\Pi(t_{\mathrm{c}})|\,\hat{\U}(t,t_0)\ket{\Psi_0(t_0)}} = -i \int_{t_0}^{t} e^{-i \int_{t'}^{t} (\vec{p} + \vec{A}(t''))^2 \dd t''}\bra{\vec{p}+\vec{A}}\hat{\Hs}(t')\hat{X}\, \hat{\U}^{\mathrm{Sub}}_0(t',t_0)\ket{\Psi_0(t_0)} \dd t' \label{eq:smatrixlike1}
 \end{equation}
 and
 \begin{equation}
-    \braket{\Pi(t_{\mathrm{c}})|\,\hat{\U}^{\mathrm{tRecX}}_0(t,t_0)\ket{\Psi_0(t_0)}} = -i \int_{t_0}^{t} e^{-i \int_{t'}^{t} (\uvec{P} - \vec{A}(t''))^2 \dd t''}\bra{\vec{p}+\vec{A}}\hat{\Hs}(t')\hat{X} \hat{\U}(t',t_0)\ket{\Psi_0(t_0)} \dd t' \label{eq:smatrixlike2}
+    \braket{\Pi(t_{\mathrm{c}})|\,\hat{\U}(t,t_0)\ket{\Psi_0(t_0)}} = -i \int_{t_0}^{t} e^{-i \int_{t'}^{t} (\vec{p} + \vec{A}(t''))^2 \dd t''}\bra{\vec{p}+\vec{A}}\hat{\Hs}(t')\hat{X}\, \hat{\U}(t',t_0)\ket{\Psi_0(t_0)} \dd t' \label{eq:smatrixlike2}
 \end{equation}
-Note that the SFA eliminates the difference in the left part of the integrand between ODE and tRecX, making the two equations distinct. 
-The final step introduces a new approximation for $\hat{U}^{\mathrm{ODE}}_0(t',t_0)\ket{\Psi_0(t_0)}$ and $\hat{U}(t',t_0)\ket{\Psi_0(t_0)}$.
+Note that the SFA eliminates the difference in the left part of the integrand between ``Sub'' and ``Full'', making the two equations distinct. 
+The final step introduces a new approximation for $\hat{\U}^{\mathrm{Sub}}_0(t',t_0)\ket{\Psi_0(t_0)}$ and $\hat{\U}(t',t_0)\ket{\Psi_0(t_0)}$.
 
-\paragraph{ODE}
+\paragraph{Sub-Hilbertspace ansatz}
 Regardless of the final form, the expression can be expanded in the bound states $\ket{\Psi_n}$.
-This is clear by considering the defining equation of the time evolution operator and observing that any overlap of $\hat{\U}^{\mathrm{ODE}}_0(t',t_0)\ket{\Psi_0(t_0)}$ with a state outside the bound-state representation would cancel out due to $\hat{X}$.
+This is clear by considering the defining equation of the time evolution operator and observing that any overlap of $\hat{\U}^{\mathrm{Sub}}_0(t',t_0)\ket{\Psi_0(t_0)}$ with a state outside the bound-state representation would cancel out due to $\hat{X}$.
 With this consideration, an ansatz using the interaction picture can be formulated as:
 \begin{equation*}
-    \hat{\U}^{\mathrm{ODE}}_0(t',t_0)\ket{\Psi_0(t_0)} = \sum_{n}c_n(t')e^{-iE_nt'}\ket{\Psi_n}
+    \hat{\U}^{\mathrm{Sub}}_0(t',t_0)\ket{\Psi_0(t_0)} = \sum_{n}c_n(t')e^{-iE_nt'}\ket{\Psi_n}\footnote{Here, $E_n$ are the eigenenergies and not the electric field. If it would be the electric field it would be denoted as a vector or the component of the vector.}
 \end{equation*}
 The factors $e^{-iE_nt'}$ are factored out to avoid potential numerical issues arising from their rapid oscillations.
 
@@ -425,7 +433,7 @@ In theory, this ansatz is exact but relies on the implicit assumption that the H
 Additionally, it assumes that the bound states remain unaffected by the laser field, which is not strictly true in reality.
 However, this approximation can be justified by the low laser intensity and the resulting ionization probability not exceeding $0.01$.
 
-\paragraph{tRecX}
+\paragraph{Full Hilbertspace ansatz}
 This case involves a more severe approximation.
 The primary advantage is that only the time evolution up to the ionization moment $t'$ is required.
 The same assumptions regarding laser intensity and ionization probability apply here, justifying the approximation of the time evolution as a superposition of bound states:
@@ -436,13 +444,13 @@ The same assumptions regarding laser intensity and ionization probability apply 
 \bigskip
 
 The key difference between the two ansatzes lies in the coefficients $c_n(t')$.
-In the ODE case, the coefficients are obtained by solving the TDSE within the subspace spanned by the bound states.
+In the subspace approach, the coefficients are obtained by solving the TDSE within the subspace spanned by the bound states.
 This approach effectively cuts off ionization, forcing the electron to the subspace regardless of laser intensity.
 Implementing this leads to a system of ordinary differential equations for the coefficients, hence the name.
-In contrast, the tRecX approach is fundamentally different.
+In contrast, the other approach is fundamentally different.
 Here, the TDSE must be solved in the full Hilbert space, with the coefficients extracted at times $t'$.
 In the atto/femtosecond regime, this demands substantial computational resources, as the electron exits the sub-Hilbert space during the process.
-For these numerical simulations, a solver called tRecX (discussed in Chapter 3) was employed, motivating the name.
+For these numerical simulations, a solver called tRecX (discussed in Chapter 3) was employed.
 
 Unlike other literature (\cite{Theory_NPS}, \cite{Ivanov20012005}), this ansatz does not neglect transitions between bound states prior to ionization.
 For example, the laser pulse may excite the electron without immediately ionizing it.
@@ -451,7 +459,7 @@ The coefficients are expected to capture all relevant dynamics within the hydrog
 The final expression can now be presented.
 By simplifying the dipole matrix element $\vec{d}_n(\vec{p}+\vec{A}) = \bra{\vec{p}+\vec{A}}\hat{\Hs}(t')\ket{\Psi_n}$ between the bound state and the continuum state, the dipole approximation \eqref{eq:dipoleApprox} can be applied, yielding:
 \begin{equation*}
-    \braket{\Pi(t_{\mathrm{c}})|\Psi_n(t)} = -\frac{i}{2}\int_{t_0}^{t} e^{-i \int_{t'}^{t} (\uvec{P} - A_z(t''))^2 \dd t''}E_z(t')\sum_{n}c_n(t)e^{-iE_nt'}\bra{\vec{p}+A_z}\hat{d}_z\ket{\Psi_n} \dd t'       \label{eq:smatrix}
+    \braket{\Pi(t_{\mathrm{c}})|\Psi_n(t)} = -\frac{i}{2}\int_{t_0}^{t} e^{-i \int_{t'}^{t} (\vec{p} + A_z(t''))^2 \dd t''}E_z(t')\sum_{n}c_n(t)e^{-iE_nt'}\bra{\vec{p}+A_z}\hat{d}_z\ket{\Psi_n} \dd t'       \label{eq:smatrix}
 \end{equation*}
 Here, the electric field is polarized along the z-axis.
 This equation corresponds to the strong-field S-matrix in the length gauge, as found in many papers \cite{Theory_NPS}, but with the distinction that excited states are not neglected.
@@ -490,20 +498,20 @@ The total ionization probability is obtained by integrating the ionization rate 
 Therefore, the SFA rate \eqref{eq:smatrix} can be written as:
 \begin{align*}
     \lim_{t\to\infty}\braket{\Psi(t)|\int \dd^3 p \ket{p}\bra{p}\Psi(t)} = &\int_{-\infty}^{\infty} \Gamma_{\mathrm{SFA}}(t) \dd t \\ %= \int_{\R^3}\dd^3p \braket{\Psi_n(t)|\Pi(t_{\mathrm{c}})}\braket{\Pi(t_{\mathrm{c}})|\Psi_n(t)}\\ 
-    = &\int \dd^3 p \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} \dd t_1  \dd t_2 \, e^{\frac{i}{2}\int_{t_1}^{t_2}(\uvec{p}+A_z(t''))^2\dd t''} E_z(t_1)E_z(t_2)\\
-    &\times\left(\sum_{n}e^{iE_nt_1}c_n^*(t_1)d_{z,n}^*(\uvec{p}+A_z(t_1))\right)\left(\sum_{n}e^{-iE_nt_2}c_n(t_2)d_{z,n}(\uvec{p}+A_z(t_2))\right)
+    = &\int \dd^3 p \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} \dd t_1  \dd t_2 \, e^{\frac{i}{2}\int_{t_1}^{t_2}(\vec{p}+A_z(t''))^2\dd t''} E_z(t_1)E_z(t_2)\\
+    &\times\left(\sum_{n}e^{iE_nt_1}c_n^*(t_1)d_{z,n}^*(\vec{p}+A_z(t_1))\right)\left(\sum_{n}e^{-iE_nt_2}c_n(t_2)d_{z,n}(\vec{p}+A_z(t_2))\right)
 \end{align*}
 By changing variables to $t=\frac{t_2+t_1}{2}$ and $T=\frac{t_2-t_1}{2}$ and using the fact that the laser pulse is polarized along the z-axis, the expression becomes:
 \begin{align*}
-    \Gamma_{\mathrm{SFA}}(t) &= \int \dd^3 p \int_{-\infty}^{\infty} \dd T \, e^{\frac{i}{2}\int_{t-T}^{t+T}(\uvec{p}+A_z(t''))^2\dd t''} E_z(t-T) E_z(t+T)\\
-    &\times\left(\sum_{n}e^{i(t-T)E_n}c_n^*(t-T)d_{z,n}^*(\uvec{p}+A_z(t-T))\right)\left(\sum_{n}e^{-i(t+T)E_n}c_n(t+T)d_{z,n}(\uvec{p}+A_z(t+T))\right)\\
-    &= \sum_{n_1}\sum_{n_2} \int_0^{\infty} \dd p\,p^2\int_0^{\pi} \dd\theta_p\,\sin\theta_p \int_0^{2\pi}\dd \phi_p\int_{-\infty}^{\infty} \dd T \, e^{\frac{i}{2}\int_{t-T}^{t+T}(\uvec{p}+A_z(t''))^2\dd t''} e^{i(t-T)E_{n_1}-i(t+T)E_{n_2}}\\
-    &\times E_z(t-T) E_z(t+T)c_{n_1}^*(t-T)c_{n_2}(t+T) d_{z,n_1}^*(\uvec{p}+A_z(t-T))d_{z,n_2}(\uvec{p}+A_z(t+T))
+    \Gamma_{\mathrm{SFA}}(t) &= \int \dd^3 p \int_{-\infty}^{\infty} \dd T \, e^{\frac{i}{2}\int_{t-T}^{t+T}(\vec{p}+A_z(t''))^2\dd t''} E_z(t-T) E_z(t+T)\\
+    &\times\left(\sum_{n}e^{i(t-T)E_n}c_n^*(t-T)d_{z,n}^*(\vec{p}+A_z(t-T))\right)\left(\sum_{n}e^{-i(t+T)E_n}c_n(t+T)d_{z,n}(\vec{p}+A_z(t+T))\right)\\
+    &= \sum_{n_1}\sum_{n_2} \int_0^{\infty} \dd p\,p^2\int_0^{\pi} \dd\theta_p\,\sin\theta_p \int_0^{2\pi}\dd \phi_p\int_{-\infty}^{\infty} \dd T \, e^{\frac{i}{2}\int_{t-T}^{t+T}(\vec{p}+A_z(t''))^2\dd t''} e^{i(t-T)E_{n_1}-i(t+T)E_{n_2}}\\
+    &\times E_z(t-T) E_z(t+T)c_{n_1}^*(t-T)c_{n_2}(t+T) d_{z,n_1}^*(\vec{p}+A_z(t-T))d_{z,n_2}(\vec{p}+A_z(t+T))
 \end{align*}
 The integration variable is changed from $\vec{p}$ to $\vec{p}+\vec{A}$, and with $\vec{\Delta}(t') = \vec{A}(t+t') - \vec{A}(t)$, the expression becomes:
 \begin{align*}
-    &\sum_{n_1}\sum_{n_2} \int_0^{\infty} \dd p\,p^2\int_0^{\pi} \dd\theta_p\,\sin\theta_p \int_0^{2\pi}\dd \phi_p\int_{-\infty}^{\infty} \dd T \, e^{\frac{i}{2}\int_{-T}^{T}(\uvec{p}+\Delta_z(t''))^2\dd t''} e^{i(t-T)E_{n_1}-i(t+T)E_{n_2}}\\
-    &\times E_z(t-T) E_z(t+T)c_{n_1}^*(t-T)c_{n_2}(t+T) d_{z,n_1}^*(\uvec{p}+\Delta_z(-T))d_{z,n_2}(\uvec{p}+\Delta_z(T))
+    &\sum_{n_1}\sum_{n_2} \int_0^{\infty} \dd p\,p^2\int_0^{\pi} \dd\theta_p\,\sin\theta_p \int_0^{2\pi}\dd \phi_p\int_{-\infty}^{\infty} \dd T \, e^{\frac{i}{2}\int_{-T}^{T}(\vec{p}+\Delta_z(t''))^2\dd t''} e^{i(t-T)E_{n_1}-i(t+T)E_{n_2}}\\
+    &\times E_z(t-T) E_z(t+T)c_{n_1}^*(t-T)c_{n_2}(t+T) d_{z,n_1}^*(\vec{p}+\Delta_z(-T))d_{z,n_2}(\vec{p}+\Delta_z(T))
 \end{align*} 
 Also the integrand in the exponential function can be further simplifyed:
 \begin{align*}
@@ -518,7 +526,7 @@ the final SFA rate to be implemented is given by:
 \begin{align*}
     \Gamma_{\mathrm{SFA}}(t) &= \sum_{n_1}\sum_{n_2} \int_0^{\infty} \dd p\,p^2\int_0^{\pi} \dd\theta_p\,\sin\theta_p \int_0^{2\pi}\dd \phi_p\int_{-\infty}^{\infty} \dd T\\
     &\times \exp\left(i\vec{p}^2T + ip\cos\theta_p\bar{\Delta}_z^k +  \frac{i}{2}\bar{\Delta}_z^2  + i(t-T)E_{n_1}-i(t+T)E_{n_2}\right)\\
-    &\times E_z(t-T) E_z(t+T)c_{n_1}^*(t-T)c_{n_2}(t+T) d_{z,n_1}^*(\uvec{p}+\Delta_z(-T))d_{z,n_2}(\uvec{p}+\Delta_z(T))
+    &\times E_z(t-T) E_z(t+T)c_{n_1}^*(t-T)c_{n_2}(t+T) d_{z,n_1}^*(\vec{p}+\Delta_z(-T))d_{z,n_2}(\vec{p}+\Delta_z(T))
     \label{eq:sfa_rate_improved}
 \end{align*}
 For numerical calculations, it can be convenient to split a complex integrand into its phase and absolute value.

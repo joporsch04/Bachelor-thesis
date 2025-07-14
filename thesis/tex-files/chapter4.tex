@@ -1,7 +1,7 @@
 This chapter describes the implementation of the formula \eqref{eq:sfa_rate_improved} and the associated challenges.
 The majority of the code was originally developed by the authors of \cite{Theory_NPS}.
 Detailed modifications made to both the tRecX source code and the SFA rate are documented in the electronic appendix [github zenodo].
-The two main new components in this implementation are the coefficients $c_n(t)$ and the dipole matrix elements $d_{z,n}(\uvec{p})$, while the remaining parts were straightforward.
+The two main new components in this implementation are the coefficients $c_n(t)$ and the dipole matrix elements $d_{z,n}(\vec{p})$, while the remaining parts were straightforward.
 
 
 
@@ -10,20 +10,19 @@ The two main new components in this implementation are the coefficients $c_n(t)$
 \section{Coefficients}
 As mentioned in chapter 2, the Dyson equation can be written in two ways, resulting in two different expressions for the S-matrix.
 The difference between the two approaches lies only in the coefficients.
-The ODE coefficients are defined with respect to the subspace spanned by the bound states, whereas the tRecX coefficients are defined with respect to the full Hilbert space.
 
 
 
-\subsection{ODE}
+\subsection{Subspace Ansatz}
 To see how to solve for the coefficients, lets look at the defining equation again:
 \begin{equation*}
-    \hat{\U}^{\mathrm{ODE}}_0(t',t_0)\ket{\Psi_0(t_0)} = \sum_{n}c_n(t')e^{-iE_nt'}\ket{\Psi_n}
+    \hat{\U}^{\mathrm{Sub}}_0(t',t_0)\ket{\Psi_0(t_0)} = \sum_{n}c_n(t')e^{-iE_nt'}\ket{\Psi_n}
 \end{equation*}
 with
 \begin{equation}
-    i\partial_{t'} \, \hat{\U}^{\mathrm{ODE}}_0(t',t_0) = \hat{X}\hat{\Hs}(t')\hat{X}\,\hat{\U}^{\mathrm{ODE}}_0(t',t_0)    \label{eq:odeU}
+    i\partial_{t'} \, \hat{\U}^{\mathrm{Sub}}_0(t',t_0) = \hat{X}\hat{\Hs}(t')\hat{X}\,\hat{\U}^{\mathrm{Sub}}_0(t',t_0)    \label{eq:odeU}
 \end{equation}
-One can think of it as the wavefunction is not "allowed" to leave the subspace. 
+One can think of it as the wavefunction is not `allowed' to leave the subspace. 
 Lets do the derivation for the coefficients real quick.
 
 We start by splitting the $\hat{\Hs}(t)$ into two parts $\hat{\Hs}_0$ and $\hat{\Hs}_{\mathrm{I}}(t)$ where the eigenstates of $\hat{\Hs}_0$ are $\{\ket{\Psi_n}\}$ and the eigenenergies $\hat{\Hs}_0$ are $\{E_n\}$. 
@@ -47,7 +46,7 @@ Thats why its called a \emph{coupled} system of ODEs.
 By increasing the number of states used in the sum, the results (i.e. the rates) should converge to a certain rate.
 However, since we forced the electron to stay inside the subspace, going to higher and higher excited states can cause numerical problems as well.
 Especially for intensities around $10^{14}\frac{\mathrm{W}}{\mathrm{cm}^2}$ and longer wavelengths ($800\mathrm{nm}-1200\mathrm{nm}$), allowing the electron to occupy higher states caused unphysical oscillations in the rates. 
-"Normally" the electron would be ionized but since the ionisation is "turned off" in approach, the electron gets excited to a high excited state, causing the model to break apart.
+`Normally' the electron would be ionized but since the ionisation is `turned off' in approach, the electron gets excited to a high excited state, causing the model to break apart.
 Eventually one has to find a certain number of states that is precise enough but does not cause numerical problems.
 For my simulations later, I used a maximum of $n=3$ for the calculation of the bound states.
 One could justify that by looking at the population of the hydrogen atom over time; most of the dynamics before ionization is determined by the first few bound states, especially $1s$, $2s$, $2p$ and $3p$ so solving for more doesnt affect the previous coefficients too much.
@@ -75,10 +74,10 @@ This makes length gauge a fitting candidate for the coefficients used in the ODE
 
 
 
-\bigskip
-In my implementation I neglected transitions to states that are forbidden via the dipole selection rules. 
-However this is an approximation, since in reality two-photon processes can occur, effectively allowing transitions between $1s$ and $2s$ for instance. 
-I numerically solved the schroedinger equation with tRecX and modyfied the code to print out the coefficients $c_n(t)$ allowing me to get insight in the "real" dynamics of the electron.
+% \bigskip
+% In my implementation I neglected transitions to states that are forbidden via the dipole selection rules. 
+% However this is an approximation, since in reality two-photon processes can occur, effectively allowing transitions between $1s$ and $2s$ for instance. 
+% I numerically solved the schroedinger equation with tRecX and modyfied the code to print out the coefficients $c_n(t)$ allowing me to get insight in the `real' dynamics of the electron.
 % the dont differ???? why??? i thoguht im negecting that in ODE c_ns but it seems not, |2,0,0> is still there, why?
 % i think im not neglecting these transitions, its the normal dynamic of the electron without neglecting 1s->2s transitions
 % its jsut that the angular integral is 0 but thats just mathematics
@@ -89,12 +88,12 @@ I numerically solved the schroedinger equation with tRecX and modyfied the code 
 
 
 
-\subsection{tRecX}
-The coefficients from the ODE are not the only one im using. I used a numerical solver (in this case tRecX) to solve the entire TDSE and extract the coefficients from the wavefunction.
+\subsection{Full Hilbertspace}
+The coefficients from the subspace are not the only one im using. I used a numerical solver (in this case tRecX) to solve the entire TDSE and extract the coefficients from the wavefunction.
 As mentioned earlier, there are two ways to think about $\hat{\U}(t',t_0)\ket{\Psi}$. 
 First, solve the TDSE in the subspace of the bound states (we did that with the ODE) or solve the TDSE in the full Hilbert space and the project it onto bound states. 
 tRecX does the second one, which is far more complicated than what the ODE is doing.
-However, tRecX results are also gauge dependent but the problem with the sum of all the bound states we faced earlier in the ODE approach is not relevant here.
+However, tRecX results are also gauge dependent but the problem with the sum of all the bound states we faced earlier in the subspace approach is not relevant here.
 That is a problem of the developers of the numerical solver.
 Also it is far more difficult to interpret the results from tRecX since many effects can determine the time evolution of the coefficients and therefore the ionization rate.
 Nonetheless its of course helpfull to have two independent sources of in some sense the same thing.
@@ -154,7 +153,7 @@ How many coefficients will i be using later? only a few? actually only 1s 2p 3p 
 
 
 \section{Dipole matrix Elements}
-The dipole transition matrix elements $\vec{d}_{nlm}(\uvec{p})$ from a certain bound state to the volkov states are a bit less ambigous than the coefficients.
+The dipole transition matrix elements $\vec{d}_{nlm}(\vec{p})$ from a certain bound state to the volkov states are a bit less ambigous than the coefficients.
 Calculating them generall is difficult, but in the case of hydrogen its even possible to do it analytically.
 A detailed derivation can be found in the appendix \ref{sec:dipolematrixelements}.
 
@@ -164,7 +163,7 @@ The final state after ionisation is not in reality a plane wave, but we approxim
 
 As mentioned in the coefficients section, not all states have equal amount of influence on the ionization dynamics.
 Besides the ground state $1s$, this thesis restricts its calculation to the states $2p$ and $3p$.
-Most of the dynamics before ionization is determined by these states, including more and more states will just make the final ionization rate more precise, but not include much "new" physics.
+Most of the dynamics before ionization is determined by these states, including more and more states will just make the final ionization rate more precise, but not include much `new' physics.
 
 It is also essential to simplify the matrix elements as much as possible to avoid numerical problems.
 Especially when integrating over the azimutal angle $\phi$ in the final rate and things are supposed to cancel out, this can lead to worng results since of course values are only until certain accuracy.

@@ -1,5 +1,4 @@
-This chapter introduces the methods used throughout the thesis.
-These include numerical methods for solving or implementing certain types of equations, as well as physical methods used for result comparison or data interpretation.
+This chapter introduces the methods used throughout the thesis including numerical methods for solving or implementing certain types of equations, as well as physical methods used for result comparison or data interpretation.
 
 
 To compare and verify the ionization rate from Chapter 2, the TDSE must be solved numerically without approximations.
@@ -15,16 +14,17 @@ For numerically solving the TDSE without approximations, a solver called tRecX w
 
 
 \subsection{tRecX}
+\paragraph{\textcolor{red}{Why is tRecX special? More motivation:}}
 tRecX is a C++ code designed for solving generalized inhomogeneous time-dependent Schrödinger-type equations in arbitrary dimensions and in a variety of coordinate systems \cite{Scrinzi_trecx}.
 Ionization is typically challenging for numerical solvers because the electron leaves the subspace of bound states, making calculations computationally expensive.
 Additionally, the Coulomb potential decays only as $1/r$, raising the question of how to discretize the space and set boundary conditions.
 
 tRecX employs various techniques that make it particularly suitable for light-atom interactions.
-For example, the method called "infinite-range exterior complex scaling" applies a unitary transformation to complex-scale space beyond a certain distance from the nucleus.
+For example, the method called ``infinite-range exterior complex scaling'' applies a unitary transformation to complex-scale space beyond a certain distance from the nucleus.
 This can be likened to the analytic continuation of a function into the complex plane.
-Furthermore, the wavefunction is "damped" by the complex-scaled region, preventing reflections at the boundary that could lead to numerical issues \cite{scrinzi_irecs}.
+Furthermore, the wavefunction is `damped' by the complex-scaled region, preventing reflections at the boundary that could lead to numerical issues \cite{scrinzi_irecs}.
 
-Furthermore, tRecX allows the gauge in which the TDSE is solved to be specified, increasing its flexibility.
+Moreover, tRecX allows the gauge (\eqref{eq:dipoleApprox}, \eqref{eq:dipoleApprox_velocity}) in which the TDSE is solved to be specified, increasing its flexibility.
 This feature will be important later.
 
 \medskip
@@ -65,16 +65,16 @@ This section mostly follows \cite{Park:18} and \cite{manorammasterthesis}.
 
 TIPTOE (Tunneling Ionization with a Perturbation for the Time-domain Observation of an Electric field) is a method for direct sampling of an electric pulse in the femtosecond to attosecond regime using quasistatic subcycle tunneling ionization in a gaseous medium or air.
 
-A typical TIPTOE simulation consists of two linearly polarized laser pulses: a "fundamental" and a "signal" pulse, similar to common pump-probe experiments.
+A typical TIPTOE simulation consists of two linearly polarized laser pulses: a ``fundamental'' and a ``signal'' pulse, similar to common pump-probe experiments.
 The drive pulse is the pulse to be sampled, with the ionization yield of a certain medium providing the measurement.
 In first order, the ionization rate can be approximated as
 \begin{equation}
     \Gamma(E_{\mathrm{F}}+E_{\mathrm{S}})\approx\Gamma(E_{\mathrm{F}})+\left.E_{\mathrm{S}}\frac{\dd \Gamma(E_{\mathrm{S}})}{\dd E}\right|_{E=E_{\mathrm{F}}}
 \end{equation}
 In this approximation, depletion of the ground state is neglected.
-The total ionization yield $N$ obtained by the two pulses is given by
+The total ionization yield $N_{\mathrm{total}}$ obtained by the two pulses is given by
 \begin{equation*}
-    N_{\mathrm{total}}=N_0+\delta N = \int \dd t,\Gamma(E_{\mathrm{F}}(t))+\int \dd t,E_{\mathrm{S}}(t)\left.\frac{\dd \Gamma(E_{\mathrm{S}}(t))}{\dd E}\right|_{E=E_{\mathrm{F}}(t)}
+    N_{\mathrm{total}}=N_{\mathrm{F}}+\delta N = \int \dd t\,\Gamma(E_{\mathrm{F}}(t))+\int \dd t\,E_{\mathrm{S}}(t)\left.\frac{\dd \Gamma(E_{\mathrm{S}}(t))}{\dd E}\right|_{E=E_{\mathrm{F}}(t)}
 \end{equation*}
 By varying the delay $\tau$ between the two pulses, the ionization yield takes on different values.
 From this, it follows that:
@@ -91,11 +91,11 @@ A TIPTOE simulation can help reconstruct the ionization dynamics, which is espec
 Later, the ionization rate $\Gamma(E_{\mathrm{F}}+E_{\mathrm{S}})$ will be integrated over the full time domain, and the ionization yield for different delays will be compared with the results from the numerical solution of the TDSE.
 The results are shown in chapter 5.
 
-For better visualization of the underlying physics in TIPTOE, the "background" ionization from $E_\mathrm{F}(t)$ is subtracted, and the ionization yield is normalized, so the formula in plot ???? reads
+For better visualization of the underlying physics in TIPTOE, the background ionization $N_{\mathrm{F}}$ from $E_\mathrm{F}(t)$ is subtracted, and the ionization yield is normalized, so the formula in plot \ref{fig:tiptoe_sfa_comparison} reads
 \begin{equation*}
-    \frac{N_{\mathrm{total}}-N_0}{N_{\mathrm{max}}}=\frac{\delta N(\tau)}{N_{\mathrm{max}}}
+    \frac{N_{\mathrm{total}}-N_{\mathrm{F}}}{N_{\mathrm{max}}}=\frac{\delta N(\tau)}{N_{\mathrm{max}}}
 \end{equation*}
-However, interesting physics can also be observed by comparing the net ionization yield $N_{\mathrm{total}}$, as discussed later in Chapter 5.
+However, interesting physics can also be observed by comparing only the total ionization yield, as discussed later in Chapter 5.
 
 Typically, TIPTOE is not used for this kind of analysis but rather for its sampling capabilities.
 Instantaneous ionization rates are highly useful because TIPTOE enables sampling of the electric field of a laser pulse in the femtosecond to attosecond regime, which has broad applications in fields such as laser spectroscopy and medical physics.
@@ -115,7 +115,7 @@ The working principle of GASFIR is based on the use of ionization probabilities 
 The approach employs the idea from SFA that the rates can be expressed as $\int \dd T K(t,T)$, where $K(t,T)$ is a kernel function.
 Later in the code, the kernel function is also visible, with the modifications applied there.
 
-GASFIR is not part of this thesis; however, its development was motivated by the idea that an improvement of the SFA formalism could benefit the GASFIR approach.
+GASFIR is not part of this thesis; however, this thesis was partially motivated by the idea that an improvement of the SFA formalism could benefit the GASFIR approach.
 
 
 % \begin{align*}
