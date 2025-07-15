@@ -15,7 +15,7 @@ The following tries to investigate this.
 
 
 %%%%%%%%%%%%%%%%%%%%%%
-\section{TIPTOE}
+\section{Comparison with TDSE using TIPTOE}
 From the TIPTOE results we want to learn, weither the tRecX coefficients or the SFA coefficients bring us closer to the tRecX ionProb results and if excited states help at all.
 
 \begin{figure}
@@ -49,7 +49,7 @@ Looking at not normalized results, tRecX is much more sensitive to the shift of 
 Maybe because tRecX takes into account all the dynamics and effects inside an atom, while excited SFA coefficients does not care that much.
 I would expect with tRecX coefficients more sensitive than with ODE coefficients???
 
-\section{Stark Shift}
+\section{Influence of Stark Shift and Polarisation}
 The Stark effect is the shift of the energy levels of an atom or molecule due to the presence of an external electric field.
 
 \begin{figure}[H]
@@ -63,9 +63,7 @@ Naiv: Stark effect changes energy in electron so its "harder" to ionise, thats w
 But thats not certainly the case because of stark effect, thats why only set absc0 to 1 and phase remains. 
 Example with oszillations with time dependent resonance frequency, and external force not at resonance but coincidence with oszillator resonance frequency so this may cause it.
 
-
-%%%%%%%%%%%%%%%%%%%%
-\section{Rates}
+\bigskip
 Stark shift doesnt seem to have much contribution (sadly) but at least more than the polarisation of the ground state.
 
 Lets investigate the influence of first coefficient, nothing more. Only the phase has a contribution, the amplitude is not important.
@@ -75,13 +73,6 @@ Top right is the isolated stark effect
 
 
 
-
-%%%%%%%%%%%%%%%%
-\section{Lorem}
-This might be how it is supposed to be -- we are in the regime where the laser field is strong enough to ionize the atom, 
-but we artificially force the electron to stay in the part of the Hilbert space covered by a few bound states. 
-If the calculations are converged with respect to the time step, and you see convergence regarding the number of bound states in the weak-field regime, 
-then it's fine if there is no convergence with respect to the number of bound states in the strong-field regime.
 
 
 

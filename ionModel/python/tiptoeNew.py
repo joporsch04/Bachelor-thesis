@@ -49,7 +49,7 @@ def main(excitedstates):
         'delay': -224.97,
         'plotting': False
     }
-    REDO_comp = True
+    REDO_comp = False
     for file_name, lam0_pump, I_pump, lam0_probe, I_probe, FWHM_probe, cep_pump, cep_probe in file_params:
 
         # delaydf = pd.read_csv("/home/user/TIPTOE-Hydrogen/plot_ion_tau_calc_output_data/ionProb_450nm_250nm_8e+13.csv")

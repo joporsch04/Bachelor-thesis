@@ -25,7 +25,6 @@ The aim of this chapter is to derive an expression for the instantaneous ionizat
 
 %%%%%%%%%%%%%%%%%%%%%
 \section{Basic Formalism}
-
 The goal is to describe the time evolution of a quantum system under an external, time-dependent electromagnetic field in a form suitable for the strong-field approximation.
 To achieve this, a working formalism must be developed.
 The starting point is the time-dependent Schrödinger equation for a given Hamiltonian and the Maxwell equations, from which the light-matter interaction can be derived.
@@ -107,7 +106,8 @@ Selecting a particular gauge (i.e., fixing a certain $\chi$) can be just a matte
 %%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Dipole Approximation}
 
-The dipole approximation is a widely used simplification in light-matter interaction. It applies when the wavelength of the optical field is significantly larger than both the size of the relevant bound electron states and the maximum displacement of a free electron. 
+The dipole approximation is a widely used simplification in light-matter interaction. 
+It applies when the wavelength of the optical field is significantly larger than both the size of the relevant bound electron states and the maximum displacement of a free electron. 
 Additionally, it assumes that the magnetic field of the light has a negligible effect on the electron dynamics, requiring nonrelativistic particle velocities.
 
 To derive this approximation, we first express Maxwell’s equations in terms of the vector and scalar potentials, as defined in \eqref{eq:potentials}. 
@@ -153,7 +153,7 @@ To further simplify the description of the laser field in the Hamiltonian, the c
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Gauges}
+\subsection{Length and velocity gauge}
 Calculating ionization rates in strong-field physics presents challenges due to the choice of gauge. While gauge transformations do not alter physical reality in classical electrodynamics, they can affect the practical computation of formulas derived in this chapter, requiring careful consideration.
 
 First, we derive two basic expressions for the Hamiltonian in the velocity gauge and length gauge using the dipole approximation. 
@@ -224,7 +224,7 @@ As with any gauge transformation, certain scenarios favor one gauge over another
 
 
 %%%%%%%%%%%%%%%%%%%%%%
-\section{Strong Field Approximation}
+\section{Strong Field Formalism}
 
 The difficulty with ionization arises from the existence of in some sense two Hilbert spaces: 
 one for the bound states in the Hydrogen atom that accounts for distortion of the wavefunction due to the laser field, and another for the continuum states that are primarily affected by the laser field but also influenced by the binding potential.
@@ -246,7 +246,7 @@ Nevertheless, it becomes evident that these approaches nevertheless yield the sa
 
 
 %%%%%%%%%%%%%%%%%%%%%
-\subsection{Subspaces}
+\subsection{Projection into Subspaces}
 The full time-dependent Hamiltonian $\hat{\Hs}(t)$ is projected onto subspaces using projection operators defined by:
 \begin{equation*}   
     \hat{X} = \sum_{n}\ket{\Psi_n}\bra{\Psi_n}\quad\text{and}\quad\hat{Y}= \hat{1} - \hat{X}
@@ -491,7 +491,7 @@ The tunneling time is imaginary, source??? % This comment/question can be kept a
 
 
 %%%%%%%%%%%%%%%%%%%%%
-\subsection{Derivation of SFA Rate}
+\subsection{Derivation of extended SFA Rate}
 The derivation mainly follows \cite{Theory_NPS} with some modifications.
 First, the ionization probability is expressed as the amplitude of projection of the wavefunction onto the continuum subspace.
 The total ionization probability is obtained by integrating the ionization rate over the time domain.
@@ -523,12 +523,12 @@ Following the notation used in the code as well as in \cite{Theory_NPS}, where
     \vec{\bar{\Delta}}^k = \int_{-T}^{T}\vec{\Delta}^k(t')\dd t' = \int_{-T}^{T}\left(\vec{A}(t+t') - \vec{A}(t)\right)^k\dd t'
 \end{equation*}
 the final SFA rate to be implemented is given by:
-\begin{align*}
+\begin{align}
     \Gamma_{\mathrm{SFA}}(t) &= \sum_{n_1}\sum_{n_2} \int_0^{\infty} \dd p\,p^2\int_0^{\pi} \dd\theta_p\,\sin\theta_p \int_0^{2\pi}\dd \phi_p\int_{-\infty}^{\infty} \dd T\\
     &\times \exp\left(i\vec{p}^2T + ip\cos\theta_p\bar{\Delta}_z^k +  \frac{i}{2}\bar{\Delta}_z^2  + i(t-T)E_{n_1}-i(t+T)E_{n_2}\right)\\
     &\times E_z(t-T) E_z(t+T)c_{n_1}^*(t-T)c_{n_2}(t+T) d_{z,n_1}^*(\vec{p}+\Delta_z(-T))d_{z,n_2}(\vec{p}+\Delta_z(T))
     \label{eq:sfa_rate_improved}
-\end{align*}
+\end{align}
 For numerical calculations, it can be convenient to split a complex integrand into its phase and absolute value.
 Although this is typically done with the given formula, the coefficients remain complex and may exhibit rapidly oscillating phase behavior.
 
