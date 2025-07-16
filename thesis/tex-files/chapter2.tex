@@ -398,8 +398,7 @@ Combining \eqref{eq:canonicalMomentum} and \eqref{eq:energy} yields:
     \bra{\Pi(t_c)}e^{-i \int_{t'}^{t} \hat{\Hs}_{\mathrm{SFA}}(t'') \dd t''} = \bra{\Pi(t_c)}e^{-i \int_{t'}^{t} (\vec{p} + \vec{A}(t''))^2 \dd t''}
 \end{equation*}
 Here, $\vec{P}$ is time-independent, while $\vec{A}$ is not.
-ATTENTION!!! WITH p+A or P-A what is it???
-
+%ATTENTION!!! WITH p+A or P-A what is it???
 Using the conservation of canonical momentum, the momentum at other times can be calculated. 
 Of particular interest is the asymptotic limit when the laser field vanishes:
 \begin{equation*}
@@ -469,23 +468,32 @@ This equation corresponds to the strong-field S-matrix in the length gauge, as f
 
 %%%%%%%%%%%%%%%%%%%%
 \section{\textcolor{red}{Ionization rates}}
-What is a ionization rate and why do we want to have it?
+% What is a ionization rate and why do we want to have it?
 
-A dilemma exists in the current approaches: while numerical simulations provide accurate ionization probabilities, they fail to yield ionization rates. 
-Conversely, analytical calculations produce reliable ionization rates but incorrect probabilities (see GASFIR paper).
+% A dilemma exists in the current approaches: while numerical simulations provide accurate ionization probabilities, they fail to yield ionization rates. 
+% Conversely, analytical calculations produce reliable ionization rates but incorrect probabilities (see GASFIR paper).
 
-No experimental method has been developed to directly measure ionization rates - only ionization probabilities, which represent a quantum mechanical observable, can be measured.
+% No experimental method has been developed to directly measure ionization rates - only ionization probabilities, which represent a quantum mechanical observable, can be measured.
 
-When an electromagnetic field is present, projections onto bound/unbound states lead to non-physical gauge-dependent predictions [14]. % M. Yuan, P. Xin, T. Chu, H. Liu, Optics Express 2017,25, 19 23493
-The tunneling time is imaginary, source??? % This comment/question can be kept as is
+% When an electromagnetic field is present, projections onto bound/unbound states lead to non-physical gauge-dependent predictions [14]. % M. Yuan, P. Xin, T. Chu, H. Liu, Optics Express 2017,25, 19 23493
+% The tunneling time is imaginary, source??? % This comment/question can be kept as is
+The concept of an instantaneous ionization rate (IIR) is a powerful and intuitive tool for understanding the physics of strong-field ionization. 
+It is frequently used to provide a time-resolved picture of the ionization process, for instance, by assigning a probability for an electron to be released at a specific moment within the laser pulse \cite{Ivanov2018}. 
+This notion is particularly useful in semiclassical models where the IIR helps to define the initial conditions for classical electron trajectories.
 
+However, the concept of an ionization `event' occurring at a precise instant in time is difficult to reconcile with conventional quantum mechanics. 
+Strictly speaking, the only well-defined and directly measurable observable is the \emph{total} ionization probability, which is the probability of finding the electron in a continuum state after the laser pulse has ended \cite{Ivanov2018}. 
+The IIR itself is not a direct quantum mechanical observable, and its definition is consequently not unique.
 
+This ambiguity leads to some theoretical challenges, such as defining a working formalism for the tunneling delay time. 
+Furthermore, an IIR defined by projecting the time-evolving wavefunction onto the subspace of bound states during the laser pulse interaction generally depends on whether the length gauge or velocity gauge is used. 
+Since physical observables must be gauge-invariant, this poses a conceptual problem.
 
-
-
-
-
-
+To address these challenges, alternative, unambiguous definitions have been proposed. 
+One such approach defines the IIR as a functional derivative of the total ionization probability with respect to the waveform of the ionizing laser pulse \cite{Ivanov2018}. 
+This method is inherently gauge-invariant because it is based on physically measurable quantities. 
+While this thesis will not follow this particular formalism, it is important to acknowledge the subtleties involved in defining an ionization rate. 
+The subsequent derivation will proceed within the SFA framework, which provides a tractable, but gauge-dependent expression for the IIR.
 
 
 
@@ -591,3 +599,44 @@ The previous regimes describe limiting cases where the complementary process is 
 However, in reality, a coexistence of both processes often occurs.
 In the intermediate regime, the tunneling process is no longer adiabatic.
 The potential barrier undergoes significant oscillations during the electron's tunneling time, allowing energy to be absorbed from the laser field while tunneling takes place.
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%
+\section{Stark shift}
+This section mainly follows \cite{subsycleacstarkshift} and \cite{starkdelonekrainov}.
+\paragraph{Phenomenology}
+The Stark shift describes the shifting and splitting of energy levels due to the presence of an external electric field.
+This phenomenon arises from the interaction between the electric field and the atom's electric dipole moment.
+Two types of Stark shifts exist: the DC Stark shift and the AC Stark shift.
+DC stands for direct current, meaning the electric field is constant in time, while AC stands for alternating current, corresponding to a (rapidly) oscillating electric field.
+Under certain conditions (e.g., a laser pulse far off resonance), the AC Stark shift can be approximated as the quadratic DC Stark shift \cite{starkdelonekrainov}.
+
+When the laser pulse is not far off resonance, significant changes to the energy levels of the bound states and to the electron dynamics can occur.
+
+\paragraph{AC Stark Shift}
+The electron wave function can be expressed as a superposition of bound states with coefficients $c_n(t)$:
+\begin{equation*}
+    \ket{\Psi(t)} = \sum_n c_n(t) e^{-iE_nt}\ket{\Psi_n}
+\end{equation*}
+where $E_n$ are the eigenenergies and $c_n(t)$ are the complex coefficients.
+When considering electron dynamics before ionization, the coefficients can be interpreted as carrying two types of information.
+First, the amplitude of the coefficients represents the probability of finding the electron in a given state $n$.
+Second, the phase of the coefficients reflects changes in the energy level of state $n$.
+The second part can be interpreted as the subcycle AC Stark shift \cite{subsycleacstarkshift}.
+This can be expressed mathematically as:
+\begin{equation}
+    \ket{\Psi(t)} = \sum_n |c_n(t)| e^{-i\int_{-\infty}^{t}E_n + \delta E_n(t')\dd t'}\ket{\Psi_n}      \label{eq:ac_stark_shift}
+\end{equation}
+The dynamic stark energy shifts $\delta E_n(t')$ are of primary interest.
+
+\bigskip
+In the context of this thesis, the influence of the AC Stark shift on the ionization process is of particular interest.
+In previous derivations of the SFA rate, both the transition to excited states and the effect of the laser field on the ground state were neglected.
+However, with the extended version of the SFA rate \eqref{eq:sfa_rate_improved}, it becomes possible to account not only for the influence of the laser field on excited states but also to distinguish between the effects of the Stark shift and the depletion of the ground state (i.e., changes in the probability amplitude).
+While including many physical effects is theoretically appealing, it is not always practical unless the impact of each approximation on the results is understood.
+The findings related to this question are presented in Chapter 4.

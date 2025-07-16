@@ -80,7 +80,7 @@ def get_coefficientsNumerical(excitedStates, t_grid, get_only_p_states, Gauge, l
 
 def get_coefficientstRecX_delay(excitedStates, t_grid, get_p_states, params, delay):
 
-    delay_files_path = "/home/user/TIPTOE/new_data/450nm_short_length_gauge/250nm/I_8.00e+13"
+    delay_files_path = "/home/user/TIPTOE/new_data/450nm_dense_length_gauge/250nm/I_8.00e+13"
 
     count_files = [eintrag for eintrag in os.listdir(delay_files_path) if os.path.isdir(os.path.join(delay_files_path, eintrag)) and eintrag.isdigit()]
     files_number = max([int(eintrag) for eintrag in count_files])

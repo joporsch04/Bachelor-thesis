@@ -184,7 +184,7 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                             DelA = (intA[tp] - intA[tm])-2*VPt*T
                             VP_p=VP[tp]-VPt
                             VP_m=VP[tm]-VPt
-                            f_t_1= 2*np.pi*np.conjugate(transitionElementtest(config[state_idx], p, pz, -VP_m, E_g))*transitionElementtest(config[state_range_idx], p, pz, -VP_p, E_g)  #25.9%      #for excitedState=1 use only phase of coefficients to see stark effect
+                            f_t_1= 2*np.pi*np.conjugate(transitionElementtest(config[state_idx], p, pz, VP_m, E_g))*transitionElementtest(config[state_range_idx], p, pz, VP_p, E_g)  #25.9%      #for excitedState=1 use only phase of coefficients to see stark effect
                             psquared_m = p**2 + VP_m**2 + 2*pz*VP_m +1e-12
                             pzAz_m = pz + VP_m
                             psquared_p = p**2 + VP_p**2 + 2*pz*VP_p +1e-12
@@ -235,7 +235,7 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                     T= Ti*dT
                     DelA = (intA[tp] - intA[tm])-2*VPt*T
                     VP_p=VP[tp]-VPt
-                    VP_m=VP[tm]-VPt
+                    VP_m=VP[tm]-VPt 
                     f_t_1= (pz+VP_p)/(p**2+VP_p**2+2*pz*VP_p+2*E_g)**3*(pz+VP_m)/(p**2+VP_m**2+2*pz*VP_m+2*E_g)**3
                     G1_T_p=np.trapz(f_t_1*np.exp(1j*pz*DelA)*np.sin(theta), Theta_grid)
                     G1_T=np.trapz(G1_T_p*window*p_grid**2*np.exp(1j*p_grid**2*T), p_grid)

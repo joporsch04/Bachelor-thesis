@@ -14,7 +14,7 @@ For numerically solving the TDSE without approximations, a solver called tRecX w
 
 
 \subsection{tRecX}
-\paragraph{\textcolor{red}{Why is tRecX special? More motivation:}}
+%\paragraph{\textcolor{red}{Why is tRecX special? More motivation:}}
 tRecX is a C++ code designed for solving generalized inhomogeneous time-dependent Schrödinger-type equations in arbitrary dimensions and in a variety of coordinate systems \cite{Scrinzi_trecx}.
 Ionization is typically challenging for numerical solvers because the electron leaves the subspace of bound states, making calculations computationally expensive.
 Additionally, the Coulomb potential decays only as $1/r$, raising the question of how to discretize the space and set boundary conditions.
@@ -92,9 +92,9 @@ Later, the ionization rate $\Gamma(E_{\mathrm{F}}+E_{\mathrm{S}})$ will be integ
 The results are shown in chapter 5.
 
 For better visualization of the underlying physics in TIPTOE, the background ionization $N_{\mathrm{F}}$ from $E_\mathrm{F}(t)$ is subtracted, and the ionization yield is normalized, so the formula in plot \ref{fig:tiptoe_sfa_comparison} reads
-\begin{equation*}
-    \frac{N_{\mathrm{total}}-N_{\mathrm{F}}}{N_{\mathrm{max}}}=\frac{\delta N(\tau)}{N_{\mathrm{max}}}
-\end{equation*}
+\begin{equation}
+    \frac{N_{\mathrm{total}}-N_{\mathrm{F}}}{N_{\mathrm{max}}}=\frac{\delta N(\tau)}{N_{\mathrm{max}}}      \label{eq:tiptoeprop_normalized}
+\end{equation}
 However, interesting physics can also be observed by comparing only the total ionization yield, as discussed later in Chapter 5.
 
 Typically, TIPTOE is not used for this kind of analysis but rather for its sampling capabilities.

@@ -56,7 +56,7 @@ def main(excitedstates):
 
         # delay = np.array(delaydf["delay"].values)
         # ion_tRecX = readtRecX_ion(f"/home/user/TIPTOE-Hydrogen/plot_ion_tau_calc_output_data/ionProb_450nm_250nm_8e+13.csv")
-        delay, ion_tRecX = read_ion_Prob_data("/home/user/TIPTOE/process_all_files_output/ionProb_450nm_short_length_gauge_250nm_8e+13.csv")
+        delay, ion_tRecX = read_ion_Prob_data("/home/user/TIPTOE/process_all_files_output/ionProb_450nm_dense_length_gauge_250nm_8e+13.csv")
 
         if REDO_comp:
             laser_pulses = LaserField(cache_results=True)
@@ -100,10 +100,10 @@ def main(excitedstates):
                 ion_na_reconstructed_GASFIR.append(0)#1-np.exp(-na_background_GASFIR-np.trapz(na_grad_GASFIR*laser_pulses.Electric_Field(time_recon), time_recon)))
                 ion_na_reconstructed_SFA.append(0)#1-np.exp(-na_background_SFA-np.trapz(na_grad_SFA*laser_pulses.Electric_Field(time_recon), time_recon))) #+na_grad2*laser_pulses.Electric_Field(time_recon)**2/2
                 laser_pulses.reset()
-            output_file = f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/ionProb_{file_name}_{excitedstates}_tRecX_length_test_newfieldfukt_nosum-m_minusA.csv"
+            output_file = f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/ionProb_{file_name}_{excitedstates}_tRecX_length_test_newfieldfukt_nosum-m_minusA_dense.csv"
             writecsv_prob(output_file, delay, ion_tRecX, ion_qs, ion_na_GASFIR, ion_na_SFA, ion_na_reconstructed_GASFIR, ion_na_reconstructed_SFA)
 
-        data_rate_delay = pd.read_csv(f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/ionProb_{file_name}_{excitedstates}_tRecX_length_test_newfieldfukt_nosum-m_minusA.csv")
+        data_rate_delay = pd.read_csv(f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/ionProb_{file_name}_{excitedstates}_tRecX_length_test_newfieldfukt_nosum-m_minusA_dense.csv")
         delay=np.array(data_rate_delay['delay'].values)
         ion_tRecX=np.array(data_rate_delay['ion_tRecX'].values)
         ion_na_GASFIR=np.array(data_rate_delay['ion_NA_GASFIR'].values)

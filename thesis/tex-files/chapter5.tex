@@ -1,14 +1,14 @@
-Before discussing the results, first we have to formulate what we want to learn from this kind of generalisation. 
-The main difference from previous approaches was to also account the dynamics before ionization.
-In principle we want to investigate how this transition influences the ionisation process or in general.
+Before discussing of the improvement of the SFA rate worked out, first we have to formulate what we want to learn from this kind of generalisation. 
+In principle we want to investigate how the excited states influence the ionisation process or in general.
 
 We want to investigate what influences the ionization dynamics more, the stark shift or the distortion of the ground state.
+This question is being answered here.
 
-Further there is quite a big difference between the results from SFA and tRecX within TIPTOE simulations. 
-An extended version of the SFA model can tell, if the discrpancy is due to the simplification of the first hilbertspace or the second hilbertspace.
-In other words, by including the dynamics before ionization, the difference between the SFA and tRecX will likely be because of the strong field approximation itself.
-If one would simplify both processes, the only shure information is that both results dont match but one dont know what causes it, the neglection of excited states, SFA or something in between.
-The following tries to investigate this.
+However, the much bigger question is that there is quite a big difference between the overall ionization yield from previous simulations within SFA compared with the numerical solution of the TDSE.
+An extended version of the SFA model could tell, if the discrepancy is due to the simplification of the dynamics before or after ionization.
+% In other words, by including the dynamics before ionization, the remaining difference between the SFA and the TDSE will likely be because of the strong field approximation itself.
+% If one would simplify both processes, the only shure information is that both results dont match but one dont know what causes it, the neglection of excited states, SFA itself, or something in between.
+Unfortunately, this thesis cannot answer this question to a statisfactory level, but it provides the theoretical framework and formulas needed to achieve this goal in future.
 
 
 
@@ -16,59 +16,116 @@ The following tries to investigate this.
 
 %%%%%%%%%%%%%%%%%%%%%%
 \section{Comparison with TDSE using TIPTOE}
-From the TIPTOE results we want to learn, weither the tRecX coefficients or the SFA coefficients bring us closer to the tRecX ionProb results and if excited states help at all.
+First compare the ionization dynamics predicted from the standart SFA approach \cite{Theory_NPS} with the results from tRecX (solving TDSE numerically).
+As can be seen in \ref{fig:tiptoe_sfa_comparison}(a), the standart SFA does a good job reconstructing the ionization dynamics, but some parts it does not capture at all\footnote{Note that \eqref{eq:tiptoeprop} is fulfilled and $\delta N(\tau)$ is actually proportional to the signal pulse.}.
+Especially in offcycle ionization dyanmics seems to be some kind of phase shift that does not match at all. 
+
+This is the starting point of this thesis since that is what was previously known.
+Now the question is how to improve this SFA model regarding the ionization dynamics.
+
+What I implemented is the extended SFA model described in chapter 2 and chapter 4. 
+As mentioned previously, there are two ways of determining the coefficients, either by solving the TDSE in the subspace of the hilbertspace using the system of ODE`s, or numerically in the full hilbertspace using a numerical solver (here tRecX).
+In the plot \ref{fig:tiptoe_sfa_comparison}(b) both the TIPTOE results from the Subspace as well as the Full hilbertspace approach are shown.
+Very important is that here, only the first coefficient and first dipole matrix element is used.
+In other words, in formula \eqref{eq:sfa_rate_improved} only the first term is used, i.e. $n_1=n_2=1$.
+In principle, almost the same formula was already implemented for simulating the standart SFA model, since there is also just the ground state involved.
+The only difference is that in the extended SFA model for one state, the coefficient $c_0(t)$ is jused so all the difference between standart SFA and extended SFA in \ref{fig:tiptoe_sfa_comparison}(b) is coming from the coefficients $c_0(t)$.
+That makes it possible to split ......
+
+
 
 \begin{figure}
     \centering
     \includegraphics[width=1\textwidth]{../ionModel/python/plotsTIPTOE/2plot_SFA-comparison_1.pdf}
     \caption{Comparison of ionization yields from TIPTOE simulations between different SFA models and reference data from tRecX. 
             (a) Standart SFA overall does a good job reconstructing the ionization dynamics, but some parts it does not capture at all 
-            (b) Extended SFA to excited states indeed shows some improvements in the reconstructing }
+            (b) Extended SFA to excited states indeed shows some improvements in the reconstructing}
     \label{fig:tiptoe_sfa_comparison}
 \end{figure}
-Note that \eqref{eq:tiptoeprop} is fulfilled and it actually looks like the signal pulse.
-On the left plot we see that tRecX is still orders of magnitude larger than the SFA results. 
-However, with excited states it goes in the right direction as can be seen on the right plot. 
-For three excited sates there is not much imporvement visible.
-Unfortunately, the results are no where close to the tRecX measurements. That indicates that there is some physics missing in the SFA model.
-If its not the excited states, the it must be something else.
-And because the change is so big it has to be something more fundamental.
-The first idea is that the interaction with the coulomb potential after ionization cannot be completely neglected, as it is done in the SFA model.
-Even though it is counterintuitive, becasue if the coulomb potential is still noticable for the electron after ionization, why would it increase the results we are seeing??????
-But this is in principle what our simulations are telling us. We can argue that we have two different ways of calculating the coefficients (ODE and tRecX) and the reproduce the same result.
 
-However it indicates that real ionization propabilities do have some characterisitcs that the improved SFA model does not capture.
 
-One also should make clear what the ODE coefficients do not capture. First, I implemented the code such that it ignores transitions not allowed by the dipole selection rules.
 
-So in principle, assuming my SFA modification was correct the TIPTOE results tell us that the coulomb potential is not negligible after all. 
-Maybe because the laser is not that intense (multiphoton ionization).
-But its difficult to test that because if I increase the laser intensity, the approximations I made with the coefficients is not valid anymore.
 
-Looking at not normalized results, tRecX is much more sensitive to the shift of probe and pump pulse, while excited SFA coefficients are not
-Maybe because tRecX takes into account all the dynamics and effects inside an atom, while excited SFA coefficients does not care that much.
-I would expect with tRecX coefficients more sensitive than with ODE coefficients???
 
-\section{Influence of Stark Shift and Polarisation}
-The Stark effect is the shift of the energy levels of an atom or molecule due to the presence of an external electric field.
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{figures/rate4_850_1.00e+14_onlystark.pdf}
-    \caption{stark effect}
-    \label{fig:starkeffect}
-\end{figure}
 
-Naiv: Stark effect changes energy in electron so its "harder" to ionise, thats why blue curve goes down (when excitedStates=1). 
-But thats not certainly the case because of stark effect, thats why only set absc0 to 1 and phase remains. 
-Example with oszillations with time dependent resonance frequency, and external force not at resonance but coincidence with oszillator resonance frequency so this may cause it.
 
-\bigskip
-Stark shift doesnt seem to have much contribution (sadly) but at least more than the polarisation of the ground state.
+\paragraph{Difference in ionization yield between SFA and TDSE}
+As mentioned in chapter 3, the Ionization yield in \ref{fig:tiptoe_sfa_comparison} is normalized, to see the actual difference better.
+Further, because we are mostly interested in the dynamics and not the plain ionization yield, its normalized according to \eqref{eq:tiptoeprop_normalized}.
+However, in the not normalized plot, one could see that the numerical solution of the TDSE is predicting a ionization probability orders of magnitude higher than the SFA model.
+In addition to that, small changes in the in the delay of the signal pulse leads to bigger changes in the TDSE results than the SFA results, so the `reference' TIPTOE result is much more sensitive to changes in the laser field.
+First observation can be interpreted by the fact that in SFA we are assuming, the electron sits in a volkov state after ionization so the elecotrn does not `feel' the coulomb potential anymore.
+This is of course a very strong assumption, any much `harder' to achcieve for the electron. 
+Imagine the laser has to really catapult the electron out of the atom to make this assumption approximately valid.
+Therefore the overall ionization yield from the SFA model is much lower than the one from the TDSE.
+Thats is also one essential reason for restrictign the laser to small ionization probabilities.
+Second, the numerical solution of the TDSE captures much more dynamics and physical effects of the ionization process.
+Many different processes can happen during that time, and that could justify why the ionization yield of the TDSE is much more sensitive to changes in the elcetric field.
 
-Lets investigate the influence of first coefficient, nothing more. Only the phase has a contribution, the amplitude is not important.
-Thats because the amplitude determines something occupation propabilitiy, but the phase is $e^{-iEt}$ and if $E$ is shifted by a bit you can isolate it by just using purely the phase.\\
-Top right is the isolated stark effect
+Both these observations are interesting, but can be expected from how the SFA model is constructed.
+To make shure that the differences really do come from the `fundamentals' of the SFA model (i.e. the assumption that the final state is a volkov state), one has to make shure that is the only possible option for the differences.
+This is of course very difficult since there are many different processes that can have a influence on the ionization dynamics that where not considered in the SFA model.
+However by making 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% On the left plot we see that tRecX is still orders of magnitude larger than the SFA results. 
+% However, with excited states it goes in the right direction as can be seen on the right plot. 
+% For three excited sates there is not much imporvement visible.
+% Unfortunately, the results are no where close to the tRecX measurements. That indicates that there is some physics missing in the SFA model.
+% If its not the excited states, the it must be something else.
+% And because the change is so big it has to be something more fundamental.
+% The first idea is that the interaction with the coulomb potential after ionization cannot be completely neglected, as it is done in the SFA model.
+% Even though it is counterintuitive, becasue if the coulomb potential is still noticable for the electron after ionization, why would it increase the results we are seeing??????
+% But this is in principle what our simulations are telling us. We can argue that we have two different ways of calculating the coefficients (ODE and tRecX) and the reproduce the same result.
+
+% However it indicates that real ionization propabilities do have some characterisitcs that the improved SFA model does not capture.
+
+% One also should make clear what the ODE coefficients do not capture. First, I implemented the code such that it ignores transitions not allowed by the dipole selection rules.
+
+% So in principle, assuming my SFA modification was correct the TIPTOE results tell us that the coulomb potential is not negligible after all. 
+% Maybe because the laser is not that intense (multiphoton ionization).
+% But its difficult to test that because if I increase the laser intensity, the approximations I made with the coefficients is not valid anymore.
+
+% Looking at not normalized results, tRecX is much more sensitive to the shift of probe and pump pulse, while excited SFA coefficients are not
+% Maybe because tRecX takes into account all the dynamics and effects inside an atom, while excited SFA coefficients does not care that much.
+% I would expect with tRecX coefficients more sensitive than with ODE coefficients???
+
+% \section{Influence of Stark Shift and Polarisation}
+% The Stark effect is the shift of the energy levels of an atom or molecule due to the presence of an external electric field.
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.9\textwidth]{figures/rate4_850_1.00e+14_onlystark.pdf}
+%     \caption{stark effect}
+%     \label{fig:starkeffect}
+% \end{figure}
+
+% Naiv: Stark effect changes energy in electron so its "harder" to ionise, thats why blue curve goes down (when excitedStates=1). 
+% But thats not certainly the case because of stark effect, thats why only set absc0 to 1 and phase remains. 
+% Example with oszillations with time dependent resonance frequency, and external force not at resonance but coincidence with oszillator resonance frequency so this may cause it.
+
+% \bigskip
+% Stark shift doesnt seem to have much contribution (sadly) but at least more than the polarisation of the ground state.
+
+% Lets investigate the influence of first coefficient, nothing more. Only the phase has a contribution, the amplitude is not important.
+% Thats because the amplitude determines something occupation propabilitiy, but the phase is $e^{-iEt}$ and if $E$ is shifted by a bit you can isolate it by just using purely the phase.\\
+% Top right is the isolated stark effect
 
 
 
