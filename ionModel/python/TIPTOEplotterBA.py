@@ -29,11 +29,11 @@ class TIPTOEplotterBA:
             'text.usetex': True,
             'font.family': 'serif',
             'font.serif': ['Computer Modern Roman'],  # Matches lmodern package
-            'font.size': 10,
-            'axes.labelsize': 10,
-            'axes.titlesize': 12,
-            'xtick.labelsize': 9,
-            'ytick.labelsize': 9,
+            'font.size': 12,
+            'axes.labelsize': 12,
+            'axes.titlesize': 14,
+            'xtick.labelsize': 12,
+            'ytick.labelsize': 12,
             'legend.fontsize': 9,
             'figure.titlesize': 12,
             'lines.linewidth': 1.0,
@@ -149,7 +149,7 @@ class TIPTOEplotterBA:
         # ion_SFA_excited_tRecX[:N] = 0
         # ion_SFA_excited_tRecX[-N:] = 0
 
-        ax3.plot(self.delay*self.AU.fs, ion_tRecX/(max(abs(ion_tRecX))), label=r'tRecX (reference)', color='black', linestyle='-')
+        ax3.plot(self.delay*self.AU.fs, ion_tRecX/(max(abs(ion_tRecX))), label=r'TDSE (reference)', color='black', linestyle='-')
         ax3.plot(self.delay*self.AU.fs, ion_SFA/(max(abs(ion_SFA))), label=r'Standard SFA', color='blue', linestyle='--', alpha=0.5)
         ax3.set_xlabel(r'Delay $\tau$ (fs)')
         ax3.set_ylabel(r'Normalized Ionization Yield')
@@ -158,13 +158,13 @@ class TIPTOEplotterBA:
         ax3.set_title('(a) Standard SFA vs Reference')
         ax3.grid(True, alpha=0.3)
         
-        ax4.plot(self.delay*self.AU.fs, ion_tRecX/(max(abs(ion_tRecX))), label=r'tRecX (reference)', color='black', linestyle='-')
+        ax4.plot(self.delay*self.AU.fs, ion_tRecX/(max(abs(ion_tRecX))), label=r'TDSE (reference)', color='black', linestyle='-')
         ax4.plot(self.delay*self.AU.fs, ion_SFA/(max(abs(ion_SFA))), label=r'Standard SFA', color='blue', linestyle='--', alpha=0.5)
-        ax4.plot(self.delay*self.AU.fs, ion_SFA_excited_ODE/(max(abs(ion_SFA_excited_ODE))), label=r'Extended SFA (ODE coeff.)', color='red', linestyle=':')
-        ax4.plot(self.delay*self.AU.fs, -ion_SFA_excited_tRecX/(max(abs(ion_SFA_excited_tRecX))), label=r'Extended SFA (tRecX coeff.)', color='green', linestyle='-.')
+        ax4.plot(self.delay*self.AU.fs, ion_SFA_excited_ODE/(max(abs(ion_SFA_excited_ODE))), label=r'Extended SFA (Sub. coeff.)', color='red', linestyle=':')
+        ax4.plot(self.delay*self.AU.fs, ion_SFA_excited_tRecX/(max(abs(ion_SFA_excited_tRecX))), label=r'Extended SFA (Full. coeff.)', color='green', linestyle='-.')
         ax4.set_xlabel(r'Delay $\tau$ (fs)')
         ax4.set_ylabel(r'Normalized Ionization Yield')
-        #ax4.set_xlim(-2, 2)
+        ax4.set_xlim(-2, 2)
         ax4.legend(loc='upper right')
         ax4.set_title('(b) Extended SFA Models vs Reference')
         ax4.grid(True, alpha=0.3)
@@ -177,7 +177,7 @@ class TIPTOEplotterBA:
 
         plt.tight_layout()
         
-        pdf_filename = f'/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/plotsTIPTOE/2plot_SFA-comparison_{self.excitedStates}_test-not+_nomsum.pdf'
+        pdf_filename = f'/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/plotsTIPTOE/2plot_SFA-comparison_{self.excitedStates}_BA.pdf'
         with PdfPages(pdf_filename) as pdf:
             pdf.savefig(fig, dpi=300, bbox_inches='tight')
 

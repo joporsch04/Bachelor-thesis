@@ -159,8 +159,8 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                 cRight = coefficients[state_range_idx, :]
                 phaseleft = np.unwrap(np.angle(cLeft))
                 phaseright = np.unwrap(np.angle(cRight))
-                absleft = np.abs(cLeft)
-                absright = np.abs(cRight)
+                absleft = np.abs(cLeft)*0+1
+                absright = np.abs(cRight)*0+1
 
                 # if state_idx != state_range_idx:
                 #     continue

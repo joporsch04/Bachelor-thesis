@@ -157,13 +157,13 @@ To further simplify the description of the laser field in the Hamiltonian, the c
 Calculating ionization rates in strong-field physics presents challenges due to the choice of gauge. While gauge transformations do not alter physical reality in classical electrodynamics, they can affect the practical computation of formulas derived in this chapter, requiring careful consideration.
 
 First, we derive two basic expressions for the Hamiltonian in the velocity gauge and length gauge using the dipole approximation. 
-The semiclassical Hamilton function for a free electron in an electric field\footnote{Derivation can be found in \cite{LandauLifschitzBand2}} is:% what is with V(x), and the mass of the proton. is it in \vec{p}?
+The semiclassical Hamilton function for a free electron in an electric field\footnote{Derivation can be found in \cite{LandauLifschitzBand2}, note that for an electron the charge is $-e$} is:% what is with V(x), and the mass of the proton. is it in \vec{p}?
 \begin{equation}%what are the arguments in H, is it even x? -> classical hamilton with H(P, x, t) but now quantum without because P is now nabla operator
-    \hat{\Hs}(\uvec{x}, t) = \frac{1}{2m}(\vec{\hat{P}} - e \vec{A}(\uvec{x}, t))^2 - e \varphi(\uvec{x}, t) \label{eq:semiClassicalHamilton}
+    \hat{\Hs}(\uvec{x}, t) = \frac{1}{2m}(\vec{\hat{P}} + e \vec{A}(\uvec{x}, t))^2 - e \varphi(\uvec{x}, t) \label{eq:semiClassicalHamilton}
 \end{equation}
 Under the dipole approximation, this simplifies to:
 \begin{equation*}
-    \hat{\Hs}(\uvec{x}, t) = \frac{\vec{\hat{P}}^2}{2m} - \frac{e}{m}\vec{\hat{P}}\cdot \vec{A}(t) + \frac{e^2}{2m}\vec{A}^2(t) - e \varphi(\uvec{x}, t)
+    \hat{\Hs}(\uvec{x}, t) = \frac{\vec{\hat{P}}^2}{2m} + \frac{e}{m}\vec{\hat{P}}\cdot \vec{A}(t) + \frac{e^2}{2m}\vec{A}^2(t) - e \varphi(\uvec{x}, t)
 \end{equation*}
 In most literature, $\varphi$ is set to zero at this stage of the derivation because the sources of the electromagnetic wave lie outside the region of interest.
 While the dipole approximation does not strictly necessitate this assumption, $\varphi$ will be left as is.
@@ -173,22 +173,23 @@ This approximation holds for sufficiently high laser intensities, though its val
 
 Next, we perform a gauge transformation called length gauge via:
 \begin{equation}
-    \chi = -\vec{A}(t)\cdot \uvec{x}
+    \chi = -\vec{A}(t)\cdot \vec{r}
 \end{equation}
-This transformation sets $\vec{A}$ to zero, modifying $\varphi$ as follows:%r=(x/3, y/3, z/3)
+With $\vec{r}(\uvec{x})=(x,y,z)$.
+This transformation sets $\vec{A}$ to zero, modifying $\varphi$ as follows:%r=(x/3, y/3, z/3) -> where is the probelm in just using r=(x,y,z)?????
 \begin{equation}
-    \nabla \varphi \to \nabla \cdot (\varphi + \vec{x} \cdot \frac{\partial \vec{A}}{\partial t}) = \nabla \varphi + \frac{\partial \vec{A}}{\partial t} = - \vec{E}
+    \nabla \varphi \to \nabla (\varphi + \vec{x} \cdot \frac{\partial \vec{A}}{\partial t}) = \nabla \varphi + \frac{\partial \vec{A}}{\partial t} = - \vec{E}
 \end{equation}
-Integrating this equation from the origin to $\vec{x}$ yields the electric potential in the length gauge. %WHAT IS ALL THIS x AND r THING? DOES IT MAKE EVEN SENSE?
+Integrating this equation from the origin to $\vec{r}$ yields the electric potential in the length gauge. %WHAT IS ALL THIS x AND r THING? DOES IT MAKE EVEN SENSE?
 With $\vec{r}$ now quantized, the Hamiltonian becomes:
 \begin{equation*}%i think E is still dependent on x so i cant just integrate it :( becasue phi is still dependent on x but i think i can solve it by just setting phi to zero
-    \hat{\Hs}(\uvec{x}, t) = \frac{\hat{\vec{P}}^2}{2m} - e \hat{\vec{x}} \cdot \vec{E}%+ V(x)
+    \hat{\Hs}(\uvec{x}, t) = \frac{\hat{\vec{P}}^2}{2m} + e \hat{\vec{r}} \cdot \vec{E}%+ V(x)
 \end{equation*}
 The time-dependent part $\hat{\Hs}(t)$ of the Hamiltonian can be expressed as:
 \begin{equation}
     \hat{\Hs}_{\mathrm{L}}(t) = -\hat{\vec{d}} \cdot \vec{E}(t) \label{eq:dipoleApprox}
 \end{equation}
-where $\hat{\vec{d}}=e\vec{\hat{x}}$ is the dipole operator and $\vec{E}(t)$ is the electric field.
+where $\hat{\vec{d}}=-e\vec{\hat{r}}$ is the dipole operator and $\vec{E}(t)$ is the electric field.
 
 An alternative gauge transformation, the velocity gauge, is also relevant. 
 Using:
@@ -201,11 +202,11 @@ the dipole approximation leaves $\vec{A}$ unchanged but modifies $\varphi$ as:
 \end{align*}
 resulting in the Hamiltonian:
 \begin{equation*}
-    \hat{\Hs}(\uvec{x}, t) = \frac{\hat{\vec{P}}^2}{2m} -\frac{e}{m}\hat{\vec{P}} \cdot \vec{A}(t)
+    \hat{\Hs}(\uvec{x}, t) = \frac{\hat{\vec{P}}^2}{2m} +\frac{e}{m}\hat{\vec{P}} \cdot \vec{A}(t)
 \end{equation*}
 and
 \begin{equation}
-    \hat{\Hs}_{\mathrm{V}}(t) = -\frac{e}{m}\hat{\vec{P}} \cdot \vec{A}(t) \label{eq:dipoleApprox_velocity}
+    \hat{\Hs}_{\mathrm{V}}(t) = \frac{e}{m}\hat{\vec{P}} \cdot \vec{A}(t) \label{eq:dipoleApprox_velocity}
 \end{equation}
 where $\varphi$ is set to zero.
 
@@ -281,7 +282,7 @@ This is the part where the SFA will later be applied.
 The remaining terms describe different physical processes.
 Two processes can occur: ionization of the electron or recombination with the atom.
 These processes are governed by the terms $\hat{\Hs}_{\mathrm{Rec}}(t)$ and $\hat{\Hs}_{\mathrm{Ion}}(t)$.
-In the present case, only one of these terms is relevant, and it will be shown later that $\hat{\Hs}_{\mathrm{Ion}}(t)$ is responsible for ionization, effectively "kicking" the electron out of the atom \cite{Ivanov20012005}.
+In the present case, only one of these terms is relevant, and it will be shown later that $\hat{\Hs}_{\mathrm{Ion}}(t)$ is responsible for ionization, effectively ``kicking'' the electron out of the atom \cite{Ivanov20012005}.
 
 While this approach may initially appear unnecessary, it establishes boundaries for the electron's behavior and provides useful intuition.
 
@@ -319,24 +320,24 @@ The Dyson equation can also be expressed in a slightly different form:
     \hat{\U}(t,t_0)=\hat{\U}^{\mathrm{Full}}_0(t,t_0)-i\int_{t_0}^{t} \hat{\U}^{\mathrm{Full}}_0(t,t')\hat{\Hs}^{\mathrm{Full}}_{\mathrm{I}}(t')\hat{\U}(t',t_0) \dd t'       \label{eq:dysonAnsatztRecX}
 \end{equation}
 It can be verified that both equations satisfy the TDSE by direct substitution of $\hat{\U}(t,t_0)$.
-The main difference between the ``Full'' and ``Sub'' formulations is that the "initial" propagator on the right side is now the full time propagator instead of a reduced one.
+The main difference between the ``Full'' and ``Sub'' formulations is that the ``initial'' propagator on the right side is now the full time propagator instead of a reduced one.
 That motivates the acronym for both variants.
 
 To simplify the analysis, the physical setting is further specified.
 Starting from the ground state of the atom, the time evolution is given by $\hat{\U}(t,t_0)\ket{\Psi_0(t_0)}$.
-For additional simplification, a projection onto a continuum state $\ket{\Pi(t_{\mathrm{c}})}$ at time $t_{\mathrm{c}}$ is considered.
-$\ket{\Pi(t_{\mathrm{c}})}$ does not represent a plane wave but rather an abstract state characterized by its momentum.
-Naturally, there is no overlap between $\ket{\Pi(t_{\mathrm{c}})}$ and $\hat{\U}^{\mathrm{Sub}}_0(t,t_0)\ket{\Psi_0(t_0)}$ or with $\hat{\U}^{\mathrm{Full}}_0(t,t_0)\ket{\Psi_0(t_0)}$, as the electron has not yet been ionized and no initial population in the continuum is assumed \cite{Ivanov20012005}.
+For additional simplification, a projection onto a continuum state $\ket{\vec{p}(t)}$ at time $t$ is considered.
+$\ket{\vec{p}(t)}$ does not represent a plane wave but rather an abstract state characterized by its momentum.
+Naturally, there is no overlap between $\ket{\vec{p}(t)}$ and $\hat{\U}^{\mathrm{Sub}}_0(t,t_0)\ket{\Psi_0(t_0)}$ or with $\hat{\U}^{\mathrm{Full}}_0(t,t_0)\ket{\Psi_0(t_0)}$, as the electron has not yet been ionized and no initial population in the continuum is assumed \cite{Ivanov20012005}.
 Furthermore, when $\hat{\Hs}^{\mathrm{Sub}}_{\mathrm{I}}(t')$ and $\hat{\Hs}^{\mathrm{Full}}_{\mathrm{I}}(t')$ are expanded, and the orthogonality of bound states and continuum states is taken into account, most terms of $\hat{\Hs}_{\mathrm{I}}(t')$ vanish.
 The remaining expressions are:
 \begin{equation}
-    \braket{\Pi(t_{\mathrm{c}})|\,\hat{\U}(t,t_0)\ket{\Psi_0(t_0)}} = -i \int_{t_0}^{t} \bra{\Pi(t_{\mathrm{c}})} \hat{\U}(t,t')\hat{Y}\hat{\Hs}(t')\hat{X} \hat{\U}^{\mathrm{Sub}}_0(t',t_0)\ket{\Psi_0(t_0)} \dd t' \label{eq:smatrixlike1_withoutsfa}
+    \braket{\vec{p}(t)|\,\hat{\U}(t,t_0)\ket{\Psi_0(t_0)}} = -i \int_{t_0}^{t} \bra{\vec{p}(t)} \hat{\U}(t,t')\hat{Y}\hat{\Hs}(t')\hat{X} \hat{\U}^{\mathrm{Sub}}_0(t',t_0)\ket{\Psi_0(t_0)} \dd t' \label{eq:smatrixlike1_withoutsfa}
 \end{equation}
 and
 \begin{equation}
-    \braket{\Pi(t_{\mathrm{c}})|\,\hat{\U}(t,t_0)\ket{\Psi_0(t_0)}} = -i \int_{t_0}^{t} \bra{\Pi(t_{\mathrm{c}})} \hat{\U}^{\mathrm{Full}}_0(t,t')\hat{Y}\hat{\Hs}(t')\hat{X} \hat{\U}(t',t_0)\ket{\Psi_0(t_0)} \dd t' \label{eq:smatrixlike2_withoutsfa}
+    \braket{\vec{p}(t)|\,\hat{\U}(t,t_0)\ket{\Psi_0(t_0)}} = -i \int_{t_0}^{t} \bra{\vec{p}(t)} \hat{\U}^{\mathrm{Full}}_0(t,t')\hat{Y}\hat{\Hs}(t')\hat{X} \hat{\U}(t',t_0)\ket{\Psi_0(t_0)} \dd t' \label{eq:smatrixlike2_withoutsfa}
 \end{equation}
-Note: No approximations have been made; \eqref{eq:smatrixlike1_withoutsfa} and \eqref{eq:smatrixlike2_withoutsfa} are exact.
+Note: No approximations have been made; \eqref{eq:smatrixlike1_withoutsfa} and \eqref{eq:smatrixlike2_withoutsfa} are exact and equivalent to one another.
 
 
 
@@ -369,12 +370,12 @@ Similarly, for the ``Full'' partitioning:
 \end{equation*}
 An exact expression for the SFA time evolution operator can be written, as it now commutes with itself at different times.
 
-The SFA is particularly useful because the eigenstates of $\hat{H}_{\mathrm{SFA}}$ have an exact analytical solution: the Volkov states. 
+The SFA is particularly useful because the eigenstates of $\hat{H}_{\mathrm{SFA}}$ have an exact analytical solution.
 To see this, consider the semiclassical Hamiltonian in \eqref{eq:semiClassicalHamilton}.
 
 Classically, the physics driven by the momentum operator $\hat{\vec{P}}$ is known as the canonical momentum, given by:
 \begin{equation}
-    \frac{\partial \Ls}{\partial \dot{\uvec{x}}} = \vec{P} = m\uvec{\dot{x}} + \frac{e}{c}\vec{A} \stackrel{\mathrm{a.u.}}{=} \vec{p} + \vec{A}    \label{eq:canonicalMomentum}
+    \frac{\partial \Ls}{\partial \dot{\uvec{x}}} = \vec{P} \stackrel{\mathrm{SI}}{=} m\vec{\dot{r}} - \frac{e}{c}\vec{A} \stackrel{\mathrm{a.u.}}{=} \vec{p} - \vec{A}    \label{eq:canonicalMomentum}
 \end{equation}
 where $\mathcal{L}$ is the Lagrangian of the system.
 
@@ -382,39 +383,39 @@ In this case, the canonical momentum is conserved.
 To verify this, setting $\varphi=0$ (justified earlier) gives $\vec{E} = -\frac{\partial \vec{A}}{\partial t}$. 
 The equation of motion for a charged particle in an electromagnetic field \cite{LandauLifschitzBand2} is:
 \begin{equation*}
-    \frac{\dd\vec{p}}{\dd t} = \vec{E} + \left(\uvec{\dot{x}}\times\vec{B}\right) \approx -\frac{\partial \vec{A}}{\partial t} = -\frac{\dd \vec{A}}{\dd t}   %why would i use uvec isntead of vec? doesnt make sense => with x its necessary because its natural variable of lagrandian
+    \frac{\dd\vec{p}}{\dd t} = -\vec{E} - \left(\vec{\dot{r}}\times\vec{B}\right) \approx \frac{\partial \vec{A}}{\partial t} = \frac{\dd \vec{A}}{\dd t}   %why would i use uvec isntead of vec? doesnt make sense => with x its necessary because its natural variable of lagrandian
 \end{equation*}
 Thus, $\frac{\dd}{\dd t}\vec{P}=0$.
 
 And also the energy of the system is clear:
 \begin{equation}
-    E(t) = \dot{\vec{x}}\frac{\partial \mathcal{L}}{\partial \dot{\vec{x}}}-\mathcal{L} = \frac{\vec{p}^2}{2} \label{eq:energy}
+    E(t) = \dot{\vec{r}}\frac{\partial \mathcal{L}}{\partial \dot{\uvec{x}}}-\mathcal{L} = \frac{(\vec{p}(t))^2}{2} \label{eq:energy}
 \end{equation}
 Note that the energy is not conserved, as the previous argument holds only for the canonical momentum, not the kinetic momentum.
 
-The key observation is that $\bra{\Pi(t_{\mathrm{c}})}$ (not $\bra{\vec{p}(t_{\mathrm{c}})}$!) is an eigenstate of $e^{-i \int_{t'}^{t} \hat{H}_{\mathrm{SFA}}(t'') \dd t''}$. 
+The key observation is that $\bra{\vec{p}(t)}$ is an eigenstate of $e^{-i \int_{t'}^{t} \hat{H}_{\mathrm{SFA}}(t'') \dd t''}$. 
 Combining \eqref{eq:canonicalMomentum} and \eqref{eq:energy} yields:
-\begin{equation*}
-    \bra{\Pi(t_c)}e^{-i \int_{t'}^{t} \hat{\Hs}_{\mathrm{SFA}}(t'') \dd t''} = \bra{\Pi(t_c)}e^{-i \int_{t'}^{t} (\vec{p} + \vec{A}(t''))^2 \dd t''}
+\begin{equation*}   %why t to t'???
+    \bra{\vec{p}(t)}e^{-i \int_{t'}^{t} \hat{\Hs}_{\mathrm{SFA}}(t'') \dd t''} = \bra{\vec{p}(t')}e^{-\frac{i}{2} \int_{t'}^{t} (\vec{P} + \vec{A}(t''))^2 \dd t''}
 \end{equation*}
 Here, $\vec{P}$ is time-independent, while $\vec{A}$ is not.
-%ATTENTION!!! WITH p+A or P-A what is it???
 Using the conservation of canonical momentum, the momentum at other times can be calculated. 
 Of particular interest is the asymptotic limit when the laser field vanishes:
 \begin{equation*}
     \vec{P} = \vec{p}(t'') + \vec{A}(t'') = \vec{p}(t\rightarrow \infty) + \vec{A}(t\rightarrow \infty) = \vec{p}
 \end{equation*}
-Furthermore, $\ket{\Pi}$ represents now a plane wave solution\textcolor{red}{(how??)},
+$\vec{p}$ is then simply the momentum of the electron after its `recovery' from interaction with the laser field.
+$\bra{\vec{p}(t')}$ can be rewritten using a similar argument:
 \begin{equation*}
-    \ket{\Pi} = \ket{\vec{p}+\vec{A}}
+    \bra{\vec{p}(t')} = \bra{\vec{p} + \vec{A}(t')}
 \end{equation*}
-Combining these results leads to the following expressions for both ``Full'' and ``Sub'':
-\begin{equation}
-    \braket{\Pi(t_{\mathrm{c}})|\,\hat{\U}(t,t_0)\ket{\Psi_0(t_0)}} = -i \int_{t_0}^{t} e^{-i \int_{t'}^{t} (\vec{p} + \vec{A}(t''))^2 \dd t''}\bra{\vec{p}+\vec{A}}\hat{\Hs}(t')\hat{X}\, \hat{\U}^{\mathrm{Sub}}_0(t',t_0)\ket{\Psi_0(t_0)} \dd t' \label{eq:smatrixlike1}
+Combining these results leads to the following expressions for both ``Sub'' and ``Full'':
+\begin{equation}        %why is it suddendly to infinity? not just to t?
+    \braket{\vec{p}(t)|\,\hat{\U}(t,t_0)\ket{\Psi_0(t_0)}} = -i \int_{t_0}^{t} e^{-i \int_{t'}^{\infty} (\vec{p} + \vec{A}(t''))^2 \dd t''}\bra{\vec{p}+\vec{A}(t')}\hat{\Hs}(t')\hat{X}\, \hat{\U}^{\mathrm{Sub}}_0(t',t_0)\ket{\Psi_0(t_0)} \dd t' \label{eq:smatrixlike1}
 \end{equation}
 and
 \begin{equation}
-    \braket{\Pi(t_{\mathrm{c}})|\,\hat{\U}(t,t_0)\ket{\Psi_0(t_0)}} = -i \int_{t_0}^{t} e^{-i \int_{t'}^{t} (\vec{p} + \vec{A}(t''))^2 \dd t''}\bra{\vec{p}+\vec{A}}\hat{\Hs}(t')\hat{X}\, \hat{\U}(t',t_0)\ket{\Psi_0(t_0)} \dd t' \label{eq:smatrixlike2}
+    \braket{\vec{p}(t)|\,\hat{\U}(t,t_0)\ket{\Psi_0(t_0)}} = -i \int_{t_0}^{t} e^{-i \int_{t'}^{\infty} (\vec{p} + \vec{A}(t''))^2 \dd t''}\bra{\vec{p}+\vec{A}(t')}\hat{\Hs}(t')\hat{X}\, \hat{\U}(t',t_0)\ket{\Psi_0(t_0)} \dd t' \label{eq:smatrixlike2}
 \end{equation}
 Note that the SFA eliminates the difference in the left part of the integrand between ``Sub'' and ``Full'', making the two equations distinct. 
 The final step introduces a new approximation for $\hat{\U}^{\mathrm{Sub}}_0(t',t_0)\ket{\Psi_0(t_0)}$ and $\hat{\U}(t',t_0)\ket{\Psi_0(t_0)}$.
@@ -456,9 +457,9 @@ For example, the laser pulse may excite the electron without immediately ionizin
 The coefficients are expected to capture all relevant dynamics within the hydrogen atom before ionization, including effects such as AC Stark shifts and ground-state distortion.
 
 The final expression can now be presented.
-By simplifying the dipole matrix element $\vec{d}_n(\vec{p}+\vec{A}) = \bra{\vec{p}+\vec{A}}\hat{\Hs}(t')\ket{\Psi_n}$ between the bound state and the continuum state, the dipole approximation \eqref{eq:dipoleApprox} can be applied, yielding:
+By simplifying the dipole matrix element $\vec{d}_n(\vec{p}+\vec{A}(t')) = \bra{\vec{p}+\vec{A}(t')}\hat{\Hs}(t')\ket{\Psi_n}$ between the bound state and the continuum state, the dipole approximation \eqref{eq:dipoleApprox} can be applied, yielding:
 \begin{equation*}
-    \braket{\Pi(t_{\mathrm{c}})|\Psi_n(t)} = -\frac{i}{2}\int_{t_0}^{t} e^{-i \int_{t'}^{t} (\vec{p} + A_z(t''))^2 \dd t''}E_z(t')\sum_{n}c_n(t)e^{-iE_nt'}\bra{\vec{p}+A_z}\hat{d}_z\ket{\Psi_n} \dd t'       \label{eq:smatrix}
+    \braket{\ket{\vec{p}(t)}|\Psi_n(t)} = -\frac{i}{2}\int_{t_0}^{t} e^{-i \int_{t'}^{\infty} (\vec{p} + A_z(t''))^2 \dd t''}E_z(t')\sum_{n}c_n(t)e^{-iE_nt'}\bra{\vec{p}+A_z(t')}\hat{d}_z\ket{\Psi_n} \dd t'       \label{eq:smatrix}
 \end{equation*}
 Here, the electric field is polarized along the z-axis.
 This equation corresponds to the strong-field S-matrix in the length gauge, as found in many papers \cite{Theory_NPS}, but with the distinction that excited states are not neglected.
@@ -633,4 +634,5 @@ In the context of this thesis, the influence of the AC Stark shift on the ioniza
 In previous derivations of the SFA rate, both the transition to excited states and the effect of the laser field on the ground state were neglected.
 However, with the extended version of the SFA rate \eqref{eq:sfa_rate_improved}, it becomes possible to account not only for the influence of the laser field on excited states but also to distinguish between the effects of the Stark shift and the depletion of the ground state (i.e., changes in the probability amplitude).
 While including many physical effects is theoretically appealing, it is not always practical unless the impact of each approximation on the results is understood.
+The splitting of the coefficients into amplitude and phase allows this kind of distinction.
 The findings related to this question are presented in Chapter 4.

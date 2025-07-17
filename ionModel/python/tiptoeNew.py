@@ -103,14 +103,14 @@ def main(excitedstates):
             output_file = f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/ionProb_{file_name}_{excitedstates}_tRecX_length_test_newfieldfukt_nosum-m_minusA_dense.csv"
             writecsv_prob(output_file, delay, ion_tRecX, ion_qs, ion_na_GASFIR, ion_na_SFA, ion_na_reconstructed_GASFIR, ion_na_reconstructed_SFA)
 
-        data_rate_delay = pd.read_csv(f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/ionProb_{file_name}_{excitedstates}_tRecX_length_test_newfieldfukt_nosum-m_minusA_dense.csv")
+        data_rate_delay = pd.read_csv(f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/ionProb_{file_name}_{excitedstates}_trecx_length.csv")
         delay=np.array(data_rate_delay['delay'].values)
         ion_tRecX=np.array(data_rate_delay['ion_tRecX'].values)
         ion_na_GASFIR=np.array(data_rate_delay['ion_NA_GASFIR'].values)
         ion_na_SFA=np.array(data_rate_delay['ion_NA_SFA'].values)
         ion_QS=np.array(data_rate_delay['ion_QS'].values)
 
-        BA_plotting = False
+        BA_plotting = True
 
         if BA_plotting:
             try:
@@ -129,9 +129,9 @@ def main(excitedstates):
 
         delay_dummy, ion_tRecX_dummy = read_ion_Prob_data("/home/user/TIPTOE/process_all_files_output/ionProb_450nm_dense_velocity_gauge_250nm_8e+13.csv")
 
-        # ion_tRecX_new = interp1d(delay_dummy, ion_tRecX_dummy, fill_value="extrapolate")(delay)
+        ion_tRecX_new = interp1d(delay_dummy, ion_tRecX_dummy, fill_value="extrapolate")(delay)
 
-        #ion_tRecX = ion_tRecX_dummy         #now c_n in length gauge, ion_tRecX is in velocity gauge but in probably not converged parameters
+        ion_tRecX = ion_tRecX_dummy         #now c_n in length gauge, ion_tRecX is in velocity gauge but in probably not converged parameters
                                             #ion_tRecX before was just for the rates that the coefficients are in length gauge
         ion_tRecX = interp1d(delay_dummy, ion_tRecX_dummy, fill_value="extrapolate")(delay)
 
@@ -156,21 +156,21 @@ def main(excitedstates):
         time=np.arange(tmin, tmax+1, 1.)
         field_probe_fourier_time=probe.Electric_Field(time)
 
-        plotter = TIPTOEplotter(ion_tRecX, ion_QS, ion_na_GASFIR, ion_na_SFA, ion_na_reconstructed_GASFIR, ion_na_reconstructed_SFA, delay, field_probe_fourier_time, time, AU, lam0_pump, I_pump, lam0_probe, I_probe, FWHM_probe)
-        fig = go.Figure()
-        fig = plotter.plotly4()
+        #plotter = TIPTOEplotter(ion_tRecX, ion_QS, ion_na_GASFIR, ion_na_SFA, ion_na_reconstructed_GASFIR, ion_na_reconstructed_SFA, delay, field_probe_fourier_time, time, AU, lam0_pump, I_pump, lam0_probe, I_probe, FWHM_probe)
+        #fig = go.Figure()
+        #fig = plotter.plotly4()
         #plotter.matplot4()
-        output_path = f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/plot_{file_name}_{excitedstates}_maxnhigh_nosumm.html"
-        fig.write_html(output_path)
+        #output_path = f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/plot_{file_name}_{excitedstates}_maxnhigh_nosumm.html"
+        #fig.write_html(output_path)
         # print(f"Plot saved to: {output_path}")
-        fig.show()
+        #fig.show()
 
         ion_SFA_excited_tRecX = ion_na_SFA
-        ion_SFA_excited_ODE = np.zeros(len(delay))#ion_SFA_ODE_new
+        ion_SFA_excited_ODE = ion_SFA_ODE_new#np.zeros(len(delay))#ion_SFA_ODE_new
 
         plotterBA = TIPTOEplotterBA(excitedstates, ion_tRecX, ion_na_GASFIR, ion_SFA_excited_tRecX, ion_SFA_excited_ODE, delay, time, AU, lam0_pump, I_pump, lam0_probe, I_probe, FWHM_probe)
-        #plotterBA.plot2SFA()
+        plotterBA.plot2SFA()
 
 
 if __name__ == "__main__":
-    main(2)
+    main(1)

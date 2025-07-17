@@ -21,32 +21,71 @@ As can be seen in \ref{fig:tiptoe_sfa_comparison}(a), the standart SFA does a go
 Especially in offcycle ionization dyanmics seems to be some kind of phase shift that does not match at all. 
 
 This is the starting point of this thesis since that is what was previously known.
-Now the question is how to improve this SFA model regarding the ionization dynamics.
-
-What I implemented is the extended SFA model described in chapter 2 and chapter 4. 
+What I implemented is the extended SFA model described in chapter 2 and chapter 4.
 As mentioned previously, there are two ways of determining the coefficients, either by solving the TDSE in the subspace of the hilbertspace using the system of ODE`s, or numerically in the full hilbertspace using a numerical solver (here tRecX).
 In the plot \ref{fig:tiptoe_sfa_comparison}(b) both the TIPTOE results from the Subspace as well as the Full hilbertspace approach are shown.
 Very important is that here, only the first coefficient and first dipole matrix element is used.
 In other words, in formula \eqref{eq:sfa_rate_improved} only the first term is used, i.e. $n_1=n_2=1$.
 In principle, almost the same formula was already implemented for simulating the standart SFA model, since there is also just the ground state involved.
 The only difference is that in the extended SFA model for one state, the coefficient $c_0(t)$ is jused so all the difference between standart SFA and extended SFA in \ref{fig:tiptoe_sfa_comparison}(b) is coming from the coefficients $c_0(t)$.
-That makes it possible to split ......
+
+\medskip
+The results show that the extended SFA does indeed show some improvements in reconstructing the offcycle ionization dynamics.
+Especially since only the coefficients for the ground state is used, and no excited states are involved, this is a very good result.
+Further, as mentioned in more detail in chapter 4, even with the coefficients from the numerical solver, many approximations were made.
+Somehow the TIPTOE measurement with coefficients from the subspace do not differ much from the standart SFA model.
+\textcolor{red}{why is that the case??}
+
+On the other hand, it seems like there is still some physics missing in the extended SFA model.
+Since plot \ref{fig:tiptoe_sfa_comparison}(b) does not include transitions to excited states, this could be a possible reason for the remaining difference.
+The other main reason could be that the coulomb potential does indeed play a not negligible role in the ionization process and the small changes in the phase of the ionization yield is coming from that.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\textwidth]{../ionModel/python/plotsTIPTOE/2plot_SFA-comparison_1_BA.pdf}
+    \caption[Comparison of SFA models and TDSE ionization yields]{Comparison of ionization yields from TIPTOE simulations between different SFA models and reference data from TDSE. 
+            (a) Standart SFA overall does a good job reconstructing the ionization dynamics, but some parts it does not capture at all 
+            (b) Comparison with extended SFA models with transitions to excited states neglected. }
+    \label{fig:tiptoe_sfa_comparison}
+\end{figure}
+
+
+\bigskip
+As mentioned in chapter 2, two major physical effects take place that are being carried over by the coefficient $c_0(t)$; the stark shift and the distortion of the ground state. 
+By only using the phase of the $c_0(t)$, only the influence of the stark shift is taken into account.
+That allows isolating different physical effects and their impact on ionization dynamics.
+
+The figure \ref{fig:tiptoe_rate_stark}(a) shows exactly this approach, a TIPTOE scan but only with the phase of the coefficients:
+\begin{equation*}
+    c_n(t) = |c_n(t)|e^{i \phi_n(t)} \rightarrow c_n(t) = e^{i \phi_n(t)}
+\end{equation*}
+The results are obvious.
+Almost all the contribution of the imporvement of ionization dynamics within the full hilbertspace coefficients are coming from the change in the energy levels.
+This is strong evidence that the stark shift is indeed a very important effect in the ground state ionization dynamics.
+The distortion of the ground state does not seem to have much impact.
+
+Figure \ref{fig:tiptoe_rate_stark}(b) shows this in more detail.
+In the rates, it is more obvious how much of an contribution the stark shift has in contrast to the distortion of the ground state.
+
+
 
 
 
 \begin{figure}
     \centering
-    \includegraphics[width=1\textwidth]{../ionModel/python/plotsTIPTOE/2plot_SFA-comparison_1.pdf}
-    \caption{Comparison of ionization yields from TIPTOE simulations between different SFA models and reference data from tRecX. 
-            (a) Standart SFA overall does a good job reconstructing the ionization dynamics, but some parts it does not capture at all 
-            (b) Extended SFA to excited states indeed shows some improvements in the reconstructing}
-    \label{fig:tiptoe_sfa_comparison}
+    \includegraphics[width=1\textwidth]{../ionModel/python/plotsTIPTOE/2plot_SFA-comparison_2.pdf}
+    \caption[Impact of stark effect on TIPTOE simulations and ionization rates]{Impact of stark shift on TIPTOE simulations and on ionization rates with transitions to excited states neglected. 
+            (a) TIPTOE
+            (b) Rate}
+    \label{fig:tiptoe_rate_stark}
 \end{figure}
 
 
 
 
-
+\medskip
+To make it in one sentence:
+Taking only the stark effect of the ground state within the strong field approximation into account while determining the coefficients by solving the TDSE in the full hilbertspace, leads to a better reconstructing of the phase of the ionization dynamics in the offcycle region of the laser pulse than only considering the distortion of the ground state.
 
 
 
@@ -55,18 +94,27 @@ As mentioned in chapter 3, the Ionization yield in \ref{fig:tiptoe_sfa_compariso
 Further, because we are mostly interested in the dynamics and not the plain ionization yield, its normalized according to \eqref{eq:tiptoeprop_normalized}.
 However, in the not normalized plot, one could see that the numerical solution of the TDSE is predicting a ionization probability orders of magnitude higher than the SFA model.
 In addition to that, small changes in the in the delay of the signal pulse leads to bigger changes in the TDSE results than the SFA results, so the `reference' TIPTOE result is much more sensitive to changes in the laser field.
-First observation can be interpreted by the fact that in SFA we are assuming, the electron sits in a volkov state after ionization so the elecotrn does not `feel' the coulomb potential anymore.
+First observation can be interpreted by the fact that in SFA we are assuming, the electron sits in a continuum state after ionization so the elecotrn does not `feel' the coulomb potential anymore.
 This is of course a very strong assumption, any much `harder' to achcieve for the electron. 
 Imagine the laser has to really catapult the electron out of the atom to make this assumption approximately valid.
 Therefore the overall ionization yield from the SFA model is much lower than the one from the TDSE.
-Thats is also one essential reason for restrictign the laser to small ionization probabilities.
 Second, the numerical solution of the TDSE captures much more dynamics and physical effects of the ionization process.
 Many different processes can happen during that time, and that could justify why the ionization yield of the TDSE is much more sensitive to changes in the elcetric field.
 
 Both these observations are interesting, but can be expected from how the SFA model is constructed.
-To make shure that the differences really do come from the `fundamentals' of the SFA model (i.e. the assumption that the final state is a volkov state), one has to make shure that is the only possible option for the differences.
-This is of course very difficult since there are many different processes that can have a influence on the ionization dynamics that where not considered in the SFA model.
-However by making 
+To make shure that the differences really do come from the `fundamentals' of the SFA model (i.e. the assumption that the final state is a continuum state), one has to make shure that is the only possible option for the differences.
+The extended SFA model described in this thesis may give promising insights into this question.
+During the research for this thesis, much work has gotten into the implementation of the extended SFA model, such that it incorparates also excited states .
+Unfortunately, due to the limited time frame, I can not present certain results for this question. 
+Latest TIPTOE results indicate that including excited states in the SFA rate help to a certain extend the difference in the order of magnitude between SFA and TDSE.
+Also the cross-coupling terms in \eqref{eq:sfa_rate_improved} (i.e. $n_1 \neq n_2$) seems to have a significant contribution to the ionizatiion rate.
+Furthermore, previous discussed results about the importance of the stark shift applies to excited states as well.
+The shift in the energy level of the excited states playes a more significant role for the ionization rate than changes in the probability ampltidue of the coefficients.
+The indicated changes in the order of magnitude of the ionization yield that could come from including excited states in the extended SFA model is could primarily coming from the dipole transition matrix elements.
+For example this could be explained by the lase rpulse exciting the elctron to for isnatnce the 3p state and later ionizing it.
+This will result in a much hgiher ionization probability overoll since more is possible.
+However, this could not be shown here.
+But these are not really results, only some hints.
 
 
 
