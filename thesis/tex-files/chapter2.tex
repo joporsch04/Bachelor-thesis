@@ -19,7 +19,7 @@
 
 The structure of this chapter largely follows \cite{Ivanov20012005}, with several modifications and adaptations to the context of this thesis.
 
-The aim of this chapter is to derive an expression for the instantaneous ionization rate (IIR) by analytically solving the time-dependent Schrödinger equation (TDSE) within the framework of the strong-field approximation (SFA).
+The aim of this chapter is to derive an expression for the ionization rate by analytically solving the time-dependent Schrödinger equation (TDSE) within the framework of the strong-field approximation (SFA).
 
 
 
@@ -498,7 +498,7 @@ The subsequent derivation proceeds within the SFA framework, which provides a tr
 The derivation mainly follows \cite{Theory_NPS} with some modifications.
 First, the ionization probability is expressed as the amplitude of projection of the wavefunction onto the continuum subspace.
 The total ionization probability is obtained by integrating the ionization rate over the time domain.
-Therefore, the SFA rate \eqref{eq:smatrix} can be written as:
+Therefore, the SFA rate can be written as:
 \begin{align*}
     \lim_{t\to\infty}\braket{\Psi(t)|\int \dd^3 p \ket{p}\bra{p}\Psi(t)} = &\int_{-\infty}^{\infty} \Gamma_{\mathrm{SFA}}(t) \dd t \\ %= \int_{\R^3}\dd^3p \braket{\Psi_n(t)|\Pi(t_{\mathrm{c}})}\braket{\Pi(t_{\mathrm{c}})|\Psi_n(t)}\\ 
     = &\int \dd^3 p \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} \dd t_1  \dd t_2 \, e^{\frac{i}{2}\int_{t_1}^{t_2}(\vec{p}+A_z(t''))^2\dd t''} E_z(t_1)E_z(t_2)\\

@@ -1,18 +1,55 @@
-Ionization with an intense laser is one of the most fundamental processes in attosecond physics and quantum mechanics in general and has a broad range of applications such as medical physics or .
-Weither you want your system to ionize or not, it may be important to understand, how ionization works.
-However since it is a quantum mechanical process, one has to first ask what information are even experimentally acessible.
-Quantum mechanics at its very fundamental level tells us one can only measure probabilities and how likely the electron get ionized.
-Unfortunately, in an actual experiment thats the only option you got.
-Further one likes to know more about the "path" the electron takes after it gets struck by the laser pulse i.e the response of the electron to the laser pulse.
+Ionization with an intense laser is one of the most fundamental processes in attosecond physics and quantum mechanics in general and has a broad range of applications such as from high-harmonic generation to photoelectron spectroscopy and medical physics.
+Of prior interest is the `response' of the electron to certain parts of the laser pulse at a given moment of time.
+From a classical point of view, the instantaneous ionization rate $\Gamma(t)$ is a way of making making this `wish' come true.
+% Understanding the dynamics of this process requires theoretical models that can predict ionization probabilities and provide insights into the underlying mechanisms.
+% In real life applications mostly we dont have static electric field, more a laser pulse, with an envelope.
+However, quantum mechanics presents a fundamental challenge: we can only measure probabilities, not the specific path an electron takes during ionization.
+Further, predicting the \emph{instantaneous} ionization of the electron at a given moment of time is difficult to reconcile with conventional quantum mechanics \cite{Ivanov2018}. 
 
-Everytime you hear "path" in quantum mechanics, the first name to think of is Heisenberg.
-His uncertainty principle sets the boundaries for these type of questions and does not let measure all the information you wish to had.
-Further to see the electrons path, one has to probe the system just as lightwaves probe the matter around you letting you see.
-However probing a quantum mechanical system effectively changes the quantum mechanical state of the electron so eventually one has to restrict oneself to something different.
+\medskip
+Lots of research effort has gtten into developing different ways of defining ionization rates \cite{agarwal2025generalapproximatorstrongfieldionization,Ivanov2018}.
+The Strong Field Approximation (SFA) has become one of the standard theoretical frameworks for deriving ionization rates due to its simplicity and reasonably good agreement with numerical solutions of the time dependent schroedinger equation. 
+The way, that it reconciles with quanum mechanics is that within SFA there is an expression that can be interpreted as an ionization rate that share similar propetrties of both vlassical and quanum mechanical physics.A very
 
-The challenge of a theoretical model is now to predict ionization propabilities and further explain the underlying mechanisms and in the best case allowing some insights what happens between initial state of the atom and measured electron.
-A clever way to do this is by establishing the concept of an instantanious ionization rate (IIR) via the propertry $P_{\mathrm{ion}}=\int_{\R}\Gamma (t)\dd t$ effectively telling you when and where an electron reacts to a incomming laser pulse.
-At first sight, "instantanious" seems to conflict with the energy time uncertainty relation $\Delta E \Delta t \geq \hbar/2$.
+However, standard SFA formulations make a crucial simplification: they assume the laser field has no effect on the atom before ionization, effectively neglecting excited atomic states and treating the electron as remaining in the ground state until the moment of ionization.
+
+This approximation leads to significant discrepancies when comparing SFA predictions with ab initio solutions of the time-dependent Schrödinger equation (TDSE). 
+Numerical simulations using solvers like tRecX reveal ionization dynamics that differ substantially from standard SFA predictions, particularly in the temporal structure of the ionization process. 
+When the laser pulse is symmetric in time, SFA predicts a symmetric ionization rate, but numerical simulations show this time symmetry is broken.
+
+The central hypothesis of this thesis is that these discrepancies arise primarily from the neglect of excited atomic states in standard SFA formulations. 
+In intense laser fields, effects such as the AC Stark shift and transient population of excited states can significantly modify the ionization dynamics. By including these effects, we can potentially bridge the gap between analytical SFA models and numerical TDSE solutions.
+
+This thesis addresses the following key questions:
+\begin{itemize}
+    \item What is the role of excited atomic states in strong field ionization?
+    \item How does the AC Stark shift influence ionization rates compared to changes in ground state population?
+    \item Can we improve the accuracy of ionization rate predictions by incorporating excited state dynamics into the SFA framework?
+\end{itemize}
+
+To answer these questions, we extend the SFA formalism to include the influence of excited atomic states on ionization rates. 
+We derive an improved expression for the IIR that incorporates time-dependent probability amplitudes for both ground and excited states, obtained by solving the TDSE within the subspace of bound states. 
+The extended model is then validated through comparison with full TDSE solutions using the TIPTOE (Temporal Ionization Probability in Tunneling and Over-barrier Excursions) method.
+
+The structure of this thesis is as follows: Chapter 2 derives the extended SFA rate and establishes the theoretical framework. 
+Chapter 3 introduces the numerical methods, including the tRecX solver and the TIPTOE analysis technique. Chapter 4 details the implementation of the extended SFA model and discusses the computational challenges. 
+Chapter 5 presents results comparing standard SFA, extended SFA, and full TDSE solutions, demonstrating the importance of excited state dynamics in strong-field ionization.
+
+
+% Weither you want your system to ionize or not, it may be important to understand, how ionization works.
+% However since it is a quantum mechanical process, one has to first ask what information are even experimentally acessible.
+% Quantum mechanics at its very fundamental level tells us one can only measure probabilities and how likely the electron get ionized.
+% Unfortunately, in an actual experiment thats the only option you got.
+% Further one likes to know more about the "path" the electron takes after it gets struck by the laser pulse i.e the response of the electron to the laser pulse.
+
+% Everytime you hear "path" in quantum mechanics, the first name to think of is Heisenberg.
+% His uncertainty principle sets the boundaries for these type of questions and does not let measure all the information you wish to had.
+% Further to see the electrons path, one has to probe the system just as lightwaves probe the matter around you letting you see.
+% However probing a quantum mechanical system effectively changes the quantum mechanical state of the electron so eventually one has to restrict oneself to something different.
+
+% The challenge of a theoretical model is now to predict ionization propabilities and further explain the underlying mechanisms and in the best case allowing some insights what happens between initial state of the atom and measured electron.
+% A clever way to do this is by establishing the concept of an instantanious ionization rate (IIR) via the propertry $P_{\mathrm{ion}}=\int_{\R}\Gamma (t)\dd t$ effectively telling you when and where an electron reacts to a incomming laser pulse.
+% At first sight, "instantanious" seems to conflict with the energy time uncertainty relation $\Delta E \Delta t \geq \hbar/2$.
 % However, instantanious refers to the response of the electron to the laser field, not the and does not contain eny infromation on when exactly does the electron get ionized.
 
 % Lets make an example to show how an IIR can be beneficial.

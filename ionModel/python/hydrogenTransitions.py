@@ -17,7 +17,7 @@ def get_eigenEnergy(excitedStates, get_p_states):
 #@profile
 def get_coefficientsNumerical(excitedStates, t_grid, get_only_p_states, Gauge, laser_pulses):
     
-    solver = HydrogenSolver(max_n=3, laser_pulses=laser_pulses)
+    solver = HydrogenSolver(max_n=11, laser_pulses=laser_pulses)
     print(f"Basis states ({len(solver.states)}): {solver.states}")
     
     solutions = solver.solve(gauge=Gauge)

@@ -1,9 +1,11 @@
+import os
 import numpy as np
 import csv
 import pandas as pd
 import matplotlib.pyplot as plt
 from IPython.display import display, HTML
 from matplotlib.backends.backend_pdf import PdfPages
+from scipy.interpolate import interp1d
 
 from __init__ import FourierTransform
 
@@ -145,12 +147,25 @@ class TIPTOEplotterBA:
         ion_SFA_excited_tRecX = self.ion_SFA_excited_tRecX - self.ion_SFA_excited_tRecX[10]
         ion_SFA_excited_ODE = self.ion_SFA_excited_ODE - self.ion_SFA_excited_ODE[-1]
 
+        delay_fs = self.delay * self.AU.fs
+        delay_dense = np.linspace(delay_fs.min(), delay_fs.max(), len(delay_fs) * 30)
+    
+        interp_tRecX = interp1d(delay_fs, ion_tRecX, kind='cubic', bounds_error=False, fill_value='extrapolate')
+        interp_SFA = interp1d(delay_fs, ion_SFA, kind='cubic', bounds_error=False, fill_value='extrapolate')
+        interp_SFA_excited_tRecX = interp1d(delay_fs, ion_SFA_excited_tRecX, kind='cubic', bounds_error=False, fill_value='extrapolate')
+        interp_SFA_excited_ODE = interp1d(delay_fs, ion_SFA_excited_ODE, kind='cubic', bounds_error=False, fill_value='extrapolate')
+
+        ion_tRecX_dense = interp_tRecX(delay_dense)
+        ion_SFA_dense = interp_SFA(delay_dense)
+        ion_SFA_excited_tRecX_dense = interp_SFA_excited_tRecX(delay_dense)
+        ion_SFA_excited_ODE_dense = interp_SFA_excited_ODE(delay_dense)
+
         # N =18
         # ion_SFA_excited_tRecX[:N] = 0
         # ion_SFA_excited_tRecX[-N:] = 0
 
-        ax3.plot(self.delay*self.AU.fs, ion_tRecX/(max(abs(ion_tRecX))), label=r'TDSE (reference)', color='black', linestyle='-')
-        ax3.plot(self.delay*self.AU.fs, ion_SFA/(max(abs(ion_SFA))), label=r'Standard SFA', color='blue', linestyle='--', alpha=0.5)
+        ax3.plot(delay_dense, ion_tRecX_dense/(max(abs(ion_tRecX_dense))), label=r'TDSE (reference)', color='black', linestyle='-')
+        ax3.plot(delay_dense, ion_SFA_dense/(max(abs(ion_SFA_dense))), label=r'Standard SFA', color='blue', linestyle='--', alpha=0.5)
         ax3.set_xlabel(r'Delay $\tau$ (fs)')
         ax3.set_ylabel(r'Normalized Ionization Yield')
         ax3.set_xlim(-2, 2)
@@ -158,15 +173,15 @@ class TIPTOEplotterBA:
         ax3.set_title('(a) Standard SFA vs Reference')
         ax3.grid(True, alpha=0.3)
         
-        ax4.plot(self.delay*self.AU.fs, ion_tRecX/(max(abs(ion_tRecX))), label=r'TDSE (reference)', color='black', linestyle='-')
-        ax4.plot(self.delay*self.AU.fs, ion_SFA/(max(abs(ion_SFA))), label=r'Standard SFA', color='blue', linestyle='--', alpha=0.5)
-        ax4.plot(self.delay*self.AU.fs, ion_SFA_excited_ODE/(max(abs(ion_SFA_excited_ODE))), label=r'Extended SFA (Sub. coeff.)', color='red', linestyle=':')
-        ax4.plot(self.delay*self.AU.fs, ion_SFA_excited_tRecX/(max(abs(ion_SFA_excited_tRecX))), label=r'Extended SFA (Full. coeff.)', color='green', linestyle='-.')
+        ax4.plot(delay_dense, ion_tRecX_dense/(max(abs(ion_tRecX_dense))), label=r'TDSE (reference)', color='black', linestyle='-')
+        ax4.plot(delay_dense, ion_SFA_dense/(max(abs(ion_SFA_dense))), label=r'Standard SFA', color='blue', linestyle='--', alpha=0.5)
+        ax4.plot(delay_dense, ion_SFA_excited_ODE_dense/(max(abs(ion_SFA_excited_ODE_dense))), label=r'Extended SFA (Sub. coeff.)', color='red', linestyle=':')
+        ax4.plot(delay_dense, ion_SFA_excited_tRecX_dense/(max(abs(ion_SFA_excited_tRecX_dense))), label=r'Extended SFA (Full. coeff.)', color='green', linestyle='-.')
         ax4.set_xlabel(r'Delay $\tau$ (fs)')
         ax4.set_ylabel(r'Normalized Ionization Yield')
         ax4.set_xlim(-2, 2)
         ax4.legend(loc='upper right')
-        ax4.set_title('(b) Extended SFA Models vs Reference')
+        ax4.set_title('(b) SFA Models vs Reference')
         ax4.grid(True, alpha=0.3)
 
         param_text = (f'$\lambda_\mathrm{{F}}={self.lam0_pump}$ nm\n'
@@ -177,9 +192,119 @@ class TIPTOEplotterBA:
 
         plt.tight_layout()
         
-        pdf_filename = f'/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/plotsTIPTOE/2plot_SFA-comparison_{self.excitedStates}_BA.pdf'
+        pdf_filename = f'/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/plotsTIPTOE/2plot_SFA-comparison_{self.excitedStates}_BA_test.pdf'
         with PdfPages(pdf_filename) as pdf:
-            pdf.savefig(fig, dpi=300, bbox_inches='tight')
+            pdf.savefig(fig, dpi=600, bbox_inches='tight')
+
+    def plot3stark(self):
+
+        filename = f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/ionization_rates_450nm_8.0e+13Wcm2.csv"
+        df = pd.read_csv(filename)
+
+        time_recon = df['time_SFA'].values
+        rate_SFA = df['rate_SFA'].values
+        time_recon_1 = df['time_extended_1'].values
+        rateExcited_1 = df['rate_extended_1'].values
+        time_recon_2 = df['time_extended_2'].values
+        rateExcited_2 = df['rate_extended_2'].values
+        time_recon_3 = df['time_extended_3'].values
+        rateExcited_3 = df['rate_extended_3'].values
+        time_recon_4 = df['time_extended_4'].values
+        rateExcited_4 = df['rate_extended_4'].values
+
+        summary_filename = f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/ionization_summary_450nm_8.0e+13Wcm2.csv"
+        summary_df = pd.read_csv(summary_filename)
+
+        print(f"Data loaded from: {filename}")
+        print(f"Summary loaded from: {summary_filename}")
+        print(f"DataFrame shape: {df.shape}")
+
+        fig, (ax1, ax2, ax3) = plt.subplots(nrows=1, ncols=3, figsize=(21, 6))
+
+        ion_tRecX = self.ion_tRecX - self.ion_tRecX[-1]
+        ion_SFA = self.ion_SFA - self.ion_SFA[-1]
+        ion_SFA_excited_tRecX = self.ion_SFA_excited_tRecX - self.ion_SFA_excited_tRecX[10]
+        ion_SFA_excited_ODE = self.ion_SFA_excited_ODE - self.ion_SFA_excited_ODE[-1]
+
+        delay_fs = self.delay * self.AU.fs
+        delay_dense = np.linspace(delay_fs.min(), delay_fs.max(), len(delay_fs) * 50)
+
+        interp_tRecX = interp1d(delay_fs, ion_tRecX, kind='cubic', bounds_error=False, fill_value='extrapolate')
+        interp_SFA = interp1d(delay_fs, ion_SFA, kind='cubic', bounds_error=False, fill_value='extrapolate')
+        interp_SFA_excited_tRecX = interp1d(delay_fs, ion_SFA_excited_tRecX, kind='cubic', bounds_error=False, fill_value='extrapolate')
+        interp_SFA_excited_ODE = interp1d(delay_fs, ion_SFA_excited_ODE, kind='cubic', bounds_error=False, fill_value='extrapolate')
+
+        ion_tRecX_dense = interp_tRecX(delay_dense)
+        ion_SFA_dense = interp_SFA(delay_dense)
+        ion_SFA_excited_tRecX_dense = interp_SFA_excited_tRecX(delay_dense)
+        ion_SFA_excited_ODE_dense = interp_SFA_excited_ODE(delay_dense)
+
+        # Interpolate rate data
+        time_dense = np.linspace(min(time_recon.min(), time_recon_1.min(), time_recon_2.min(), 
+                                    time_recon_3.min(), time_recon_4.min()), 
+                                max(time_recon.max(), time_recon_1.max(), time_recon_2.max(),
+                                    time_recon_3.max(), time_recon_4.max()), 
+                                len(time_recon) * 50)
+        
+        interp_rate_SFA = interp1d(time_recon, rate_SFA, kind='cubic', bounds_error=False, fill_value='extrapolate')
+        interp_rate_1 = interp1d(time_recon_1, rateExcited_1, kind='cubic', bounds_error=False, fill_value='extrapolate')
+        interp_rate_2 = interp1d(time_recon_2, rateExcited_2, kind='cubic', bounds_error=False, fill_value='extrapolate')
+        interp_rate_3 = interp1d(time_recon_3, rateExcited_3, kind='cubic', bounds_error=False, fill_value='extrapolate')
+        interp_rate_4 = interp1d(time_recon_4, rateExcited_4, kind='cubic', bounds_error=False, fill_value='extrapolate')
+
+        rate_SFA_dense = interp_rate_SFA(time_dense)
+        rate_1_dense = interp_rate_1(time_dense)
+        rate_2_dense = interp_rate_2(time_dense)
+        rate_3_dense = interp_rate_3(time_dense)
+        rate_4_dense = interp_rate_4(time_dense)
+
+        # Plot 1: Ion yields (existing plot)
+        ax1.plot(delay_dense, ion_tRecX_dense/(max(abs(ion_tRecX_dense))), label=r'TDSE (reference)', color='black', linestyle='-')
+        ax1.plot(delay_dense, ion_SFA_dense/(max(abs(ion_SFA_dense))), label=r'Standard SFA', color='blue', linestyle='--', alpha=0.5)
+        ax1.plot(delay_dense, ion_SFA_excited_ODE_dense/(max(abs(ion_SFA_excited_ODE_dense))), label=r'Extended SFA (Sub. coeff.)', color='red', linestyle=':')
+        ax1.plot(delay_dense, ion_SFA_excited_tRecX_dense/(max(abs(ion_SFA_excited_tRecX_dense))), label=r'Extended SFA (Full. coeff.)', color='green', linestyle='-.')
+        ax1.set_xlabel(r'Delay $\tau$ (fs)')
+        ax1.set_ylabel(r'Normalized Ionization Yield')
+        ax1.set_xlim(-2, 2)
+        ax1.legend(loc='upper right')
+        ax1.set_title('(a) SFA Models vs Reference')
+        ax1.grid(True, alpha=0.3)
+
+        # Plot 2: Rate SFA, Rate 1, Rate 2
+        ax2.plot(time_dense, rate_SFA_dense, label=r'Standard SFA', color='blue', linestyle='-')
+        ax2.plot(time_dense, rate_1_dense, label=r'Extended SFA only phase', color='green', linestyle='-')
+        ax2.plot(time_dense, rate_2_dense, label=r'Extended SFA only abs', color='green', linestyle='-')
+        ax2.set_xlim(-50, 50)
+        ax2.set_xlabel(r'Time (fs)')
+        ax2.set_ylabel(rf'Ionization Rate ($\mathrm{{fs}}^{{-1}}$)')
+        ax2.legend(loc='upper right')
+        ax2.set_title(r'(b) Full Hilbertspace Extended SFA: Phase vs Magnitude')
+        ax2.grid(True, alpha=0.3)
+
+        # Plot 3: Rate 3, Rate 4
+        ax3.plot(time_dense, rate_SFA_dense, label=r'Standard SFA', color='blue', linestyle='-')
+        ax3.plot(time_dense, rate_3_dense, label=r'Extended SFA only phase', color='red', linestyle='-')
+        ax3.plot(time_dense, rate_4_dense, label=r'Extended SFA only abs', color='red', linestyle='-')
+        ax3.set_xlim(-50, 50)
+        ax3.set_xlabel(r'Time (fs)')
+        ax3.set_ylabel(rf'Ionization Rate ($\mathrm{{fs}}^{{-1}}$)')
+        ax3.legend(loc='upper right')
+        ax3.set_title(r'(c) Sub Hilbertspace Extended SFA: $e^{i\phi}$ vs $|c_0|$')
+        ax3.grid(True, alpha=0.3)
+
+        param_text = (f'$\lambda_\mathrm{{F}}={self.lam0_pump}$ nm\n'
+                    f'$\lambda_\mathrm{{S}}={self.lam0_probe}$ nm\n'
+                    f'$I_\mathrm{{F}}={self.I_pump:.1e}$ W/cm$^2$\n'
+                    f'$I_\mathrm{{S}}={self.I_probe:.1e}$ W/cm$^2$')
+        ax1.text(0.02, 0.98, param_text, transform=ax1.transAxes, fontsize=8, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+
+        plt.tight_layout()
+        
+        pdf_filename = f'/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/plotsTIPTOE/3plot_stark-comparison_{self.excitedStates}_BA.pdf'
+        with PdfPages(pdf_filename) as pdf:
+            pdf.savefig(fig, dpi=600, bbox_inches='tight')
+
+
 
 
 

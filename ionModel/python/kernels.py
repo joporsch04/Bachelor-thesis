@@ -159,8 +159,8 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                 cRight = coefficients[state_range_idx, :]
                 phaseleft = np.unwrap(np.angle(cLeft))
                 phaseright = np.unwrap(np.angle(cRight))
-                absleft = np.abs(cLeft)*0+1
-                absright = np.abs(cRight)*0+1
+                absleft = np.abs(cLeft)
+                absright = np.abs(cRight)
 
                 # if state_idx != state_range_idx:
                 #     continue
@@ -171,6 +171,9 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                 if params['only_c0_is_1_rest_normal'] and state_idx == 0:
                     print("only_c0_is_1_rest_normal is set to True")
                     absleft, absright = absleft*0+1, absright*0+1
+                if params['abs_normal_phase_0'] and state_idx == 0:
+                    print("abs_normal_phase_0 is set to True")
+                    phaseleft, phaseright = phaseleft*0, phaseright*0
 
                 for i in prange(Tar.size):
                     Ti=Ti_ar[i]
@@ -209,9 +212,9 @@ def exact_SFA_jit_helper(tar, Tar, params, EF, EF2, VP, intA, intA2, dT, N, n, n
                     fig = make_subplots(rows=1, cols=2, shared_xaxes=False, subplot_titles=subplot_titles,horizontal_spacing=0.15)
                     fig.add_trace(go.Scatter(x=tar, y=np.real(current_state_rate), mode='lines', name=f'Current transition {state_idx}→{state_range_idx} ({config_left_str}→{config_right_str})'), row=1, col=1)
                     fig.add_trace(go.Scatter(x=tar, y=np.real(rate), mode='lines', name=f'Cumulative rate (all transitions so far)'), row=1, col=1)
-                    fig.add_trace(go.Scatter(x=EF_grid, y=abs(cLeft)**2, mode='lines', name=f'|c_{state_idx}|² ({config_left_str})'), row=1, col=2)
+                    fig.add_trace(go.Scatter(x=EF_grid, y=np.unwrap(np.angle(cLeft)), mode='lines', name=f'|c_{state_idx}|² ({config_left_str})'), row=1, col=2)
                     if state_idx != state_range_idx:
-                        fig.add_trace(go.Scatter(x=EF_grid, y=abs(cRight)**2, mode='lines',name=f'|c_{state_range_idx}|² ({config_right_str})'), row=1, col=2)
+                        fig.add_trace(go.Scatter(x=EF_grid, y=np.angle(cRight), mode='lines',name=f'|c_{state_range_idx}|² ({config_right_str})'), row=1, col=2)
                     
                     fig.update_layout(width=1200, height=400, title_text=f"Transition {state_idx}→{state_range_idx}: {config_left_str}→{config_right_str}")
                     fig.update_xaxes(title_text="Time (a.u.)", row=1, col=1, range=[-50, 50])
