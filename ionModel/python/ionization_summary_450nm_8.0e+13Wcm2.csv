@@ -1,0 +1,6 @@
+Method,Integrated_Yield,Parameters
+Standard SFA,0.00011346179704394354,Standard
+"Extended SFA (trecx, |c0|=1)",0.00014147482586329002,"coeffType=trecx, only_c0_is_1_rest_normal=True"
+"Extended SFA (trecx, phase only)",0.00010939851885141187,"coeffType=trecx, abs_normal_phase_0=True"
+"Extended SFA (numerical, |c0|=1)",0.00010049079038137945,"coeffType=numerical, only_c0_is_1_rest_normal=True"
+"Extended SFA (numerical, phase only)",0.00010876240978240904,"coeffType=numerical, abs_normal_phase_0=True"

@@ -11,5 +11,3 @@
 *.bbl
 *.blg
 __pycache__
-
-*csv

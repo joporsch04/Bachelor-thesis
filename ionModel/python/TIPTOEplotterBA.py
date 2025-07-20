@@ -140,7 +140,7 @@ class TIPTOEplotterBA:
         # plt.close()
 
     def plot2SFA(self):
-        fig, (ax3, ax4) = plt.subplots(nrows=1, ncols=2, figsize=(14, 6))
+        fig, (ax3, ax4) = plt.subplots(nrows=1, ncols=2, figsize=(14, 8))
 
         ion_tRecX = self.ion_tRecX - self.ion_tRecX[-1]
         ion_SFA = self.ion_SFA - self.ion_SFA[-1]
@@ -185,9 +185,9 @@ class TIPTOEplotterBA:
         ax4.grid(True, alpha=0.3)
 
         param_text = (f'$\lambda_\mathrm{{F}}={self.lam0_pump}$ nm\n'
-                     f'$\lambda_\mathrm{{S}}={self.lam0_probe}$ nm\n'
-                     f'$I_\mathrm{{F}}={self.I_pump:.1e}$ W/cm$^2$\n'
-                     f'$I_\mathrm{{S}}={self.I_probe:.1e}$ W/cm$^2$')
+                    f'$\lambda_\mathrm{{S}}={self.lam0_probe}$ nm\n'
+                    f'$I_\mathrm{{F}}={self.I_pump/1e13:.1f} \\times 10^{{13}}$ W/cm$^2$\n'
+                    f'$I_\mathrm{{S}}={self.I_probe/1e9:.1f} \\times 10^{{9}}$ W/cm$^2$')
         ax3.text(0.02, 0.98, param_text, transform=ax3.transAxes, fontsize=8, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
 
         plt.tight_layout()
@@ -219,7 +219,12 @@ class TIPTOEplotterBA:
         print(f"Summary loaded from: {summary_filename}")
         print(f"DataFrame shape: {df.shape}")
 
-        fig, (ax1, ax2, ax3) = plt.subplots(nrows=1, ncols=3, figsize=(21, 6))
+        fig = plt.figure(figsize=(14, 8))
+        gs = fig.add_gridspec(2, 2, width_ratios=[1.75, 1], height_ratios=[1, 1])
+        
+        ax1 = fig.add_subplot(gs[:, 0])  # Left plot spans both rows
+        ax2 = fig.add_subplot(gs[0, 1])  # Top right
+        ax3 = fig.add_subplot(gs[1, 1])  # Bottom right
 
         ion_tRecX = self.ion_tRecX - self.ion_tRecX[-1]
         ion_SFA = self.ion_SFA - self.ion_SFA[-1]
@@ -239,7 +244,6 @@ class TIPTOEplotterBA:
         ion_SFA_excited_tRecX_dense = interp_SFA_excited_tRecX(delay_dense)
         ion_SFA_excited_ODE_dense = interp_SFA_excited_ODE(delay_dense)
 
-        # Interpolate rate data
         time_dense = np.linspace(min(time_recon.min(), time_recon_1.min(), time_recon_2.min(), 
                                     time_recon_3.min(), time_recon_4.min()), 
                                 max(time_recon.max(), time_recon_1.max(), time_recon_2.max(),
@@ -258,45 +262,64 @@ class TIPTOEplotterBA:
         rate_3_dense = interp_rate_3(time_dense)
         rate_4_dense = interp_rate_4(time_dense)
 
-        # Plot 1: Ion yields (existing plot)
         ax1.plot(delay_dense, ion_tRecX_dense/(max(abs(ion_tRecX_dense))), label=r'TDSE (reference)', color='black', linestyle='-')
         ax1.plot(delay_dense, ion_SFA_dense/(max(abs(ion_SFA_dense))), label=r'Standard SFA', color='blue', linestyle='--', alpha=0.5)
-        ax1.plot(delay_dense, ion_SFA_excited_ODE_dense/(max(abs(ion_SFA_excited_ODE_dense))), label=r'Extended SFA (Sub. coeff.)', color='red', linestyle=':')
-        ax1.plot(delay_dense, ion_SFA_excited_tRecX_dense/(max(abs(ion_SFA_excited_tRecX_dense))), label=r'Extended SFA (Full. coeff.)', color='green', linestyle='-.')
+        ax1.plot(delay_dense, ion_SFA_excited_ODE_dense/(max(abs(ion_SFA_excited_ODE_dense))), label=r'Extended SFA (Sub. coeff.)', color='darkred', linestyle=':')
+        ax1.plot(delay_dense, ion_SFA_excited_tRecX_dense/(max(abs(ion_SFA_excited_tRecX_dense))), label=r'Extended SFA (Full. coeff.)', color='darkgreen', linestyle='-.')
         ax1.set_xlabel(r'Delay $\tau$ (fs)')
         ax1.set_ylabel(r'Normalized Ionization Yield')
         ax1.set_xlim(-2, 2)
         ax1.legend(loc='upper right')
-        ax1.set_title('(a) SFA Models vs Reference')
+        ax1.set_title('(a) Extended SFA Models vs Reference: Only Phase')
         ax1.grid(True, alpha=0.3)
 
-        # Plot 2: Rate SFA, Rate 1, Rate 2
-        ax2.plot(time_dense, rate_SFA_dense, label=r'Standard SFA', color='blue', linestyle='-')
-        ax2.plot(time_dense, rate_1_dense, label=r'Extended SFA only phase', color='green', linestyle='-')
-        ax2.plot(time_dense, rate_2_dense, label=r'Extended SFA only abs', color='green', linestyle='-')
-        ax2.set_xlim(-50, 50)
+        ax2.plot(time_dense, rate_SFA_dense, label=r'Standard SFA', color='blue', linestyle='-', alpha=0.5)
+        ax2.plot(time_dense, rate_3_dense, label=r"Sub. SFA: only phase", color='darkred', linestyle='-.')
+        ax2.plot(time_dense, rate_4_dense, label=r"Sub. SFA: only abs", color=(1.0, 0.4, 0.6), linestyle='--')
+        ax2.set_xlim(-37, 37)
         ax2.set_xlabel(r'Time (fs)')
         ax2.set_ylabel(rf'Ionization Rate ($\mathrm{{fs}}^{{-1}}$)')
         ax2.legend(loc='upper right')
-        ax2.set_title(r'(b) Full Hilbertspace Extended SFA: Phase vs Magnitude')
+        ax2.set_title(r'(b) Sub Hilbertspace Extended SFA:' + '\n' +  'Only Phase vs Only Magnitude')
         ax2.grid(True, alpha=0.3)
+        
+        prob_SFA = 0.00011346179704394354
+        prob_rate_3 = 0.00010049079038137945
+        prob_rate_4 = 0.00010876240978240904
+        
+        prob_text_2 = (f'Ionization Probabilities:\n'
+                      f'Standard SFA: {prob_SFA/1e-4:.3f}$\\times 10^{{-4}}$\n'
+                      f'Sub. SFA (phase): {prob_rate_3/1e-4:.3f}$\\times 10^{{-4}}$\n'
+                      f'Sub. SFA (abs): {prob_rate_4/1e-4:.3f}$\\times 10^{{-4}}$')
+        ax2.text(0.02, 0.97, prob_text_2, transform=ax2.transAxes, fontsize=8,
+                verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.2))
 
-        # Plot 3: Rate 3, Rate 4
-        ax3.plot(time_dense, rate_SFA_dense, label=r'Standard SFA', color='blue', linestyle='-')
-        ax3.plot(time_dense, rate_3_dense, label=r'Extended SFA only phase', color='red', linestyle='-')
-        ax3.plot(time_dense, rate_4_dense, label=r'Extended SFA only abs', color='red', linestyle='-')
-        ax3.set_xlim(-50, 50)
+        ax3.plot(time_dense, rate_SFA_dense, label=r'Standard SFA', color='blue', linestyle='-', alpha=0.5)
+        ax3.plot(time_dense, rate_1_dense, label=r"Full. SFA: only phase", color='darkgreen', linestyle='-.')
+        ax3.plot(time_dense, rate_2_dense, label=r"Full. SFA: only abs", color=(0.0, 0.858, 0.528), linestyle='--')
+        ax3.set_xlim(-39, 39)
         ax3.set_xlabel(r'Time (fs)')
         ax3.set_ylabel(rf'Ionization Rate ($\mathrm{{fs}}^{{-1}}$)')
         ax3.legend(loc='upper right')
-        ax3.set_title(r'(c) Sub Hilbertspace Extended SFA: $e^{i\phi}$ vs $|c_0|$')
+        ax3.set_title(r'(c) Full Hilbertspace Extended SFA:' + '\n' +  'Only Phase vs Only Magnitude')
         ax3.grid(True, alpha=0.3)
+
+        prob_rate_1 = 0.00014147482586329002
+        prob_rate_2 = 0.00010939851885141187
+        
+        prob_text_3 = (f'Ionization Probabilities:\n'
+                      f'Standard SFA: {prob_SFA/1e-4:.3f}$\\times 10^{{-4}}$\n'
+                      f'Full. SFA (phase): {prob_rate_1/1e-4:.3f}$\\times 10^{{-4}}$\n'
+                      f'Full. SFA (abs): {prob_rate_2/1e-4:.3f}$\\times 10^{{-4}}$')
+        ax3.text(0.015, 0.98, prob_text_3, transform=ax3.transAxes, fontsize=8, 
+                verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.2))
+
 
         param_text = (f'$\lambda_\mathrm{{F}}={self.lam0_pump}$ nm\n'
                     f'$\lambda_\mathrm{{S}}={self.lam0_probe}$ nm\n'
-                    f'$I_\mathrm{{F}}={self.I_pump:.1e}$ W/cm$^2$\n'
-                    f'$I_\mathrm{{S}}={self.I_probe:.1e}$ W/cm$^2$')
-        ax1.text(0.02, 0.98, param_text, transform=ax1.transAxes, fontsize=8, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+                    f'$I_\mathrm{{F}}={self.I_pump/1e13:.1f} \\times 10^{{13}}$ W/cm$^2$\n'
+                    f'$I_\mathrm{{S}}={self.I_probe/1e9:.1f} \\times 10^{{9}}$ W/cm$^2$')
+        ax1.text(0.02, 0.98, param_text, transform=ax1.transAxes, fontsize=8, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.2))
 
         plt.tight_layout()
         
