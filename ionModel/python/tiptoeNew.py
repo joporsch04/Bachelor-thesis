@@ -103,7 +103,7 @@ def main(excitedstates):
             output_file = f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/ionProb_{file_name}_{excitedstates}_tRecX_length_onlystark.csv"
             writecsv_prob(output_file, delay, ion_tRecX, ion_qs, ion_na_GASFIR, ion_na_SFA, ion_na_reconstructed_GASFIR, ion_na_reconstructed_SFA)
 
-        data_rate_delay = pd.read_csv(f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/ionProb_{file_name}_{excitedstates}_tRecX_length_onlystark.csv")
+        data_rate_delay = pd.read_csv(f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/ionProb_{file_name}_{excitedstates}_tRecX_length.csv")
         delay=np.array(data_rate_delay['delay'].values)
         ion_tRecX=np.array(data_rate_delay['ion_tRecX'].values)
         ion_na_GASFIR=np.array(data_rate_delay['ion_NA_GASFIR'].values)
@@ -114,7 +114,7 @@ def main(excitedstates):
 
         if BA_plotting:
             try:
-                data_rate_delay_ODE = pd.read_csv(f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/ionProb_{file_name}_{excitedstates}_ODE_length_onlystark.csv")
+                data_rate_delay_ODE = pd.read_csv(f"/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/dataOutput/ionProb_{file_name}_{excitedstates}_ODE_length.csv")
                 ion_SFA_ODE_new = np.array(data_rate_delay_ODE['ion_NA_SFA'].values)
             except FileNotFoundError:
                 print(f"File not found for {file_name} with excited states {excitedstates}. Using interpolated data instead.")
@@ -169,8 +169,8 @@ def main(excitedstates):
         ion_SFA_excited_ODE = ion_SFA_ODE_new#np.zeros(len(delay))#ion_SFA_ODE_new
 
         plotterBA = TIPTOEplotterBA(excitedstates, ion_tRecX, ion_na_GASFIR, ion_SFA_excited_tRecX, ion_SFA_excited_ODE, delay, time, AU, lam0_pump, I_pump, lam0_probe, I_probe, FWHM_probe)
-        #plotterBA.plot2SFA()
-        plotterBA.plot3stark()
+        plotterBA.plot2SFA()
+        #plotterBA.plot3stark()
 
 
 if __name__ == "__main__":

@@ -1,11 +1,11 @@
-This chapter describes the implementation of the formula \eqref{eq:sfa_rate_improved} and the associated challenges.
+This Chapter describes the implementation of the formula \eqref{eq:sfa_rate_improved} and the associated challenges.
 The majority of the code was originally developed by the authors of \cite{Theory_NPS}.
-Modifications made to both the tRecX source code and the SFA rate are documented in the electronic appendix [github zenodo].
+Modifications made to both the tRecX source code and the SFA rate are documented in the electronic appendix \cite{johannes_porsch_2025_16223179}.
 The two main new components in this implementation are the coefficients $c_n(t)$ and the dipole matrix elements $d_{z,n}(\vec{p})$, while the remaining parts were straightforward.
 
 %%%%%%%%%%%%%%%%
 \section{Coefficients}
-As mentioned in chapter 2, the Dyson equation can be written in two ways, resulting in two different expressions for the S-matrix.
+As mentioned in Chapter 2, the Dyson equation can be written in two ways, resulting in two different expressions for the strong field s-matrix.
 The difference between the two approaches lies only in the coefficients.
 
 
@@ -17,12 +17,12 @@ To understand how the coefficients are determined, the defining equation can be 
 \end{equation*}
 with
 \begin{equation}
-    i\partial_{t'} \, \hat{\U}^{\mathrm{Sub}}_0(t',t_0) = \hat{X}\hat{\Hs}(t')\hat{X}\,\hat{\U}^{\mathrm{Sub}}_0(t',t_0)    \label{eq:odeU}
+    i\frac{\partial}{\partial t'} \, \hat{\U}^{\mathrm{Sub}}_0(t',t_0) = \hat{X}\hat{\Hs}(t')\hat{X}\,\hat{\U}^{\mathrm{Sub}}_0(t',t_0)    \label{eq:odeU}
 \end{equation}
 This can be interpreted as the wavefunction being restricted to the subspace.
 The derivation for the coefficients is outlined below.
 
-First, $\hat{\Hs}(t)$ is split into two parts: $\hat{\Hs}0$ and $\hat{\Hs}{\mathrm{I}}(t)$, where the eigenstates of $\hat{\Hs}0$ are ${\ket{\Psi_n}}$ and the eigenenergies are ${E_n}$.
+First, $\hat{\Hs}(t)$ is split into two parts: $\hat{\Hs}_0$ and $\hat{\Hs}_{\mathrm{I}}(t)$, where the eigenstates of $\hat{\Hs}_0$ are ${\ket{\Psi_n}}$ and the eigenenergies are ${E_n}$. 
 By substituting the ansatz above into \eqref{eq:odeU} and multiplying with $\bra{\Psi_m}$, the coefficients $c_n(t)$ are obtained:
 \begin{equation*}
     i  \dot{c}_m(t) = \sum_n c_n(t) e^{-i \omega_{nm} t} \braket{\Psi_m|\hat{\Hs}_{\mathrm{I}}(t)|\Psi_n}  \label{eq:ode}
@@ -31,7 +31,7 @@ with $\omega_{nm} = E_n - E_m$.
 
 \medskip
 Several challenges arise when implementing this approach.
-First, while $\sum_n$ theoretically extends from $0$ to $\infty$, numerical simulations require a finite number of states.
+First, while $\sum_n$ theoretically extends from zero to infinity, numerical simulations require a finite number of states.
 The justification for the chosen number of states must be considered, along with ensuring that truncating the sum does not introduce numerical instabilities.
 
 Additionally, increasing the number of coefficients affects previously calculated values.
@@ -42,8 +42,8 @@ As the number of states increases, the results (e.g., the rates) should converge
 However, since the electron is constrained to the subspace, including highly excited states may introduce numerical instabilities.
 For intensities around $10^{14}\frac{\mathrm{W}}{\mathrm{cm}^2}$ and longer wavelengths ($800\mathrm{nm}-1200\mathrm{nm}$), allowing occupation of higher states led to unphysical oscillations in the rates.
 Under typical conditions, the electron would ionize, but since ionization is suppressed in this approach, excitation to high-energy states can cause the model to fail.
-Thus, a balance must be struck between accuracy and numerical stability.
-In the simulations presented later, a maximum of $n=3$ was used for the bound-state calculations.
+Thus, a balance must be made between accuracy and numerical stability.
+In the simulations presented later, a maximum of $n=3$ was used for the bound state calculations.\footnote{Higher values of $n$ were tested for lower wavelengths and intensities, but no significant changes in the results were observed.}
 This choice is justified by analyzing the population dynamics of the hydrogen atom over time, where most pre-ionization dynamics are governed by the first few bound states—particularly $1s$, $2s$, $2p$, and $3p$—meaning that including additional states has minimal impact on the lower-state coefficients.
 
 Note: This discussion pertains not to the number of bound states included in the final simulations, but rather to the number considered when solving the ODE.
@@ -94,7 +94,7 @@ Since far more physical effects influence the time evolution of the coefficients
 Nevertheless, having two independent methods that, in some sense, compute the same quantity is useful, allowing for interpretation based on their respective advantages and disadvantages.
 
 For extracting the coefficients from tRecX—i.e., solving the full TDSE and projecting onto bound states—the source code was modified as follows:
-The occupation probability of specified bound states was already implemented, meaning the code outputs  $\braket{\Psi(t)|\hat{P}_{\mathrm{Occ\{H0:n\}}}\footnote{The notation here is the same as in the code for better reference}|\Psi(t)}=|\braket{\Psi(t)|n}|^2$.
+The occupation probability of specified bound states was already implemented, meaning the code output \footnote{The notation used here follows the same convention as in the code for better reference.}  $\braket{\Psi(t)|\hat{P}_{\mathrm{Occ\{H0:n\}}}|\Psi(t)}=|\braket{\Psi(t)|n}|^2$.
 The main modification involved implementing a new function that replaces the left bra $\bra{\Psi(t)}$ with the eigenstate used in $\hat{P}_{\mathrm{Occ\{H0:n\}}}$, while ensuring the eigenstates were normalized.
 This results in:
 \begin{equation*}
@@ -102,7 +102,7 @@ This results in:
 \end{equation*}
 To achieve this, the eigenvalue problem had to be solved again, and the eigenstates were passed to the function calculating the expectation value.
 A more elegant and efficient implementation could likely be devised, especially since the eigenstates are already computed elsewhere, but the current approach suffices for now.
-A detailed description of the changes made to tRecX can be found in the appendix [GitHub/Zenodo].
+A detailed description of the changes made to tRecX can be found in \cite{johannes_porsch_2025_16223179}.
 
 \bigskip
 In principle, this is all that is required.
@@ -113,7 +113,7 @@ Thus, caution is necessary.
 
 \paragraph{Gauge dependence}
 The coefficients are gauge-dependent, similar to the subspace approach using the ODE.
-However, in tRecX, a "hybrid gauge" is employed.
+However, in tRecX, a `hybrid gauge' is employed.
 This means that within a certain radius $R_g$ from the nucleus, length gauge is used, while outside this radius, velocity gauge is applied.
 Length gauge is better suited for pre-ionization dynamics, as the electron's behavior is more accurately described by its position rather than its momentum.
 The gauge radius must be chosen carefully to ensure that pre-ionization dynamics are not computed in velocity gauge.
@@ -173,9 +173,10 @@ This choice can be justified by examining the populations of the hydrogen atom, 
 
 
 
-\section{Dipole matrix Elements}
+\section{Dipole Matrix Elements}
 The dipole transition matrix elements $\vec{d}_{nlm}(\vec{p})$ from a certain bound state to the continuum states are somewhat less ambiguous than the coefficients. 
-Calculating them in general is difficult, but in the case of hydrogen, an analytical solution is possible. A detailed derivation can be found in Appendix \ref{sec:dipolematrixelements}.
+Calculating them in general is difficult, but in the case of hydrogen, an analytical solution is possible. A detailed derivation can be found in Appendix \ref{sec:dipolematrixelements}. 
+The actual calculation of the formula for implementation in the code was performed in a Mathematica notebook, which can be found in the electronic appendix \cite{johannes_porsch_2025_16223179}.
 
 As mentioned in the theory section, this simplicity in calculation is only possible due to the strong approximation made with the SFA regarding the dipole matrix elements. 
 The final state after ionization is not truly a plane wave but is approximated as such under the SFA.
@@ -184,7 +185,7 @@ As discussed in the coefficients section, not all states contribute equally to t
 Besides the ground state $1s$, this thesis restricts calculations to the states $2p$ and $3p$. Most of the pre-ionization dynamics is determined by these states; including additional states would primarily refine the ionization rate rather than introduce significant new physics.
 
 Simplifying the matrix elements is also crucial to avoid numerical instabilities. 
-Particularly when integrating over the azimuthal angle $\phi$ in the final rate, where exact cancellations are expected, limited numerical precision can lead to incorrect results.
+Particularly when integrating over the azimuthal angle $\phi_p$ in the final rate, where exact cancellations are expected, limited numerical precision can lead to incorrect results.
 
 The dipole matrix elements can be simplified by noting that the ground state is $1s$ and the light wave is linearly polarized, ensuring that all other states also have $m=0$. Since the derivation is lengthy, it is provided in Appendix \ref{sec:dipolematrixelements} as well.
 
@@ -192,7 +193,7 @@ The dipole matrix elements can be simplified by noting that the ground state is 
 \section{TIPTOE Simulations}
 As discussed in Chapter 3, TIPTOE is used in this thesis to compare the ionization yield obtained from the SFA rate and the numerical solution of the TDSE with tRecX.
 
-In implementation, both approaches can be treated as a type of "machine," where an arbitrary laser field is input and an ionization probability is output. The laser field in this case consists of two pulses in a \texttt{cos8} envelope: a strong ``fundamental'' pulse and a weaker ``signal'' pulse shifted in time by $\tau$. 
+In implementation, both approaches can be treated as a type of ``machine'', where an arbitrary laser field is input and an ionization probability is output. The laser field in this case consists of two pulses in a \texttt{cos8} envelope: a strong ``fundamental'' pulse and a weaker ``signal'' pulse shifted in time by $\tau$. 
 In tRecX, two laser pulses can be implemented directly. In the SFA rate implemented in Python, the laser field is constructed as an object of the class \texttt{LaserField} from the file \texttt{field\_functions.py}.
 
 Particularly in the SFA rate, numerical challenges arise because the signal pulse acts only as a small perturbation to the fundamental pulse. Care must be taken to ensure that numerical methods accurately capture this perturbation; otherwise, TIPTOE will fail. This challenge is addressed in Chapter 5.

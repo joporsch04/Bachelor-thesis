@@ -5,24 +5,24 @@
 % $E_n=\frac{Z^2}{2n^2}$
 
 \label{sec:dipolematrixelements}
-
+%notation: \uvec{x} = (r,\theta_r,\phi_r)
 
 Here, the general transition dipole matrix elements into the continuum for a hydrogen atom are derived.     %hydrogenlike???
 The general matrix element in this case is given by:
 \begin{equation*}
-    \uvec{d}_{nlm}(\uvec{p}) = \braket{\Pi|\vec{\hat{d}}|\Psi_{nlm}} \stackrel{\mathrm{a.u.}}{=} \braket{p|\vec{\hat{r}}|\Psi_{nlm}}
+    \vec{d}_{nlm}(\uvec{p}) \stackrel{\mathrm{a.u.}}{=} -\braket{\vec{p}|\vec{\hat{r}}|\Psi_{nlm}}
 \end{equation*}
-where $\ket{p}$ is a plane wave.
+where $\ket{\vec{p}}$ is a plane wave.
 The wave function for the hydrogen atom is well known:
 \begin{equation}
-    \Psi_{nlm}(\uvec{x}) = \braket{\uvec{x}|\Psi_{nlm}} = R_{nl}(r)Y_{lm}(\theta, \phi) \label{eq:psi_position_hydrogen}
+    \Psi_{nlm}(\uvec{x}) = \braket{\vec{r}|\Psi_{nlm}} = R_{nl}(r)Y_{lm}(\theta_r, \phi_r) \label{eq:psi_position_hydrogen}
 \end{equation}
-with $R_{nl}(r)$ being the radial part of the wavefunction and $Y_{lm}(\theta, \phi)$ being the spherical harmonics.
+with $R_{nl}(r)$ being the radial part of the wavefunction and $Y_{lm}(\theta_r, \phi_r)$ being the spherical harmonics.
 
-By partitioning the $\hat{\vec{1}}$ operator and using the fact that $\vec{\hat{r}} \rightarrow i\nabla_{\uvec{p}}$ %Interesting because by choosing a certain way to display the operator we also choose a natural basis for the representation of the operator. Therefore I write \nabla_{\uvec{p}} instead of \nabla_{\vec{p}}.
+By partitioning the $\hat{1}$ operator and using the fact that $\vec{\uvec{r}} \rightarrow i\nabla_{\uvec{p}}$ %Interesting because by choosing a certain way to display the operator we also choose a natural basis for the representation of the operator. Therefore I write \nabla_{\uvec{p}} instead of \nabla_{\vec{p}}.
 in momentum representation, a general formula for the transition is obtained:
 \begin{equation*}
-    \uvec{d}_{nlm}(\uvec{p}) = i\nabla_{\uvec{p}}\int \dd^3\uvec{x}\,\psi_{nlm}(\uvec{x}) e^{-i\uvec{p}\cdot\uvec{x}} = i\nabla_{\uvec{p}}\phi_{nlm}(\uvec{p})
+    \vec{d}_{nlm}(\uvec{p}) = -i\nabla_{\uvec{p}}\int \dd^3\uvec{x}\,\psi_{nlm}(\uvec{x}) e^{-i\vec{p}\cdot\vec{r}} = -i\nabla_{\uvec{p}}\phi_{nlm}(\uvec{p})
 \end{equation*}
 In principle, this integral (i.e the Fourier transform) is all that is required.
 Due to the structure of $\psi_{nlm}$, a result similar to \eqref{eq:psi_position_hydrogen} can be expected.
@@ -41,7 +41,7 @@ where $F_{nl}(p)$ is the Fourier transform of the radial part of the wavefunctio
 \subsection*{Momentum space}
 The so-called plane wave expansion \cite{Jackson:1998nia} of the exponential part of the integral is given by:
 \begin{equation*}
-    e^{i\uvec{p}\cdot\uvec{x}} = \sum_{l'=0}^\infty (2l'+1)i^{l'} j_{l'}(pr) P_{l'}(\uvec{p}\cdot\uvec{x}) = 4\pi\sum_{l'=0}^\infty \sum_{m'=-l'}^{l'} i^{l'} j_{l'}(pr) Y_{l'm'}(\theta_p, \phi_p) Y_{l'm'}^*(\theta_x, \phi_x)
+    e^{i\vec{p}\cdot\vec{r}} = \sum_{l'=0}^\infty (2l'+1)i^{l'} j_{l'}(pr) P_{l'}(\vec{p}\cdot\vec{r}) = 4\pi\sum_{l'=0}^\infty \sum_{m'=-l'}^{l'} i^{l'} j_{l'}(pr) Y_{l'm'}(\theta_p, \phi_p) Y_{l'm'}^*(\theta_r, \phi_r)
 \end{equation*}
 Here, $j_l(pr)$ represents the spherical Bessel functions, and the integration is performed over spherical coordinates. 
 While the expression initially appears complex, the orthogonality of the spherical harmonics can be used to simplify the integral to:
@@ -101,7 +101,7 @@ The final expression for $\phi_{nlm}(\uvec{p})$, which can also be found in \cit
 \subsection*{Improved rate}
 Usually all that remains is to differentiate \eqref{eq:phi_nlm} with respect to $\uvec{p}$.
 However, before that, the SFA rate can be improved directly by performing the integration over $\phi_p$ analytically.
-The rate according to chapter 2 is given by:
+The rate according to Chapter 2 is given by:
 \begin{align*}
     \Gamma_{\mathrm{SFA}}(t) &= \sum_{n_1}\sum_{n_2} \int_0^{\infty} \dd p\,p^2\int_0^{\pi} \dd\theta_p\,\sin\theta_p \int_0^{2\pi}\dd \phi_p\int_{-\infty}^{\infty} \dd T\\
     &\times \exp\left(i\vec{p}^2T + ip\cos\theta_p\bar{\Delta}_z^k +  \frac{i}{2}\bar{\Delta}_z^2  + i(t-T)E_{n_1}-i(t+T)E_{n_2}\right)\\
@@ -109,7 +109,7 @@ The rate according to chapter 2 is given by:
 \end{align*}
 As mentioned before, the dipole transition matrix element can be written in the following convenient form:
 \begin{equation*}
-    d_{z,nlm}(\uvec{p}) = \left[i\nabla_{\uvec{p}}\phi_{nlm}(\uvec{p})\right]_z = iY_{lm}(\theta_p, \phi_p)\left(\cos\theta_p\frac{\partial F_{nl}}{\partial p}-\frac{\sin\theta_p}{p}\frac{\partial F_{nl}}{\partial p}\right)
+    d_{z,nlm}(\uvec{p}) = \left[-i\nabla_{\uvec{p}}\phi_{nlm}(\uvec{p})\right]_z = -iY_{lm}(\theta_p, \phi_p)\left(\cos\theta_p\frac{\partial F_{nl}}{\partial p}-\frac{\sin\theta_p}{p}\frac{\partial F_{nl}}{\partial p}\right)
 \end{equation*}
 Note that here the $z$ component of a gradient in spherical coordinates was taken. The exact formula can be easily computed using the transformation between Cartesian and spherical coordinates.
 

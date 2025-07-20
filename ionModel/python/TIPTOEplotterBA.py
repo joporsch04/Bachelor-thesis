@@ -140,7 +140,7 @@ class TIPTOEplotterBA:
         # plt.close()
 
     def plot2SFA(self):
-        fig, (ax3, ax4) = plt.subplots(nrows=1, ncols=2, figsize=(14, 8))
+        fig, (ax3, ax4) = plt.subplots(nrows=1, ncols=2, figsize=(14, 6))
 
         ion_tRecX = self.ion_tRecX - self.ion_tRecX[-1]
         ion_SFA = self.ion_SFA - self.ion_SFA[-1]
@@ -192,7 +192,7 @@ class TIPTOEplotterBA:
 
         plt.tight_layout()
         
-        pdf_filename = f'/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/plotsTIPTOE/2plot_SFA-comparison_{self.excitedStates}_BA_test.pdf'
+        pdf_filename = f'/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/plotsTIPTOE/2plot_SFA-comparison_{self.excitedStates}_BA.pdf'
         with PdfPages(pdf_filename) as pdf:
             pdf.savefig(fig, dpi=600, bbox_inches='tight')
 
@@ -244,6 +244,12 @@ class TIPTOEplotterBA:
         ion_SFA_excited_tRecX_dense = interp_SFA_excited_tRecX(delay_dense)
         ion_SFA_excited_ODE_dense = interp_SFA_excited_ODE(delay_dense)
 
+        ion_tRecX_dense = ion_tRecX
+        ion_SFA_dense = ion_SFA
+        ion_SFA_excited_tRecX_dense = ion_SFA_excited_tRecX
+        ion_SFA_excited_ODE_dense = ion_SFA_excited_ODE
+        delay_dense = delay_fs
+
         time_dense = np.linspace(min(time_recon.min(), time_recon_1.min(), time_recon_2.min(), 
                                     time_recon_3.min(), time_recon_4.min()), 
                                 max(time_recon.max(), time_recon_1.max(), time_recon_2.max(),
@@ -261,6 +267,13 @@ class TIPTOEplotterBA:
         rate_2_dense = interp_rate_2(time_dense)
         rate_3_dense = interp_rate_3(time_dense)
         rate_4_dense = interp_rate_4(time_dense)
+
+        rate_SFA_dense = rate_SFA
+        rate_1_dense = rateExcited_1
+        rate_2_dense = rateExcited_2
+        rate_3_dense = rateExcited_3
+        rate_4_dense = rateExcited_4
+        time_dense = time_recon_2
 
         ax1.plot(delay_dense, ion_tRecX_dense/(max(abs(ion_tRecX_dense))), label=r'TDSE (reference)', color='black', linestyle='-')
         ax1.plot(delay_dense, ion_SFA_dense/(max(abs(ion_SFA_dense))), label=r'Standard SFA', color='blue', linestyle='--', alpha=0.5)

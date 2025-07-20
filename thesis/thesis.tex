@@ -30,6 +30,15 @@
 \usepackage{braket} % package for dirac notation
 %\usepackage{newtxmath} % different style for mathematical symbols: fourier, newtxmath, stix2, mathabx
 
+\usepackage[
+    backend=biber,
+    style=numeric,
+    sorting=none
+]{biblatex}
+
+\addbibresource{bibliography.bib}
+
+
 \usepackage{titlesec}
 \usepackage{listings}   % for code format
 \usepackage{xcolor}
@@ -97,10 +106,22 @@
 
 \begin{document}
 
+\clearpage
+\thispagestyle{empty}
 \input{tex-files/titlepage.tex}
-\cleardoublepage
+
+\clearpage
+\thispagestyle{empty}
+\null
+\clearpage
+
+\thispagestyle{empty}
 \input{tex-files/titlepage_deutsch.tex}
-\cleardoublepage
+
+\clearpage
+\thispagestyle{empty}
+\null
+\clearpage
 
 
 \pagenumbering{roman}
@@ -113,7 +134,14 @@
     \input{tex-files/abstract.tex}
 \end{abstract}
 
+\clearpage
+\thispagestyle{empty}
+\null
+\clearpage
 
+
+\phantomsection % needed for appearence in toc
+\addcontentsline{toc}{chapter}{Contents} % ...
 \tableofcontents
 \cleardoublepage
 
@@ -121,7 +149,12 @@
 \phantomsection % ...
 \addcontentsline{toc}{chapter}{List of Figures} % ...
 \listoffigures
-\cleardoublepage
+
+
+\clearpage
+\thispagestyle{empty}
+\null
+\clearpage
 
 
 \pagenumbering{arabic}
@@ -164,7 +197,7 @@
 % \cleardoublepage
 
 
-\chapter{Dipole transition matrix elements}
+\chapter{Dipole Transition Matrix Elements}
 \input{tex-files/appendixB.tex}
 \cleardoublepage
 
@@ -184,21 +217,37 @@
 % \cleardoublepage
 
 
-\phantomsection % ...
-\addcontentsline{toc}{chapter}{Bibliography} % ...
-\bibliographystyle{plain}
-\bibliography{bibliography}
+
+\cleardoublepage
+
+\chapter*{Declaration on the Use of AI Tools}
+
+During the preparation of this thesis, artificial intelligence (AI) tools were used.
+Specifically, ChatGPT, DeepSeek, Gemini 2.5 Pro, and GitHub Copilot were employed for proofreading and grammar correction of the text, as well as for formatting Python code used in generating plots and processing data.
+Additionally, AI-assisted methods were applied to identify relevant academic papers during the literature search.
+
+\clearpage
+\thispagestyle{empty}
+\null
+\clearpage
+
+
+% \phantomsection % ...
+% \addcontentsline{toc}{chapter}{Bibliography} % ...
+\printbibliography[heading=bibintoc]
+% \bibliographystyle{plain}
+% \bibliography{bibliography}
 \cleardoublepage
 
 
-\chapter*{Declaration of Authorship}
+\chapter*{Eigenständigkeitserklärung}
 \addcontentsline{toc}{chapter}{Declaration of Authorship}
 \emph{Hiermit erkläre ich, die vorliegende Arbeit selbständig verfasst zu haben und keine anderen als die in der Arbeit angegebenen Quellen und Hilfsmittel benutzt zu haben.}
 
-\vspace{2cm}  
+\vspace{2cm}
 \noindent
 \begin{tabular}{p{7cm} p{7cm}}
-    München, den 20.6.2025 & \rule{6cm}{0.4pt} \\  
+    München, den 22. Juli 2025 & \rule{6cm}{0.4pt} \\  
     & Unterschrift
 \end{tabular}
 

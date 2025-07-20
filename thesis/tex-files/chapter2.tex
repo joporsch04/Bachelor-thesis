@@ -17,11 +17,9 @@
 
 
 
-The structure of this chapter largely follows \cite{Ivanov20012005}, with several modifications and adaptations to the context of this thesis.
+The structure of this Chapter largely follows \cite{Ivanov20012005}, with several modifications and adaptations to the context of this thesis.
 
-The aim of this chapter is to derive an expression for the ionization rate by analytically solving the time-dependent Schrödinger equation (TDSE) within the framework of the strong-field approximation (SFA).
-
-
+The aim of this Chapter is to derive an expression for the instantaneous ionization rate (IIR) by analytically solving the time-dependent Schrödinger equation (TDSE) within the framework of the strong-field approximation (SFA).
 
 %%%%%%%%%%%%%%%%%%%%%
 \section{Basic Formalism}
@@ -56,9 +54,9 @@ The Coulomb potential in atomic units is given by
 \begin{equation*}
     \hat{\Hs}_{\mathrm{C}} \stackrel{\mathrm{a.u.}}{=} \frac{1}{|\hat{\vec{r}}-\hat{\vec{r}}_0|}.
 \end{equation*}
-Since the TDSE is a \emph{linear} PDE, the Hamiltonian can be partitioned into separate parts.
+Since the TDSE is a \emph{linear} partial differential equation, the Hamiltonian can be partitioned into separate parts.
 This partitioning can be performed in various ways, all of which are mathematically equivalent.
-For instance, a division into the unpertubed part and the interaction part yields:
+For instance, a division into the unperturbed part and the interaction part yields:
 \begin{equation*}
     \hat{\Hs}(t) \stackrel{\mathrm{a.u.}}{=} \underbrace{\frac{\hat{\vec{P}}^2}{2}+\frac{1}{|\hat{\vec{r}}-\hat{\vec{r}}_0|}}_{\hat{\Hs}_0} + \hat{\Hs}_{\mathrm{I}}(t).
 \end{equation*}
@@ -94,14 +92,9 @@ Specifically, the transformations
         \varphi &\to \varphi - \frac{\partial \chi}{\partial t},
     \end{aligned}
 \end{equation}
-with $\chi(t)$ being an arbitrary smooth scalar function, also satisfy Maxwell's equations. 
-This non-uniqueness is referred to as gauge freedom and arises directly from the structure of the equations. 
-Selecting a particular gauge (i.e., fixing a certain $\chi$) can be just a matter of convenience and simplify calculations, as demonstrated below.
-
-
-
-
-
+with $\chi(\uvec{x}, t)$ being an arbitrary smooth scalar function, also satisfy Maxwell's equations. 
+This non-uniqueness is called gauge freedom and arises from the mathematical structure of Maxwell's equations.
+Selecting a particular gauge (i.e., fixing a certain $\chi$) can be just a matter of convenience and simplify calculations.
 
 %%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Dipole Approximation}
@@ -110,7 +103,7 @@ The dipole approximation is a widely used simplification in light-matter interac
 It applies when the wavelength of the optical field is significantly larger than both the size of the relevant bound electron states and the maximum displacement of a free electron. 
 Additionally, it assumes that the magnetic field of the light has a negligible effect on the electron dynamics, requiring nonrelativistic particle velocities.
 
-To derive this approximation, we first express Maxwell’s equations in terms of the vector and scalar potentials, as defined in \eqref{eq:potentials}. 
+To derive this approximation, Maxwell’s equations are first expressed in terms of the vector and scalar potentials, as defined in \eqref{eq:potentials}.
 This results in two coupled differential equations, which complicates the analysis. 
 However, a simpler expression for the vector potential $\vec{A}$ can be obtained by selecting a specific gauge—the Lorentz gauge:
 \begin{equation*}
@@ -132,17 +125,17 @@ Consequently, the vector potential becomes spatially independent and can be appr
 \begin{equation*}
     \vec{A}(\uvec{x}, t) = \vec{A}_0\e^{\mp i \omega t}\mathrm{exp}\left\{\pm2\pi i\frac{|\vec{r}|}{\lambda}\vec{e}_{\vec{k}} \cdot \vec{e}_{\vec{r}}\right\} \approx \vec{A}_0 \e^{\mp i \omega t}\left(1+\Os\left(\frac{|\vec{r}|}{\lambda}\right)\right) = \vec{A}(t)
 \end{equation*}
-This approximation holds as long as the wavelength is sufficiently large. 
+This approximation holds as long as the wavelength $\lambda$ is sufficiently large. 
 Under these conditions, the magnetic field simplifies to:
 \begin{equation*}
     \vec{B} = \nabla \times \vec{A} \approx 0.
 \end{equation*}
 Although a different gauge may be chosen later, the physical description of the system remains unchanged. 
-The dipole approximation itself is gauge-independent, ensuring that $\vec{B}$ remains approximately zero in any gauge. 
+Of course the dipole approximation itself is gauge-independent, meaning that $\vec{B}$ remains approximately zero in any gauge. 
 The Lorentz gauge is used here for convenience, as it provides an intuitive framework for the vector potential expansion.
 
 The dipole approximation is valid for most experimental configurations, including the calculations in this work. 
-However, it has limitations—for example, it breaks down in cases where strong-field ionization generates very fast electrons (\cite{bosmandipoleapprox}, \cite{breakdowndipoleapprox}).
+However, it has limitations—for example, it breaks down in cases where strong-field ionization generates very fast electrons \cite{bosmandipoleapprox, breakdowndipoleapprox}.
 
 This was the essence of the dipole approximation.
 To further simplify the description of the laser field in the Hamiltonian, the choice of gauge must be considered more carefully.
@@ -153,11 +146,11 @@ To further simplify the description of the laser field in the Hamiltonian, the c
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Length and velocity gauge}
-Calculating ionization rates in strong-field physics presents challenges due to the choice of gauge. While gauge transformations do not alter physical reality in classical electrodynamics, they can affect the practical computation of formulas derived in this chapter, requiring careful consideration.
+\subsection{Length and Velocity Gauge}
+Calculating ionization rates in strong-field physics presents challenges due to the choice of gauge. While gauge transformations do not alter physical reality in classical electrodynamics, they can affect the practical computation of formulas derived in this Chapter, requiring careful consideration.
 
-First, we derive two basic expressions for the Hamiltonian in the velocity gauge and length gauge using the dipole approximation. 
-The semiclassical Hamilton function for a free electron in an electric field\footnote{Derivation can be found in \cite{LandauLifschitzBand2}, note that for an electron the charge is $-e$} is:% what is with V(x), and the mass of the proton. is it in \vec{p}?
+First, two basic expressions for the Hamiltonian in the velocity gauge and length gauge are derived using the dipole approximation.
+The semiclassical\footnote{In the semiclassical approach, quantum objects such as electrons are treated quantum-mechanically, while fields are treated classically.} Hamilton function for a free electron in an electric field is\footnote{The derivation is provided in \cite{LandauLifschitzBand2}. Note that for an electron, the charge is $-e$.}:% what is with V(x), and the mass of the proton. is it in \vec{p}?
 \begin{equation}%what are the arguments in H, is it even x? -> classical hamilton with H(P, x, t) but now quantum without because P is now nabla operator
     \hat{\Hs}(\uvec{x}, t) = \frac{1}{2m}(\vec{\hat{P}} + e \vec{A}(\uvec{x}, t))^2 - e \varphi(\uvec{x}, t) \label{eq:semiClassicalHamilton}
 \end{equation}
@@ -169,19 +162,18 @@ In most literature, $\varphi$ is set to zero at this stage of the derivation bec
 While the dipole approximation does not strictly necessitate this assumption, $\varphi$ will be left as is.
 
 A common assumption in semiclassical Hamiltonians is that the vector potential alone drives electron state transitions, with no back-reaction from the electron \cite{bosmandipoleapprox}. 
-This approximation holds for sufficiently high laser intensities, though its validity may depend on specific conditions.%(is it really??) bosmann!!
-
-Next, we perform a gauge transformation called length gauge via:
+This approximation holds for sufficiently high laser intensities, though its validity may depend on specific conditions. %(is it really??) bosmann!!
+The gauge transformation to the length gauge is performed via:
 \begin{equation}
     \chi = -\vec{A}(t)\cdot \vec{r}
 \end{equation}
-With $\vec{r}(\uvec{x})=(x,y,z)$.
+with $\vec{r}(\uvec{x})=(x,y,z)$.
 This transformation sets $\vec{A}$ to zero, modifying $\varphi$ as follows:%r=(x/3, y/3, z/3) -> where is the probelm in just using r=(x,y,z)?????
 \begin{equation}
-    \nabla \varphi \to \nabla (\varphi + \vec{x} \cdot \frac{\partial \vec{A}}{\partial t}) = \nabla \varphi + \frac{\partial \vec{A}}{\partial t} = - \vec{E}
+    \nabla \varphi \to \nabla (\varphi + \vec{r} \cdot \frac{\partial \vec{A}}{\partial t}) = \nabla \varphi + \frac{\partial \vec{A}}{\partial t} = - \vec{E}
 \end{equation}
 Integrating this equation from the origin to $\vec{r}$ yields the electric potential in the length gauge. %WHAT IS ALL THIS x AND r THING? DOES IT MAKE EVEN SENSE?
-With $\vec{r}$ now quantized, the Hamiltonian becomes:
+With $\hat{\vec{r}}$ now quantized, the Hamiltonian becomes:
 \begin{equation*}%i think E is still dependent on x so i cant just integrate it :( becasue phi is still dependent on x but i think i can solve it by just setting phi to zero
     \hat{\Hs}(\uvec{x}, t) = \frac{\hat{\vec{P}}^2}{2m} + e \hat{\vec{r}} \cdot \vec{E}%+ V(x)
 \end{equation*}
@@ -191,6 +183,7 @@ The time-dependent part $\hat{\Hs}(t)$ of the Hamiltonian can be expressed as:
 \end{equation}
 where $\hat{\vec{d}}=-e\vec{\hat{r}}$ is the dipole operator and $\vec{E}(t)$ is the electric field.
 
+\medskip
 An alternative gauge transformation, the velocity gauge, is also relevant. 
 Using:
 \begin{equation*}
@@ -210,6 +203,7 @@ and
 \end{equation}
 where $\varphi$ is set to zero.
 
+\medskip
 These are standard formulations of the interaction Hamiltonian for light-matter interactions. 
 As with any gauge transformation, certain scenarios favor one gauge over another (see Chapter 4).
 
@@ -228,7 +222,7 @@ As with any gauge transformation, certain scenarios favor one gauge over another
 \section{Strong Field Formalism}
 
 The difficulty with ionization arises from the existence of in some sense two Hilbert spaces: 
-one for the bound states in the Hydrogen atom that accounts for distortion of the wavefunction due to the laser field, and another for the continuum states that are primarily affected by the laser field but also influenced by the binding potential.
+One for the bound states in the hydrogen atom that accounts for distortion of the wavefunction due to the laser field, and another for the continuum states that are primarily affected by the laser field but also influenced by the binding potential.
 
 It will be shown that SFA provides a treatment for the second Hilbert space, simplifying its description. 
 However, previous SFA formulations oversimplify the first Hilbert subspace to such an extent that there remains one Hilbert space for eigenstates unaffected by the laser field and another for continuum states unaffected by the binding potential.
@@ -261,7 +255,7 @@ The most natural partitioning is first written as:
 \begin{equation*}
     \hat{\Hs}(t) = \underbrace{\hat{X}\hat{\Hs}(t)\hat{X}}_{\hat{\Hs}_{\mathrm{Bound}}(t)=\hat{\Hs}^{\mathrm{Sub}}_0(t)} + \underbrace{\hat{Y}\hat{\Hs}(t)\hat{Y} + \hat{X}\hat{\Hs}(t)\hat{Y} + \hat{Y}\hat{\Hs}(t)\hat{X}}_{\hat{\Hs}_{\mathrm{Cont}}(t)+\hat{\Hs}_{\mathrm{Rec}}(t)+\hat{\Hs}_{\mathrm{Ion}}(t)=\hat{\Hs}^{\mathrm{Sub}}_{\mathrm{I}}(t)} = \hat{\Hs}^{\mathrm{Sub}}_0(t)+\hat{\Hs}^{\mathrm{Sub}}_{\mathrm{I}}(t)
 \end{equation*}
-Similar to $\hat{\Hs}(t)=\hat{\Hs}_0(t)+\hat{\Hs}_\mathrm{I}(t)$, where $\hat{\Hs}_\mathrm{I}(t)$ represents the interacting perturbation (for instance, in the length gauge \eqref{eq:dipoleApprox}), but now applied to the full Hamiltonian projected onto subspaces.
+The natural interpretation arises from the similarity to $\hat{\Hs}(t)=\hat{\Hs}_0(t)+\hat{\Hs}_{\mathrm{I}}(t)$, where $\hat{\Hs}_{\mathrm{I}}(t)$ represents the interacting perturbation (for instance, in the length gauge \eqref{eq:dipoleApprox}), now applied to the full Hamiltonian projected onto subspaces.
 For reasons that will be explained later, this is referred to as the Subspace partition.
 While the notation may appear arbitrary now, its significance will become clear later.
 
@@ -273,7 +267,7 @@ The Hamiltonian can alternatively be partitioned into a different form, the full
 The physical meaning of these terms can be interpreted as follows:
 In $\hat{\Hs}_{\mathrm{Bound}}(t)$, the electron remains within the subspace and can always be described by a superposition of bound states.
 Without ionization, this would be the only term governing the time evolution.
-In previous work, this part of the Hamiltonian was often simplified to the extent that effects like Stark shift or coupling to excited states were neglected.
+In previous work, this part of the Hamiltonian was often simplified to the extent that the laser had no effect on the atom besides the ability to ionize it. Further details regarding physical effects, such as the Stark effect, can be found in Section \ref{sec:starkdistortion}.
 
 $\hat{\Hs}_{\mathrm{Cont}}(t)$ describes similar dynamics, but in the subspace of continuum states rather than bound states.
 While in reality these two spaces cannot be completely separated, this distinction provides conceptual clarity.
@@ -296,7 +290,7 @@ While this approach may initially appear unnecessary, it establishes boundaries 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Dyson equation}
+\subsection{Dyson Equation}
 For determining the time evolution, care must be taken since the full Hamiltonian does not commute with itself at different times, requiring an exact treatment.
 As the full Dyson series \eqref{eq:dyson} can be cumbersome to deal with, an alternative approach is used.
 This approach is enabled by the fact that the Hamiltonian can be split into two parts by projecting it into subspaces.
@@ -353,7 +347,7 @@ Note: No approximations have been made; \eqref{eq:smatrixlike1_withoutsfa} and \
 
 %%%%%%%%%%%%%%%%%%
 \subsection{Strong Field Approximation}
-In principle, the strong field approximation (SFA) involves neglecting the binding potential after ionization.
+In principle, the strong field approximation involves neglecting the binding potential after ionization.
 This approximation is intuitively reasonable because the laser field becomes the dominant force acting on the electron, exerting significantly greater influence on the ionization dynamics than the Coulomb potential.
 It should be noted that SFA is not restricted to high-intensity laser pulses; even for arbitrary small ionization probabilities, SFA implies that once ionization occurs, the laser pulse dominates the subsequent dynamics.
 
@@ -362,11 +356,11 @@ The time evolution operator after ionization can be expressed as:
 \begin{equation*}
     %\hat{\Hs}(t) &= \hat{\Hs}_0 + \hat{V}_I(t) = \hat{\Hs}_p + \hat{V}_C + \hat{V}_I(t) 
     %e^{-i \int_{t'}^{t} \hat{\Hs}(t'') \dd t''} &\approx e^{-i \int_{t'}^{t} \hat{\Hs}_{\mathrm{SFA}}(t'') \dd t''} \quad \text{with} \quad \hat{\Hs}_{\mathrm{SFA}}(t) &= \hat{\Hs}(t) - \hat{V}_C
-    \hat{\U}(t,t') \approx \hat{\U}_{\mathrm{SFA}}(t,t')=e^{-i \int_{t'}^{t} \hat{\Hs}_{\mathrm{SFA}}(t'') \dd t''} \quad \text{and} \quad \Hs_{\mathrm{SFA}}(t') = \hat{\Hs}(t) - \hat{\Hs}_{\mathrm{C}}      \label{eq:sfa_formula}
+    \hat{\U}(t,t') \approx \hat{\U}_{\mathrm{SFA}}(t,t')=e^{-i \int_{t'}^{t} \hat{\Hs}_{\mathrm{SFA}}(t'') \dd t''} \quad \text{and} \quad \hat{\Hs}_{\mathrm{SFA}}(t') = \hat{\Hs}(t) - \hat{\Hs}_{\mathrm{C}}      
 \end{equation*}
 Similarly, for the ``Full'' partitioning:
 \begin{equation*}
-    \hat{\U}^{\mathrm{Full}}_0(t,t') \approx \hat{\U}_{\mathrm{SFA}}(t,t')=e^{-i \int_{t'}^{t} \hat{\Hs}_{\mathrm{SFA}}(t'') \dd t''} \quad \text{and} \quad \Hs_{\mathrm{SFA}}(t') = \hat{\Hs}(t) - \hat{\Hs}_{\mathrm{C}}      \label{eq:sfa_formula}
+    \hat{\U}^{\mathrm{Full}}_0(t,t') \approx \hat{\U}_{\mathrm{SFA}}(t,t')=e^{-i \int_{t'}^{t} \hat{\Hs}_{\mathrm{SFA}}(t'') \dd t''} \quad \text{and} \quad \hat{\Hs}_{\mathrm{SFA}}(t') = \hat{\Hs}(t) - \hat{\Hs}_{\mathrm{C}}
 \end{equation*}
 An exact expression for the SFA time evolution operator can be written, as it now commutes with itself at different times.
 
@@ -423,9 +417,9 @@ The final step introduces a new approximation for $\hat{\U}^{\mathrm{Sub}}_0(t',
 \paragraph{Sub-Hilbertspace ansatz}
 Regardless of the final form, the expression can be expanded in the bound states $\ket{\Psi_n}$.
 This is clear by considering the defining equation of the time evolution operator and observing that any overlap of $\hat{\U}^{\mathrm{Sub}}_0(t',t_0)\ket{\Psi_0(t_0)}$ with a state outside the bound-state representation would cancel out due to $\hat{X}$.
-With this consideration, an ansatz using the interaction picture can be formulated as:
+With this consideration, an ansatz using the interaction picture can be formulated as\footnote{Here, $E_n$ represents the eigenenergies and not the electric field. If referring to the electric field, the notation would be a vector or a vector component.}:
 \begin{equation*}
-    \hat{\U}^{\mathrm{Sub}}_0(t',t_0)\ket{\Psi_0(t_0)} = \sum_{n}c_n(t')e^{-iE_nt'}\ket{\Psi_n}\footnote{Here, $E_n$ are the eigenenergies and not the electric field. If it would be the electric field it would be denoted as a vector or the component of the vector.}
+    \hat{\U}^{\mathrm{Sub}}_0(t',t_0)\ket{\Psi_0(t_0)} = \sum_{n}c_n(t')e^{-iE_nt'}\ket{\Psi_n}
 \end{equation*}
 The factors $e^{-iE_nt'}$ are factored out to avoid potential numerical issues arising from their rapid oscillations.
 
@@ -444,31 +438,31 @@ The same assumptions regarding laser intensity and ionization probability apply 
 \bigskip
 
 The key difference between the two ansatzes lies in the coefficients $c_n(t')$.
-In the subspace approach, the coefficients are obtained by solving the TDSE within the subspace spanned by the bound states.
+In the subspace approach, the coefficients are obtained by solving the time-dependent Schrödinger equation for a wavefunction that is restricted to the subspace spanned by the bound states.
 This approach effectively cuts off ionization, forcing the electron to the subspace regardless of laser intensity.
 Implementing this leads to a system of ordinary differential equations for the coefficients, hence the name.
 In contrast, the other approach is fundamentally different.
-Here, the TDSE must be solved in the full Hilbert space, with the coefficients extracted at times $t'$.
+Here, the TDSE must be solved for a wavefunction in the full Hilbert space.
 In the atto/femtosecond regime, this demands substantial computational resources, as the electron exits the sub-Hilbert space during the process.
 For these numerical simulations, a solver called tRecX (discussed in Chapter 3) was employed.
 
-Unlike other literature (\cite{Theory_NPS}, \cite{Ivanov20012005}), this ansatz does not neglect transitions between bound states prior to ionization.
-For example, the laser pulse may excite the electron without immediately ionizing it.
-The coefficients are expected to capture all relevant dynamics within the hydrogen atom before ionization, including effects such as AC Stark shifts and ground-state distortion.
+Unlike other literature \cite{Theory_NPS, Ivanov20012005}, this ansatz does not neglect transitions between bound states prior to ionization.
+For example, the laser pulse may excite the electron without immediate ionization.
+The coefficients are expected to capture many of these interesting dynamics within the hydrogen atom before ionization occurs.
 
 The final expression can now be presented.
-By simplifying the dipole matrix element $\vec{d}_n(\vec{p}+\vec{A}(t')) = \bra{\vec{p}+\vec{A}(t')}\hat{\Hs}(t')\ket{\Psi_n}$ between the bound state and the continuum state, the dipole approximation \eqref{eq:dipoleApprox} can be applied, yielding:
-\begin{equation*}
-    \braket{\ket{\vec{p}(t)}|\Psi_n(t)} = -\frac{i}{2}\int_{t_0}^{t} e^{-i \int_{t'}^{\infty} (\vec{p} + A_z(t''))^2 \dd t''}E_z(t')\sum_{n}c_n(t)e^{-iE_nt'}\bra{\vec{p}+A_z(t')}\hat{d}_z\ket{\Psi_n} \dd t'       \label{eq:smatrix}
-\end{equation*}
+By simplifying the dipole transition matrix element $\vec{d}_n(\vec{p}+\vec{A}(t')) \stackrel{\mathrm{a.u.}}{=} -\bra{\vec{p}+\vec{A}(t')}\hat{\vec{r}}\ket{\Psi_n}$ between the bound state and the continuum state, the dipole approximation \eqref{eq:dipoleApprox} can be applied, yielding:
+\begin{equation}
+    \braket{\vec{p}(t)|\Psi_n(t)} = \frac{i}{2}\int_{t_0}^{t} e^{-i \int_{t'}^{\infty} (\vec{p} + A_z(t''))^2 \dd t''}E_z(t')\sum_{n}c_n(t)e^{-iE_nt'}\bra{\vec{p}+A_z(t')}\hat{d}_z\ket{\Psi_n} \dd t'       \label{eq:smatrix}
+\end{equation}
 Here, the electric field is polarized along the z-axis.
-This equation corresponds to the strong-field S-matrix in the length gauge, as found in many papers \cite{Theory_NPS}, but with the distinction that excited states are not neglected.
+This equation corresponds to the strong-field s-matrix in the length gauge, as found in many papers \cite{Theory_NPS, Ivanov20012005}, but with the difference that excited states and the influence of the laser field on the atom are not neglected.
 
 
 
 
 %%%%%%%%%%%%%%%%%%%%
-\section{Ionization rates}
+\section{Ionization Rates}
 % What is a ionization rate and why do we want to have it?
 
 % A dilemma exists in the current approaches: while numerical simulations provide accurate ionization probabilities, they fail to yield ionization rates. 
@@ -478,15 +472,15 @@ This equation corresponds to the strong-field S-matrix in the length gauge, as f
 
 % When an electromagnetic field is present, projections onto bound/unbound states lead to non-physical gauge-dependent predictions [14]. % M. Yuan, P. Xin, T. Chu, H. Liu, Optics Express 2017,25, 19 23493
 % The tunneling time is imaginary, source??? % This comment/question can be kept as is
-The concept of an instantaneous ionization rate (IIR) is a powerful and intuitive tool for understanding the physics of strong-field ionization. It is frequently used to provide a time-resolved picture of the ionization process, for instance, by assigning a probability for an electron to be released at a specific moment within the laser pulse \cite{Ivanov2018}.
+The concept of an instantaneous ionization rate (IIR) is a powerful and intuitive tool for understanding the physics of strong-field ionization. It is frequently used to provide a time-resolved picture of the ionization process, for instance, by assigning a probability for an electron to be released at a specific moment during the laser pulse \cite{Ivanov2018}.
 
-However, the concept of an ionization `event' occurring at a precise instant in time is difficult to reconcile with conventional quantum mechanics, i.e., Heisenberg's uncertainty principle. 
+However, the concept of an ionization `event' occurring at a precise instant in time is difficult to harmonize with quantum mechanics, such as Heisenberg's uncertainty principle. 
 Strictly speaking, the only well-defined and directly measurable observable is the \emph{total} ionization probability after the laser pulse has interacted with the atom. 
 The IIR itself is not a direct quantum mechanical observable, and its definition can be challenging (gauge dependence).
 
 This ambiguity leads to theoretical challenges, such as defining a working formalism for the tunneling delay time \cite{Ivanov2018}.
 
-To address these challenges, alternative, unambiguous definitions have been proposed. One such approach defines the IIR as a functional derivative of the total ionization probability with respect to the waveform of the ionizing laser pulse \cite{Ivanov2018}. 
+To address these challenges, alternative, unambiguous definitions have been proposed \cite{agarwal2025generalapproximatorstrongfieldionization}. One such approach defines the IIR as a functional derivative of the total ionization probability with respect to the waveform of the ionizing laser pulse \cite{Ivanov2018}. 
 This method is inherently gauge-invariant because it is based on physically measurable quantities. 
 While this thesis does not follow this particular formalism, it is important to acknowledge the subtleties involved in defining an ionization rate. 
 The subsequent derivation proceeds within the SFA framework, which provides a tractable, but gauge-dependent expression for the IIR.
@@ -494,11 +488,11 @@ The subsequent derivation proceeds within the SFA framework, which provides a tr
 
 
 %%%%%%%%%%%%%%%%%%%%%
-\subsection{Derivation of extended SFA Rate}
+\subsection{Derivation of Extended SFA Rate}
 The derivation mainly follows \cite{Theory_NPS} with some modifications.
 First, the ionization probability is expressed as the amplitude of projection of the wavefunction onto the continuum subspace.
 The total ionization probability is obtained by integrating the ionization rate over the time domain.
-Therefore, the SFA rate can be written as:
+Therefore, the SFA rate \eqref{eq:smatrix} can be written as:
 \begin{align*}
     \lim_{t\to\infty}\braket{\Psi(t)|\int \dd^3 p \ket{p}\bra{p}\Psi(t)} = &\int_{-\infty}^{\infty} \Gamma_{\mathrm{SFA}}(t) \dd t \\ %= \int_{\R^3}\dd^3p \braket{\Psi_n(t)|\Pi(t_{\mathrm{c}})}\braket{\Pi(t_{\mathrm{c}})|\Psi_n(t)}\\ 
     = &\int \dd^3 p \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} \dd t_1  \dd t_2 \, e^{\frac{i}{2}\int_{t_1}^{t_2}(\vec{p}+A_z(t''))^2\dd t''} E_z(t_1)E_z(t_2)\\
@@ -516,7 +510,7 @@ The integration variable is changed from $\vec{p}$ to $\vec{p}+\vec{A}$, and wit
     &\sum_{n_1}\sum_{n_2} \int_0^{\infty} \dd p\,p^2\int_0^{\pi} \dd\theta_p\,\sin\theta_p \int_0^{2\pi}\dd \phi_p\int_{-\infty}^{\infty} \dd T \, e^{\frac{i}{2}\int_{-T}^{T}(\vec{p}+\Delta_z(t''))^2\dd t''} e^{i(t-T)E_{n_1}-i(t+T)E_{n_2}}\\
     &\times E_z(t-T) E_z(t+T)c_{n_1}^*(t-T)c_{n_2}(t+T) d_{z,n_1}^*(\vec{p}+\Delta_z(-T))d_{z,n_2}(\vec{p}+\Delta_z(T))
 \end{align*} 
-Also the integrand in the exponential function can be further simplifyed:
+Also the integrand in the exponential function can be further simplified:
 \begin{align*}
     \frac{i}{2}\int_{-T}^{T}(\vec{p}+\Delta_z(t''))^2\dd t'' &= i\vec{p}^2T + \frac{i}{2}\int_{-T}^{T}\Delta_z(t'')^2+2\vec{p}\cdot\Delta_z(t'')\dd t'' \\
     &= i\vec{p}^2T + ip\cos\theta_p\int_{-T}^{T}\Delta_z(t'')\dd t'' +  \frac{i}{2}\int_{-T}^{T}\Delta_z(t'')^2\dd t''
@@ -527,8 +521,8 @@ Following the notation used in the code as well as in \cite{Theory_NPS}, where
 \end{equation*}
 the final SFA rate to be implemented is given by:
 \begin{align}
-    \Gamma_{\mathrm{SFA}}(t) &= \sum_{n_1}\sum_{n_2} \int_0^{\infty} \dd p\,p^2\int_0^{\pi} \dd\theta_p\,\sin\theta_p \int_0^{2\pi}\dd \phi_p\int_{-\infty}^{\infty} \dd T\\
-    &\times \exp\left(i\vec{p}^2T + ip\cos\theta_p\bar{\Delta}_z^k +  \frac{i}{2}\bar{\Delta}_z^2  + i(t-T)E_{n_1}-i(t+T)E_{n_2}\right)\\
+    \Gamma_{\mathrm{SFA}}(t) &= \sum_{n_1}\sum_{n_2} \int_0^{\infty} \dd p\,p^2\int_0^{\pi} \dd\theta_p\,\sin\theta_p \int_0^{2\pi}\dd \phi_p\int_{-\infty}^{\infty} \dd T\notag\\
+    &\times \exp\left(i\vec{p}^2T + ip\cos\theta_p\bar{\Delta}_z^k +  \frac{i}{2}\bar{\Delta}_z^2  + i(t-T)E_{n_1}-i(t+T)E_{n_2}\right)\notag\\
     &\times E_z(t-T) E_z(t+T)c_{n_1}^*(t-T)c_{n_2}(t+T) d_{z,n_1}^*(\vec{p}+\Delta_z(-T))d_{z,n_2}(\vec{p}+\Delta_z(T))
     \label{eq:sfa_rate_improved}
 \end{align}
@@ -536,6 +530,45 @@ For numerical calculations, it can be convenient to split a complex integrand in
 Although this is typically done with the given formula, the coefficients remain complex and may exhibit rapidly oscillating phase behavior.
 
 
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%
+\section{Stark Shift}
+\label{sec:starkdistortion}
+This section mainly follows \cite{subsycleacstarkshift, starkdelonekrainov}.
+\paragraph{Phenomenology}
+The Stark shift describes the shifting and splitting of energy levels due to the presence of an external electric field.
+This phenomenon arises from the interaction between the electric field and the atom's electric dipole moment.
+Two types of Stark shifts exist: the DC Stark shift and the AC Stark shift.
+DC stands for direct current, meaning the electric field is constant in time, while AC stands for alternating current, corresponding to a (rapidly) oscillating electric field.
+Under certain conditions (e.g., a laser pulse far off resonance), the AC Stark shift can be approximated as the quadratic DC Stark shift \cite{starkdelonekrainov}.
+
+When the laser pulse is not far off resonance, significant changes to the energy levels of the bound states and to the electron dynamics can occur.
+
+\paragraph{AC Stark Shift}
+The electron wave function within the subspace of the bound states can be expressed as a superposition of bound states with coefficients $c_n(t)$:
+\begin{equation*}
+    \ket{\Psi(t)} = \sum_n c_n(t) e^{-iE_nt}\ket{\Psi_n}
+\end{equation*}
+where $E_n$ are the eigenenergies and $c_n(t)$ are the complex coefficients.
+When considering electron dynamics before ionization, the coefficients can be interpreted as carrying two types of information.
+First, the amplitude of the coefficients represents the probability of finding the electron in a given state $n$.
+Second, the phase of the coefficients reflects changes in the energy level of state $n$.
+The second part can be interpreted as the subcycle AC Stark shift \cite{subsycleacstarkshift}.
+This can be expressed mathematically as:
+\begin{equation}
+    \ket{\Psi(t)} = \sum_n |c_n(t)| e^{-i\int_{-\infty}^{t}E_n + \delta E_n(t')\dd t'}\ket{\Psi_n}      \label{eq:ac_stark_shift}
+\end{equation}
+The dynamic stark energy shifts $\delta E_n(t')$ are of primary interest.
+
+\bigskip
+In the context of this thesis, the influence of the AC Stark shift on the ionization process is of particular interest.
+In previous derivations of the SFA rate, both the transition to excited states and the effect of the laser field on the ground state were neglected.
+However, with the extended version of the SFA rate \eqref{eq:sfa_rate_improved}, it becomes possible to account not only for the influence of the laser field on excited states but also to distinguish between the effects of the Stark shift and the depletion of the ground state (i.e., changes in the probability amplitude).
+While including many physical effects is theoretically appealing, it is not always practical unless the impact of each approximation on the results is understood.
+The splitting of the coefficients into amplitude and phase allows this kind of distinction.
+The findings related to this question are presented in Chapter 4.
 
 
 
@@ -550,7 +583,7 @@ To distinguish these processes, several parameters must be defined.
 According to \cite{Keldysh:1965ojf}, strong field ionization primarily depends on three parameters: the photon energy, the binding potential, and the ponderomotive energy.
 
 \paragraph{Ponderomotive Energy}
-The ponderomotive energy is defined as the cycle-averaged quiver energy of a free electron in an electromagnetic field [cite wikipedia].
+The ponderomotive energy is defined as the cycle-averaged quiver energy of a free electron in an electromagnetic field \cite{manorammasterthesis}.
 Since harmonic motion is experienced by the particle, the time-averaged kinetic energy is given by
 \begin{equation*}
     \frac{1}{2}m\omega^2 \braket{x^2}=\frac{e^2E^2}{4m_e\omega^2} = \frac{E^2}{4\omega^2}
@@ -594,45 +627,3 @@ The previous regimes describe limiting cases where the complementary process is 
 However, in reality, a coexistence of both processes often occurs.
 In the intermediate regime, the tunneling process is no longer adiabatic.
 The potential barrier undergoes significant oscillations during the electron's tunneling time, allowing energy to be absorbed from the laser field while tunneling takes place.
-
-
-
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%
-\section{Stark shift}
-This section mainly follows \cite{subsycleacstarkshift} and \cite{starkdelonekrainov}.
-\paragraph{Phenomenology}
-The Stark shift describes the shifting and splitting of energy levels due to the presence of an external electric field.
-This phenomenon arises from the interaction between the electric field and the atom's electric dipole moment.
-Two types of Stark shifts exist: the DC Stark shift and the AC Stark shift.
-DC stands for direct current, meaning the electric field is constant in time, while AC stands for alternating current, corresponding to a (rapidly) oscillating electric field.
-Under certain conditions (e.g., a laser pulse far off resonance), the AC Stark shift can be approximated as the quadratic DC Stark shift \cite{starkdelonekrainov}.
-
-When the laser pulse is not far off resonance, significant changes to the energy levels of the bound states and to the electron dynamics can occur.
-
-\paragraph{AC Stark Shift}
-The electron wave function can be expressed as a superposition of bound states with coefficients $c_n(t)$:
-\begin{equation*}
-    \ket{\Psi(t)} = \sum_n c_n(t) e^{-iE_nt}\ket{\Psi_n}
-\end{equation*}
-where $E_n$ are the eigenenergies and $c_n(t)$ are the complex coefficients.
-When considering electron dynamics before ionization, the coefficients can be interpreted as carrying two types of information.
-First, the amplitude of the coefficients represents the probability of finding the electron in a given state $n$.
-Second, the phase of the coefficients reflects changes in the energy level of state $n$.
-The second part can be interpreted as the subcycle AC Stark shift \cite{subsycleacstarkshift}.
-This can be expressed mathematically as:
-\begin{equation}
-    \ket{\Psi(t)} = \sum_n |c_n(t)| e^{-i\int_{-\infty}^{t}E_n + \delta E_n(t')\dd t'}\ket{\Psi_n}      \label{eq:ac_stark_shift}
-\end{equation}
-The dynamic stark energy shifts $\delta E_n(t')$ are of primary interest.
-
-\bigskip
-In the context of this thesis, the influence of the AC Stark shift on the ionization process is of particular interest.
-In previous derivations of the SFA rate, both the transition to excited states and the effect of the laser field on the ground state were neglected.
-However, with the extended version of the SFA rate \eqref{eq:sfa_rate_improved}, it becomes possible to account not only for the influence of the laser field on excited states but also to distinguish between the effects of the Stark shift and the depletion of the ground state (i.e., changes in the probability amplitude).
-While including many physical effects is theoretically appealing, it is not always practical unless the impact of each approximation on the results is understood.
-The splitting of the coefficients into amplitude and phase allows this kind of distinction.
-The findings related to this question are presented in Chapter 4.

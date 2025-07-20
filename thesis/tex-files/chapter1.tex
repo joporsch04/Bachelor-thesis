@@ -1,39 +1,63 @@
-Ionization with an intense laser is one of the most fundamental processes in attosecond physics and quantum mechanics in general and has a broad range of applications such as from high-harmonic generation to photoelectron spectroscopy and medical physics.
-Of prior interest is the `response' of the electron to certain parts of the laser pulse at a given moment of time.
-From a classical point of view, the instantaneous ionization rate $\Gamma(t)$ is a way of making making this `wish' come true.
-% Understanding the dynamics of this process requires theoretical models that can predict ionization probabilities and provide insights into the underlying mechanisms.
-% In real life applications mostly we dont have static electric field, more a laser pulse, with an envelope.
-However, quantum mechanics presents a fundamental challenge: we can only measure probabilities, not the specific path an electron takes during ionization.
-Further, predicting the \emph{instantaneous} ionization of the electron at a given moment of time is difficult to reconcile with conventional quantum mechanics \cite{Ivanov2018}. 
+Ionization with an intense laser is one of the most fundamental processes in attosecond physics and quantum mechanics in general and has a broad range of applications, from high-harmonic generation to photoelectron spectroscopy and medical physics.
+Of particular interest is the `response' of the electron to certain parts of the laser pulse at a given moment of time.
+From a classical point of view, the instantaneous ionization rate $\Gamma(t)$ provides a way to realize this concept.
+However, quantum mechanics presents a fundamental challenge: only probabilities can be measured, not the specific path an electron takes during ionization.
+In addition, predicting the \emph{instantaneous} ionization of the electron at a given moment of time is difficult to reconcile with conventional quantum mechanics \cite{Ivanov2018}.
+This is particularly due to the fact that the electron's response to the laser pulse is not instantaneous.
 
 \medskip
-Lots of research effort has gtten into developing different ways of defining ionization rates \cite{agarwal2025generalapproximatorstrongfieldionization,Ivanov2018}.
-The Strong Field Approximation (SFA) has become one of the standard theoretical frameworks for deriving ionization rates due to its simplicity and reasonably good agreement with numerical solutions of the time dependent schroedinger equation. 
-The way, that it reconciles with quanum mechanics is that within SFA there is an expression that can be interpreted as an ionization rate that share similar propetrties of both vlassical and quanum mechanical physics.A very
+Significant research effort has been devoted to developing different ways of defining ionization rates \cite{agarwal2025generalapproximatorstrongfieldionization,Ivanov2018}.
+The Strong Field Approximation (SFA) has become one of the standard theoretical frameworks for deriving ionization rates due to its simplicity and reasonably good agreement with numerical solutions of the time-dependent Schrödinger equation (TDSE).
+The way it reconciles with quantum mechanics is that within SFA, an expression exists that behaves just like an ionization rate, sharing characteristics of both classical and quantum mechanical physics.
+One very important property is that it matches the concept of an ionization rate under the assumption that the electron responds instantaneously to the electric field.
 
-However, standard SFA formulations make a crucial simplification: they assume the laser field has no effect on the atom before ionization, effectively neglecting excited atomic states and treating the electron as remaining in the ground state until the moment of ionization.
+\medskip
+Two major problems exist with ionization rates within SFA.
+The first is their ambiguity, as the rate is not defined via a physically measurable quantity, making it gauge-dependent.
+The second is that the SFA itself is a crude approximation, significantly affecting the predicted ionization process in general.
+Further, in previous approaches, not only was the SFA applied, but additional approximations were made regarding the influence of the laser pulse on the atom, such as the Stark shift or transitions to excited states.
+This could explain why SFA can reconstruct overall ionization dynamics but fails to accurately reproduce off-cycle ionization dynamics.
 
-This approximation leads to significant discrepancies when comparing SFA predictions with ab initio solutions of the time-dependent Schrödinger equation (TDSE). 
-Numerical simulations using solvers like tRecX reveal ionization dynamics that differ substantially from standard SFA predictions, particularly in the temporal structure of the ionization process. 
-When the laser pulse is symmetric in time, SFA predicts a symmetric ionization rate, but numerical simulations show this time symmetry is broken.
+\medskip
+Additionally, a significant discrepancy exists between the order of magnitude of ionization probabilities predicted by SFA and numerical solutions of the TDSE.
+This could have various causes, such as the SFA itself.
+However, it could also be due to the non-negligible impact of neglecting transitions to excited states.
 
-The central hypothesis of this thesis is that these discrepancies arise primarily from the neglect of excited atomic states in standard SFA formulations. 
-In intense laser fields, effects such as the AC Stark shift and transient population of excited states can significantly modify the ionization dynamics. By including these effects, we can potentially bridge the gap between analytical SFA models and numerical TDSE solutions.
+\medskip
+The aim of this thesis is to investigate the influence of neglecting the laser pulse's impact on the atom in ionization dynamics.
+In particular, it examines whether the Stark effect or the distortion of the ground state has a greater influence on ionization dynamics.
+It also explores whether transitions to excited states could explain the large absolute difference between SFA-predicted ionization probabilities and numerical TDSE solutions.
+For this purpose, rigorous analytical expressions for the ionization rate within SFA are developed.
 
-This thesis addresses the following key questions:
-\begin{itemize}
-    \item What is the role of excited atomic states in strong field ionization?
-    \item How does the AC Stark shift influence ionization rates compared to changes in ground state population?
-    \item Can we improve the accuracy of ionization rate predictions by incorporating excited state dynamics into the SFA framework?
-\end{itemize}
+% \medskip
+% This thesis is split into different parts. 
+% The first Chapter 
 
-To answer these questions, we extend the SFA formalism to include the influence of excited atomic states on ionization rates. 
-We derive an improved expression for the IIR that incorporates time-dependent probability amplitudes for both ground and excited states, obtained by solving the TDSE within the subspace of bound states. 
-The extended model is then validated through comparison with full TDSE solutions using the TIPTOE (Temporal Ionization Probability in Tunneling and Over-barrier Excursions) method.
 
-The structure of this thesis is as follows: Chapter 2 derives the extended SFA rate and establishes the theoretical framework. 
-Chapter 3 introduces the numerical methods, including the tRecX solver and the TIPTOE analysis technique. Chapter 4 details the implementation of the extended SFA model and discusses the computational challenges. 
-Chapter 5 presents results comparing standard SFA, extended SFA, and full TDSE solutions, demonstrating the importance of excited state dynamics in strong-field ionization.
+% Understanding the dynamics of this process requires theoretical models that can predict ionization probabilities and provide insights into the underlying mechanisms.
+% In real life applications mostly we dont have static electric field, more a laser pulse, with an envelope.
+
+%This approximation leads to significant discrepancies when comparing SFA predictions with ab initio solutions of the time-dependent Schrödinger equation (TDSE). 
+% Numerical simulations using solvers like tRecX reveal ionization dynamics that differ substantially from standard SFA predictions, particularly in the temporal structure of the ionization process. 
+% When the laser pulse is symmetric in time, SFA predicts a symmetric ionization rate, but numerical simulations show this time symmetry is broken.
+
+% The central hypothesis of this thesis is that these discrepancies arise primarily from the neglect of excited atomic states in standard SFA formulations. 
+% In intense laser fields, effects such as the AC Stark shift and transient population of excited states can significantly modify the ionization dynamics. By including these effects, we can potentially bridge the gap between analytical SFA models and numerical TDSE solutions.
+
+% This thesis addresses the following key questions:
+% \begin{itemize}
+%     \item What is the role of excited atomic states in strong field ionization?
+%     \item How does the AC Stark shift influence ionization rates compared to changes in ground state population?
+%     \item Can we improve the accuracy of ionization rate predictions by incorporating excited state dynamics into the SFA framework?
+% \end{itemize}
+
+% To answer these questions, we extend the SFA formalism to include the influence of excited atomic states on ionization rates. 
+% We derive an improved expression for the IIR that incorporates time-dependent probability amplitudes for both ground and excited states, obtained by solving the TDSE within the subspace of bound states. 
+% The extended model is then validated through comparison with full TDSE solutions using the TIPTOE (Temporal Ionization Probability in Tunneling and Over-barrier Excursions) method.
+
+% The structure of this thesis is as follows: Chapter 2 derives the extended SFA rate and establishes the theoretical framework. 
+% Chapter 3 introduces the numerical methods, including the tRecX solver and the TIPTOE analysis technique. Chapter 4 details the implementation of the extended SFA model and discusses the computational challenges. 
+% Chapter 5 presents results comparing standard SFA, extended SFA, and full TDSE solutions, demonstrating the importance of excited state dynamics in strong-field ionization.
 
 
 % Weither you want your system to ionize or not, it may be important to understand, how ionization works.
