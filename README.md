@@ -1,4 +1,5 @@
 # Bachelor Thesis
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.16223180.svg)](https://doi.org/10.5281/zenodo.16223180)
 
 ## ⚠️Thesis in progress
 This Bachelor's thesis is still in progress, expected to be completed by September 2025.
