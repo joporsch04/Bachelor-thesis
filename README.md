@@ -1,6 +1,9 @@
 # Bachelor Thesis
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.16223179.svg)](https://doi.org/10.5281/zenodo.16223179)
 
+## Title
+The Impact of the Dynamic Stark Shift on Sub-cycle Ionization of Atoms in the Multiphoton Regime.
+
 ## Author
 Johannes Porsch (Jo.Porsch@campus.lmu.de, joporsch04@gmail.com)
 
@@ -22,6 +25,10 @@ While the model successfully improves reconstructing the ionization dynamics, th
 
 ## Version Information
 The official submission of this thesis corresponds to version **v1.0.0**. However, the repository will be updated continuously with future improvements and additions.
+
+## License
+This thesis is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+
 
 ## Git
 ```
