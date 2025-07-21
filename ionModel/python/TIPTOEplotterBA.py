@@ -33,19 +33,19 @@ class TIPTOEplotterBA:
             'font.serif': ['Computer Modern Roman'],  # Matches lmodern package
             'font.size': 12,
             'axes.labelsize': 12,
-            'axes.titlesize': 14,
+            'axes.titlesize': 16,
             'xtick.labelsize': 12,
             'ytick.labelsize': 12,
-            'legend.fontsize': 9,
+            'legend.fontsize': 10,
             'figure.titlesize': 12,
-            'lines.linewidth': 1.0,
-            'axes.linewidth': 0.8,
+            'lines.linewidth': 1.5,
+            'axes.linewidth': 0.5,
             'grid.linewidth': 0.5,
             'xtick.major.width': 0.8,
             'ytick.major.width': 0.8,
             'xtick.minor.width': 0.5,
             'ytick.minor.width': 0.5,
-            'savefig.dpi': 300,
+            'savefig.dpi': 600,
             'savefig.bbox': 'tight',
             'savefig.pad_inches': 0.1
         })
@@ -160,6 +160,12 @@ class TIPTOEplotterBA:
         ion_SFA_excited_tRecX_dense = interp_SFA_excited_tRecX(delay_dense)
         ion_SFA_excited_ODE_dense = interp_SFA_excited_ODE(delay_dense)
 
+        ion_tRecX_dense = ion_tRecX
+        ion_SFA_dense = ion_SFA
+        ion_SFA_excited_tRecX_dense = ion_SFA_excited_tRecX
+        ion_SFA_excited_ODE_dense = ion_SFA_excited_ODE
+        delay_dense = delay_fs
+
         # N =18
         # ion_SFA_excited_tRecX[:N] = 0
         # ion_SFA_excited_tRecX[-N:] = 0
@@ -169,7 +175,7 @@ class TIPTOEplotterBA:
         ax3.set_xlabel(r'Delay $\tau$ (fs)')
         ax3.set_ylabel(r'Normalized Ionization Yield')
         ax3.set_xlim(-2, 2)
-        ax3.legend(loc='upper right')
+        ax3.legend(loc='upper right', fontsize=13)
         ax3.set_title('(a) Standard SFA vs Reference')
         ax3.grid(True, alpha=0.3)
         
@@ -180,7 +186,7 @@ class TIPTOEplotterBA:
         ax4.set_xlabel(r'Delay $\tau$ (fs)')
         ax4.set_ylabel(r'Normalized Ionization Yield')
         ax4.set_xlim(-2, 2)
-        ax4.legend(loc='upper right')
+        ax4.legend(loc='upper right', fontsize=13)
         ax4.set_title('(b) SFA Models vs Reference')
         ax4.grid(True, alpha=0.3)
 
@@ -188,7 +194,7 @@ class TIPTOEplotterBA:
                     f'$\lambda_\mathrm{{S}}={self.lam0_probe}$ nm\n'
                     f'$I_\mathrm{{F}}={self.I_pump/1e13:.1f} \\times 10^{{13}}$ W/cm$^2$\n'
                     f'$I_\mathrm{{S}}={self.I_probe/1e9:.1f} \\times 10^{{9}}$ W/cm$^2$')
-        ax3.text(0.02, 0.98, param_text, transform=ax3.transAxes, fontsize=8, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+        ax3.text(0.02, 0.98, param_text, transform=ax3.transAxes, fontsize=14, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.2))
 
         plt.tight_layout()
         
@@ -282,13 +288,13 @@ class TIPTOEplotterBA:
         ax1.set_xlabel(r'Delay $\tau$ (fs)')
         ax1.set_ylabel(r'Normalized Ionization Yield')
         ax1.set_xlim(-2, 2)
-        ax1.legend(loc='upper right')
+        ax1.legend(loc='upper right', fontsize=14)
         ax1.set_title('(a) Extended SFA Models vs Reference: Only Phase')
         ax1.grid(True, alpha=0.3)
 
         ax2.plot(time_dense, rate_SFA_dense, label=r'Standard SFA', color='blue', linestyle='-', alpha=0.5)
         ax2.plot(time_dense, rate_3_dense, label=r"Sub. SFA: only phase", color='darkred', linestyle='-.')
-        ax2.plot(time_dense, rate_4_dense, label=r"Sub. SFA: only abs", color=(1.0, 0.4, 0.6), linestyle='--')
+        ax2.plot(time_dense, rate_4_dense, label=r"Sub. SFA: only magn", color=(1.0, 0.4, 0.6), linestyle='--')
         ax2.set_xlim(-37, 37)
         ax2.set_xlabel(r'Time (fs)')
         ax2.set_ylabel(rf'Ionization Rate ($\mathrm{{fs}}^{{-1}}$)')
@@ -303,13 +309,13 @@ class TIPTOEplotterBA:
         prob_text_2 = (f'Ionization Probabilities:\n'
                       f'Standard SFA: {prob_SFA/1e-4:.3f}$\\times 10^{{-4}}$\n'
                       f'Sub. SFA (phase): {prob_rate_3/1e-4:.3f}$\\times 10^{{-4}}$\n'
-                      f'Sub. SFA (abs): {prob_rate_4/1e-4:.3f}$\\times 10^{{-4}}$')
-        ax2.text(0.02, 0.97, prob_text_2, transform=ax2.transAxes, fontsize=8,
+                      f'Sub. SFA (magn): {prob_rate_4/1e-4:.3f}$\\times 10^{{-4}}$')
+        ax2.text(0.02, 0.97, prob_text_2, transform=ax2.transAxes, fontsize=10,
                 verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.2))
 
         ax3.plot(time_dense, rate_SFA_dense, label=r'Standard SFA', color='blue', linestyle='-', alpha=0.5)
         ax3.plot(time_dense, rate_1_dense, label=r"Full. SFA: only phase", color='darkgreen', linestyle='-.')
-        ax3.plot(time_dense, rate_2_dense, label=r"Full. SFA: only abs", color=(0.0, 0.858, 0.528), linestyle='--')
+        ax3.plot(time_dense, rate_2_dense, label=r"Full. SFA: only magn", color=(0.0, 0.858, 0.528), linestyle='--')
         ax3.set_xlim(-39, 39)
         ax3.set_xlabel(r'Time (fs)')
         ax3.set_ylabel(rf'Ionization Rate ($\mathrm{{fs}}^{{-1}}$)')
@@ -323,8 +329,8 @@ class TIPTOEplotterBA:
         prob_text_3 = (f'Ionization Probabilities:\n'
                       f'Standard SFA: {prob_SFA/1e-4:.3f}$\\times 10^{{-4}}$\n'
                       f'Full. SFA (phase): {prob_rate_1/1e-4:.3f}$\\times 10^{{-4}}$\n'
-                      f'Full. SFA (abs): {prob_rate_2/1e-4:.3f}$\\times 10^{{-4}}$')
-        ax3.text(0.015, 0.98, prob_text_3, transform=ax3.transAxes, fontsize=8, 
+                      f'Full. SFA (magn): {prob_rate_2/1e-4:.3f}$\\times 10^{{-4}}$')
+        ax3.text(0.015, 0.98, prob_text_3, transform=ax3.transAxes, fontsize=10, 
                 verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.2))
 
 
@@ -332,7 +338,7 @@ class TIPTOEplotterBA:
                     f'$\lambda_\mathrm{{S}}={self.lam0_probe}$ nm\n'
                     f'$I_\mathrm{{F}}={self.I_pump/1e13:.1f} \\times 10^{{13}}$ W/cm$^2$\n'
                     f'$I_\mathrm{{S}}={self.I_probe/1e9:.1f} \\times 10^{{9}}$ W/cm$^2$')
-        ax1.text(0.02, 0.98, param_text, transform=ax1.transAxes, fontsize=8, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.2))
+        ax1.text(0.02, 0.98, param_text, transform=ax1.transAxes, fontsize=14, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.2))
 
         plt.tight_layout()
         

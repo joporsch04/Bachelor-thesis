@@ -1,14 +1,14 @@
 This Chapter introduces the methods used throughout the thesis including numerical methods for solving or implementing certain types of equations, as well as physical methods used for result comparison or data interpretation.
 
+To compare and verify the extended SFA rate from Chapter 2, the TDSE must be solved numerically without harsh approximations such as the SFA.
+A reliable approach for comparison involves the use of the sampling method TIPTOE \cite{Park:18}, where the ionization yield from both methods is compared.
+When expanding an existing model, such comparisons are particularly important to assess whether modifications align with expected outcomes.
 
-To compare and verify the ionization rate from Chapter 2, the TDSE must be solved numerically without approximations.
-A reliable approach for comparison involves the use of the sampling method TIPTOE \cite{Park:18}, where the ionization yield from both are methods being compared.
-When expanding an existing model, it is particularly important to perform such comparisons to assess whether modifications align with expected outcomes.
 
 %%%%%%%%%%%%%%%%%%%%%%%
 \section{Numerical Methods}
 To implement formula \eqref{eq:smatrix}, the TDSE must be solved numerically in two different ways to obtain the coefficients $c_n(t)$.  
-Two methods were used (numerical solver and ODE), each with its own advantages and disadvantages.  
+Two methods were used, each with its own advantages and disadvantages.  
 
 For numerically solving the TDSE without approximations, a solver called tRecX was used.  
 
@@ -21,20 +21,20 @@ Additionally, the Coulomb potential decays only as $1/r$, raising the question o
 
 tRecX employs various techniques that make it particularly suitable for light-atom interactions.
 For example, the method called ``infinite-range exterior complex scaling'' applies a unitary transformation to complex-scale space beyond a certain distance from the nucleus.
-This can be likened to the analytic continuation of a function into the complex plane.
+This can be viewed as the analytic continuation of a function into the complex plane.
 Furthermore, the wavefunction is `damped' by the complex-scaled region, preventing reflections at the boundary that could lead to numerical issues \cite{scrinzi_irecs}.
 
-Moreover, tRecX allows the gauge \eqref{eq:dipoleApprox}, \eqref{eq:dipoleApprox_velocity} in which the TDSE is solved to be specified, increasing its flexibility.
+Moreover, tRecX allows the gauge \eqref{eq:dipoleApprox} or \eqref{eq:dipoleApprox_velocity} in which the TDSE is solved to be specified, increasing its flexibility.
 This feature will be important later.
 
 \medskip
 Throughout this thesis, tRecX was employed for two purposes.
 
-First, it was used to solve the TDSE in the entire Hilbert space to obtain the coefficients $c_n(t)$, which are required for the improved SFA rate.
+First, it was used to solve the TDSE in the entire Hilbert space to obtain the coefficients $c_n(t)$, which are required for the extended SFA rate.
 For this purpose, the source code was modified to calculate the coefficients and store them in an appropriate format.
 Further details regarding the implementation can be found in Chapter 4.
 
-Second, tRecX served as a reference within the TIPTOE experiment to evaluate the performance of the SFA rate with excited states \eqref{eq:sfa_rate_improved}.
+Second, tRecX served as a reference within the TIPTOE experiment to evaluate the performance of the extended SFA rate \eqref{eq:sfa_rate_improved}.
 
 
 % \paragraph{\textcolor{red}{irECS}}
@@ -69,7 +69,7 @@ A typical TIPTOE simulation consists of two linearly polarized laser pulses: a `
 The drive pulse is the pulse to be sampled, with the ionization yield of a certain medium providing the measurement.
 In first order, the ionization rate can be approximated as
 \begin{equation}
-    \Gamma(E_{\mathrm{F}}+E_{\mathrm{S}})\approx\Gamma(E_{\mathrm{F}})+\left.E_{\mathrm{S}}\frac{\dd \Gamma(E_{\mathrm{S}})}{\dd E}\right|_{E=E_{\mathrm{F}}}
+    \Gamma(E_{\mathrm{F}}+E_{\mathrm{S}})\approx\Gamma(E_{\mathrm{F}})+\left.E_{\mathrm{S}}\frac{\dd \Gamma(E_{\mathrm{S}})}{\dd E}\right|_{E=E_{\mathrm{F}}}.
 \end{equation}
 In this approximation, depletion of the ground state is neglected.
 The total ionization yield $N_{\mathrm{total}}$ obtained by the two pulses is given by
@@ -85,20 +85,20 @@ Thus, the field amplitude of the signal pulse can be sampled by measuring the io
 The TIPTOE method can be applied across a broad spectral range of the signal pulse, as long as the fundamental pulse is shorter than $1.5$ optical cycles.
 
 \bigskip
-This method provides a way to compare ionization dynamics predicted by a numerical solver and by the SFA rate \eqref{eq:sfa_rate_improved}.
+This method provides a way to compare ionization dynamics predicted by a numerical solver and by the extended SFA rate \eqref{eq:sfa_rate_improved}.
 TIPTOE is particularly useful because numerical simulations can provide good predictions about ionization probabilities, while analytical models describe ionization rates.
 A TIPTOE simulation can help reconstruct the ionization dynamics, which is especially relevant in the context of this thesis.
 Later, the ionization rate $\Gamma(E_{\mathrm{F}}+E_{\mathrm{S}})$ will be integrated over the full time domain, and the ionization yield for different delays will be compared with the results from the numerical solution of the TDSE.
 The results are shown in Chapter 5.
 
-For better visualization of the underlying physics in TIPTOE, the background ionization $N_{\mathrm{F}}$ from $E_\mathrm{F}(t)$ is subtracted, and the ionization yield is normalized, so the formula in plot \ref{fig:tiptoe_sfa_comparison} reads
+For better visualization of the underlying physics captured by TIPTOE, the background ionization $N_{\mathrm{F}}$ caused by $E_\mathrm{F}(t)$ is subtracted, and the ionization yield is normalized, so the formula reads
 \begin{equation}
     \frac{N_{\mathrm{total}}-N_{\mathrm{F}}}{N_{\mathrm{max}}}=\frac{\delta N(\tau)}{N_{\mathrm{max}}}      \label{eq:tiptoeprop_normalized}
 \end{equation}
-However, interesting physics can also be observed by comparing only the total ionization yield, as discussed later in Chapter 5.
+However, interesting physics can be observed by comparing also the total ionization yield, as discussed in Section \ref{sec:diff_ion_SFA_tRecX}.
 
 Typically, TIPTOE is not used for this kind of analysis but rather for its sampling capabilities.
-Instantaneous ionization rates are highly useful because TIPTOE enables sampling of the electric field of a laser pulse in the femtosecond to attosecond regime, which has broad applications in fields such as laser spectroscopy and medical physics.
+Ionization rates are highly useful because TIPTOE enables sampling of the electric field of a laser pulse in the femtosecond to attosecond regime, which has broad applications in fields such as laser spectroscopy and medical physics.
 
 
 
@@ -113,7 +113,6 @@ The model was validated for hydrogen and shows good agreement with existing theo
 
 The working principle of GASFIR is based on the use of ionization probabilities to retrieve ionization rates.
 The approach employs the idea from SFA that the rates can be expressed as $\int \dd T K(t,T)$, where $K(t,T)$ is a kernel function.
-Later in the code, the kernel function is also visible, with the modifications applied there.
 
 GASFIR is not part of this thesis; however, this thesis was partially motivated by the idea that an improvement of the SFA formalism could benefit the GASFIR approach.
 

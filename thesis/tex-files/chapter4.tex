@@ -1,7 +1,7 @@
 This Chapter describes the implementation of the formula \eqref{eq:sfa_rate_improved} and the associated challenges.
 The majority of the code was originally developed by the authors of \cite{Theory_NPS}.
 Modifications made to both the tRecX source code and the SFA rate are documented in the electronic appendix \cite{johannes_porsch_2025_16223179}.
-The two main new components in this implementation are the coefficients $c_n(t)$ and the dipole matrix elements $d_{z,n}(\vec{p})$, while the remaining parts were straightforward.
+The two main new components in the implementation of the extended SFA rate are the coefficients $c_n(t)$ and the dipole matrix elements $d_{z,n}(\vec{p})$, while the remaining parts were straightforward.
 
 %%%%%%%%%%%%%%%%
 \section{Coefficients}
@@ -64,7 +64,7 @@ After ionization, according to the SFA, it is described as a plane wave oscillat
 
 From this perspective, both gauges can be useful.
 During the first part of the process—when the electron remains bound to the hydrogen atom—the length gauge is more appropriate, as the electron's behavior is better described in terms of its position rather than its momentum.
-This is why, in most elementary introductions to light-matter interaction (such as discussions of Rabi oscillations), the length gauge is preferred for systems where ionization does not occur.
+This is why, in most elementary introductions to light-matter interaction (such as discussions of Rabi oscillations), the length gauge is preferred for systems where ionization can not occur.
 Conversely, after ionization, the velocity gauge becomes more suitable, as the electron is no longer influenced by the potential (due to the SFA) and is fully characterized by its momentum.
 
 Thus, the length gauge is a fitting choice for the coefficients used in the ODE ansatz.
@@ -84,11 +84,11 @@ Thus, the length gauge is a fitting choice for the coefficients used in the ODE 
 
 
 
-\subsection{Full Hilbertspace}
+\subsection{Full Hilbert Space}
 The coefficients from the subspace are not the only ones used. A numerical solver (in this case tRecX) was employed to solve the entire TDSE, and the coefficients were extracted from the wavefunction.
 
 As mentioned earlier, there are two ways to consider $\hat{\U}(t',t_0)\ket{\Psi}$.
-First, the TDSE can be solved in the subspace of the bound states (as done with the ODE), or the TDSE can be solved in the full Hilbert space and then projected onto bound states.
+First, the TDSE can be solved in the subspace of the bound states (as done with the system of ODEs), or the TDSE can be solved in the full Hilbert space and then projected onto bound states.
 tRecX implements the second approach, which is significantly more complex than the ODE method.
 Since far more physical effects influence the time evolution of the coefficients—and consequently the ionization rate—it becomes more challenging to isolate individual effects and their consequences.
 Nevertheless, having two independent methods that, in some sense, compute the same quantity is useful, allowing for interpretation based on their respective advantages and disadvantages.
@@ -178,7 +178,7 @@ The dipole transition matrix elements $\vec{d}_{nlm}(\vec{p})$ from a certain bo
 Calculating them in general is difficult, but in the case of hydrogen, an analytical solution is possible. A detailed derivation can be found in Appendix \ref{sec:dipolematrixelements}. 
 The actual calculation of the formula for implementation in the code was performed in a Mathematica notebook, which can be found in the electronic appendix \cite{johannes_porsch_2025_16223179}.
 
-As mentioned in the theory section, this simplicity in calculation is only possible due to the strong approximation made with the SFA regarding the dipole matrix elements. 
+As mentioned in the theory section, this simplicity in calculation is only possible due to the harsh approximation made with the SFA regarding the dipole matrix elements. 
 The final state after ionization is not truly a plane wave but is approximated as such under the SFA.
 
 As discussed in the coefficients section, not all states contribute equally to the ionization dynamics. 
@@ -193,7 +193,7 @@ The dipole matrix elements can be simplified by noting that the ground state is 
 \section{TIPTOE Simulations}
 As discussed in Chapter 3, TIPTOE is used in this thesis to compare the ionization yield obtained from the SFA rate and the numerical solution of the TDSE with tRecX.
 
-In implementation, both approaches can be treated as a type of ``machine'', where an arbitrary laser field is input and an ionization probability is output. The laser field in this case consists of two pulses in a \texttt{cos8} envelope: a strong ``fundamental'' pulse and a weaker ``signal'' pulse shifted in time by $\tau$. 
+In implementation, both approaches can be treated as a type of `machine', where an arbitrary laser field is input and an ionization probability is output. The laser field in this case consists of two pulses in a \texttt{cos8} envelope: a strong ``fundamental'' pulse and a weaker ``signal'' pulse shifted in time by $\tau$. 
 In tRecX, two laser pulses can be implemented directly. In the SFA rate implemented in Python, the laser field is constructed as an object of the class \texttt{LaserField} from the file \texttt{field\_functions.py}.
 
-Particularly in the SFA rate, numerical challenges arise because the signal pulse acts only as a small perturbation to the fundamental pulse. Care must be taken to ensure that numerical methods accurately capture this perturbation; otherwise, TIPTOE will fail. This challenge is addressed in Chapter 5.
+Particularly in the different SFA rates, numerical challenges arise because the signal pulse acts only as a small perturbation to the fundamental pulse. Care must be taken to ensure that numerical methods accurately capture this perturbation; otherwise, TIPTOE will fail. This challenge is addressed in Chapter 5.

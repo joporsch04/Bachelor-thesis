@@ -1,8 +1,8 @@
-The biggest benefit of the extended SFA rate in \eqref{eq:sfa_rate_improved} is not only that it incorporates more physical effects than standard SFA, but also that, with certain `tricks,’ the influence of different physical effects on the ionization dynamics can be observed. This is preferable to simply presenting a modified rate that yields better results without understanding \emph{why} it yields better results. Before discussing whether the improvement of the SFA rate was successful, it is first necessary to define what can be learned from this kind of generalization.
+The biggest benefit of the extended SFA rate in equation \eqref{eq:sfa_rate_improved} is not only that it incorporates more physical effects than standard SFA, but also that, with certain `tricks’, the influence of different physical effects on the ionization dynamics can be observed. This is preferable to simply presenting a modified rate that yields better results without understanding \emph{why} it yields better results. Before discussing whether the improvement of the SFA rate was successful, it is first necessary to define what can be learned from this kind of generalization.
 
 The goal is to investigate how the incorporation of excited states and the influence of the laser field on the atom affects the ionization process. Specifically, the focus is on determining whether the Stark shift or the distortion of the ground state has a greater impact on the ionization dynamics. This question is answered in this Chapter.
 
-However, a more significant issue is the previously known considerable discrepancy between the overall ionization yield obtained from SFA simulations and the numerical solution of the TDSE. An extended version of the SFA model could help determine whether this discrepancy arises from simplifications in the dynamics before or after ionization. Unfortunately, a fully satisfactory answer to this question cannot be provided in this thesis, even though the theoretical framework of Chapter 2 allows for such an investigation. This remains a topic for future work. This aspect requires additional investigation in future work.
+However, a more significant issue is the previously known considerable discrepancy between the overall ionization yield obtained from SFA simulations and the numerical solution of the TDSE. An extended version of the SFA model could help determine whether this discrepancy arises from simplifications in the dynamics before or after ionization. Unfortunately, a fully satisfactory answer to this question cannot be provided in this thesis, even though the theoretical framework of Chapter 2 allows for such an investigation. This remains a topic for future work.
 
 
 
@@ -18,7 +18,7 @@ However, a more significant issue is the previously known considerable discrepan
 % \paragraph{Interpretation of extended SFA formula}
 % Since the derivation of formula \eqref{eq:sfa_rate_improved} is also one main result of this thesis, I beginn with interpreting the formula. 
 \paragraph{Improved Reconstruction of Ionization Dynamics}
-The ionization dynamics predicted by the standard SFA approach \cite{Theory_NPS} are first compared with the results from the numerical solution of the TDSE. As shown in \ref{fig:tiptoe_sfa_comparison}(a), the standard SFA generally provides a good reconstruction of the ionization dynamics, though some features are not captured at all\footnote{Note that \eqref{eq:tiptoeprop} is fulfilled and $\delta N(\tau)$ is proportional to the signal pulse.}. In particular, the off-cycle ionization dynamics exhibits a phase shift that does not match the numerical results.
+The ionization dynamics predicted by the standard SFA approach \cite{Theory_NPS} are first compared with the results from the numerical solution of the TDSE. As shown in figure \ref{fig:tiptoe_sfa_comparison}(a), the standard SFA generally provides a good reconstruction of the ionization dynamics, though some features are not captured at all\footnote{Note that \eqref{eq:tiptoeprop} is fulfilled and $\delta N(\tau)$ is proportional to the signal pulse.}. In particular, the off-cycle ionization dynamics exhibits a phase shift that does not match the numerical results.
 
 \medskip
 This discrepancy serves as the starting point and motivation of this thesis.
@@ -33,7 +33,7 @@ The results indicate that the extended SFA model using coefficients from the ful
 
 \medskip
 Interestingly, the TIPTOE measurement with coefficients from the subspace does not differ significantly from the standard SFA model.
-This suggests that no physical contribution from the coefficients of the wavefunction confined to the subspace of the bound state is captured by TIPTOE in the ionization dynamics.
+This suggests that no physical contribution from the coefficients of the wavefunction caged by the subspace of the bound state is captured by TIPTOE in the ionization dynamics.
 The consequences of this observation are elaborated in the next paragraph.
 
 \medskip
@@ -41,7 +41,7 @@ Additionally, the extended SFA model still appears to lack some physical contrib
 Since \ref{fig:tiptoe_sfa_comparison}(b) does not account for transitions to excited states, this could explain the remaining discrepancies.
 Another possible reason is the non-negligible role of the Coulomb potential in the ionization process, where the small phase variations in the ionization yield originate from its influence.
 
-\begin{figure}
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=1\textwidth]{figures/2plot_SFA-comparison_1_BA.pdf}
     \caption[Comparison of ionization dynamics predicted by SFA models and TDSE]{Comparison of ionization dynamics predicted between different SFA models and reference data from TDSE using TIPTOE simulations with transitions to excited states neglected.  
@@ -99,6 +99,7 @@ However, the difference must arise from effects that manifest in the phase of th
 Possible explanations include the influence of the Coulomb potential on ionization dynamics or other effects that are captured by a numerical solver but not by a simple system of ODE's.
 
 \section{Difference in Ionization Yield between SFA and TDSE}
+\label{sec:diff_ion_SFA_tRecX}
 As mentioned in Chapter 3, the ionization yield of the TIPTOE simulations in figures \ref{fig:tiptoe_sfa_comparison} and \ref{fig:tiptoe_rate_stark}(a) is normalized to better visualize the actual differences.
 Further, since the primary focus lies on the dynamics rather than the absolute ionization yield, the normalization is performed according to \eqref{eq:tiptoeprop_normalized}.
 However, in the non-normalized plot, it can be observed that the numerical solution of the TDSE predicts an ionization probability orders of magnitude higher than that of the SFA model.
@@ -115,14 +116,14 @@ While these observations are interesting, they align with the theoretical founda
 To confirm that the discrepancies arise solely from the core assumptions of the SFA model (i.e., the treatment of the final state as a continuum state), other possible explanations must be ruled out.
 The extended SFA model proposed in this thesis may provide insights into this question.
 During this research, significant effort has been dedicated to implementing the extended SFA model, particularly to incorporate excited states.
-However, due to time constraints, conclusive results on this matter could not be obtained.
+However, conclusive results on this matter could not be obtained.
 
 Preliminary TIPTOE results suggest that including excited states in the SFA rate partially reduces the order-of-magnitude discrepancy between the SFA and TDSE predictions.
 Additionally, the cross-coupling terms in \eqref{eq:sfa_rate_improved} (i.e., $n_1 \neq n_2$) appear to contribute significantly to the ionization rate.
 Furthermore, the previously discussed importance of the energy shift in the phase also applies to excited states.
 The energy level shifts of excited states have a more pronounced effect on the ionization rate than changes in the probability amplitudes of the coefficients.
 The observed changes in the ionization yield magnitude, potentially arising from the inclusion of excited states in the extended SFA model, may primarily stem from the dipole transition matrix elements.
-For instance, this could be explained by the laser pulse first exciting the electron to, say, the $3p$ state before ionizing it, leading to a higher overall ionization probability due to additional pathways.
+For instance, this could be explained by the laser pulse first exciting the electron to, for example, the $3p$ state before ionizing it, leading to a higher overall ionization probability due to additional pathways.
 However, this hypothesis could not be fully verified here.
 These indications remain speculative and should not yet be considered definitive results.
 

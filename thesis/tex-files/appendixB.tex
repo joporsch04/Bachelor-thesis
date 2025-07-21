@@ -19,7 +19,7 @@ The wave function for the hydrogen atom is well known:
 \end{equation}
 with $R_{nl}(r)$ being the radial part of the wavefunction and $Y_{lm}(\theta_r, \phi_r)$ being the spherical harmonics.
 
-By partitioning the $\hat{1}$ operator and using the fact that $\vec{\uvec{r}} \rightarrow i\nabla_{\uvec{p}}$ %Interesting because by choosing a certain way to display the operator we also choose a natural basis for the representation of the operator. Therefore I write \nabla_{\uvec{p}} instead of \nabla_{\vec{p}}.
+By partitioning the $\hat{1}$ operator and using the fact that $\hat{\vec{r}} \rightarrow i\nabla_{\uvec{p}}$ %Interesting because by choosing a certain way to display the operator we also choose a natural basis for the representation of the operator. Therefore I write \nabla_{\uvec{p}} instead of \nabla_{\vec{p}}.
 in momentum representation, a general formula for the transition is obtained:
 \begin{equation*}
     \vec{d}_{nlm}(\uvec{p}) = -i\nabla_{\uvec{p}}\int \dd^3\uvec{x}\,\psi_{nlm}(\uvec{x}) e^{-i\vec{p}\cdot\vec{r}} = -i\nabla_{\uvec{p}}\phi_{nlm}(\uvec{p})
@@ -105,11 +105,11 @@ The rate according to Chapter 2 is given by:
 \begin{align*}
     \Gamma_{\mathrm{SFA}}(t) &= \sum_{n_1}\sum_{n_2} \int_0^{\infty} \dd p\,p^2\int_0^{\pi} \dd\theta_p\,\sin\theta_p \int_0^{2\pi}\dd \phi_p\int_{-\infty}^{\infty} \dd T\\
     &\times \exp\left(i\vec{p}^2T + ip\cos\theta_p\bar{\Delta}_z^k +  \frac{i}{2}\bar{\Delta}_z^2  + i(t-T)E_{n_1}-i(t+T)E_{n_2}\right)\\
-    &\times E_z(t-T) E_z(t+T)c_{n_1}^*(t-T)c_{n_2}(t+T) d_{z,n_1}^*(\uvec{p}+\Delta_z(-T))d_{z,n_2}(\uvec{p}+\Delta_z(T))
+    &\times E_z(t-T) E_z(t+T)c_{n_1}^*(t-T)c_{n_2}(t+T) d_{z,n_1}^*(\vec{p}+\Delta_z(-T))d_{z,n_2}(\vec{p}+\Delta_z(T))
 \end{align*}
 As mentioned before, the dipole transition matrix element can be written in the following convenient form:
 \begin{equation*}
-    d_{z,nlm}(\uvec{p}) = \left[-i\nabla_{\uvec{p}}\phi_{nlm}(\uvec{p})\right]_z = -iY_{lm}(\theta_p, \phi_p)\left(\cos\theta_p\frac{\partial F_{nl}}{\partial p}-\frac{\sin\theta_p}{p}\frac{\partial F_{nl}}{\partial p}\right)
+    d_{z,nlm}(\vec{p}) = \left[-i\nabla_{\uvec{p}}\phi_{nlm}(\vec{p})\right]_z = -iY_{lm}(\theta_p, \phi_p)\left(\cos\theta_p\frac{\partial F_{nl}}{\partial p}-\frac{\sin\theta_p}{p}\frac{\partial F_{nl}}{\partial p}\right)
 \end{equation*}
 Note that here the $z$ component of a gradient in spherical coordinates was taken. The exact formula can be easily computed using the transformation between Cartesian and spherical coordinates.
 

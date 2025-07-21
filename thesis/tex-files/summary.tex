@@ -2,4 +2,17 @@
 % What is more important, stark shift or else?\\
 % Its very interesting to see how much physics can be derived from very little plots.
 % \medskip
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+This thesis aimed to improve the strong-field approximation (SFA) through the development of a more rigorous analytical framework incorporating the influence of the laser field on the atomic state prior to ionization. The goal was to enhance the understanding and reconstruction of ionization dynamics and to investigate the discrepancy in absolute ionization yields between standard SFA and numerical solutions of the time-dependent Schrödinger equation (TDSE).
+
+\medskip
+An extended SFA model was successfully derived, accounting for the dynamics of the ground state. The results demonstrated an improvement in reproducing the off-cycle ionization dynamics observed in TIPTOE simulations. This was achieved by using only ground-state coefficients obtained from solving the TDSE in the full Hilbert space.
+
+\medskip
+Interestingly, this improvement was found to be almost exclusively attributable to the phase of the coefficient, which represents the time-dependent energy shift of the state. In contrast, the distortion of the ground-state probability amplitude had a negligible effect. Most notably, a comparison with the coefficients determined by solving the TDSE in the subspace of the bound states showed no improvement or change at all.
+Since the Stark shift should be visible in both coefficients, this observation provides strong evidence that the phase difference observed with the full Hilbert space coefficients is not due to the Stark effect, but rather another dynamic process that manifests only when the electron is allowed to ionize. While the exact origin remains an open question, it must be an effect captured only by the numerical solver but not by a simple ODE solver.
+
+\medskip
+Furthermore, preliminary investigations suggested that including transitions to excited states within the extended SFA framework could partially reduce the orders-of-magnitude discrepancy in the total ionization yield between standard SFA and TDSE resuts.
+
+\medskip
+Future work could focus on two main directions. First, identifying the physical origin of the phase contribution that corrects the ionization dynamics. Second, the preliminary study on the role of excited states should be extended. The use of the extended SFA model may help quantify whether including excited bound states bridges the gap in the absolute ionization yield compared to TDSE results.
