@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "The Impact of the Dynamic Stark Shift on Sub-cycle Ionization of Atoms in the Multiphoton Regime"
+authors:
+- family-names: "Porsch"
+  given-names: "Johannes"
+title: "Bachelor-thesis"
+version: 1.0.0
+doi: 10.5281/zenodo.1234
+date-released: 2025-07-22
+url: "https://github.com/joporsch04/Bachelor-thesis"
+doi: 10.5281/zenodo.16223179
+license: CC-BY-4.0
+thesis:
+  degree: Bachelor of Science
+  institution: Ludwig-Maximilians-Universität München
+  city: München
+  country: DE
