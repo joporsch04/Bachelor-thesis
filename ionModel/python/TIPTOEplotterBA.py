@@ -5,6 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from IPython.display import display, HTML
 from matplotlib.backends.backend_pdf import PdfPages
+from field_functions import LaserField
 from scipy.interpolate import interp1d
 
 from __init__ import FourierTransform
@@ -140,6 +141,12 @@ class TIPTOEplotterBA:
         # plt.close()
 
     def plot2SFA(self):
+
+        laser_pulses = LaserField(cache_results=True)
+        laser_pulses.add_pulse(250, 8e9, -np.pi/2, 0.58/ AtomicUnits.fs)
+        t_min, t_max = laser_pulses.get_time_interval()
+        time_recon_1= np.arange(int(t_min), int(t_max)+1, 1.)
+
         fig, (ax3, ax4) = plt.subplots(nrows=1, ncols=2, figsize=(14, 6))
 
         ion_tRecX = self.ion_tRecX - self.ion_tRecX[-1]
@@ -198,9 +205,20 @@ class TIPTOEplotterBA:
 
         plt.tight_layout()
         
-        pdf_filename = f'/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/plotsTIPTOE/2plot_SFA-comparison_{self.excitedStates}_BA.pdf'
-        with PdfPages(pdf_filename) as pdf:
-            pdf.savefig(fig, dpi=600, bbox_inches='tight')
+        pdf_filename = f'/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/plotsTIPTOE/2plot_SFA-comparison_{self.excitedStates}_BP_laser_pulses.pdf'
+
+        jpeg_filename = f'/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/plotsTIPTOE/2plot_SFA-comparison_{self.excitedStates}_BP_2_ax2_only.jpeg'
+        
+        extent = ax4.get_window_extent().transformed(fig.dpi_scale_trans.inverted())
+        from matplotlib.transforms import Bbox
+        padded_extent = Bbox.from_extents(
+            extent.x0 - 0.9, extent.y0 - 0.5, 
+            extent.x1 + 0.1, extent.y1 + 0.5
+        )
+        fig.savefig(jpeg_filename, format='jpeg', dpi=600, bbox_inches=padded_extent)
+
+        # with PdfPages(pdf_filename) as pdf:
+        #     pdf.savefig(fig, dpi=600, bbox_inches='tight')
 
     def plot3stark(self):
 
@@ -330,8 +348,8 @@ class TIPTOEplotterBA:
                       f'Standard SFA: {prob_SFA/1e-4:.3f}$\\times 10^{{-4}}$\n'
                       f'Full. SFA (phase): {prob_rate_1/1e-4:.3f}$\\times 10^{{-4}}$\n'
                       f'Full. SFA (magn): {prob_rate_2/1e-4:.3f}$\\times 10^{{-4}}$')
-        ax3.text(0.015, 0.98, prob_text_3, transform=ax3.transAxes, fontsize=10, 
-                verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.2))
+        # ax3.text(0.015, 0.98, prob_text_3, transform=ax3.transAxes, fontsize=10, 
+        #         verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.2))
 
 
         param_text = (f'$\lambda_\mathrm{{F}}={self.lam0_pump}$ nm\n'
@@ -342,9 +360,21 @@ class TIPTOEplotterBA:
 
         plt.tight_layout()
         
-        pdf_filename = f'/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/plotsTIPTOE/3plot_stark-comparison_{self.excitedStates}_BA.pdf'
-        with PdfPages(pdf_filename) as pdf:
-            pdf.savefig(fig, dpi=600, bbox_inches='tight')
+        pdf_filename = f'/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/plotsTIPTOE/3plot_stark-comparison_{self.excitedStates}_BP_7.pdf'
+
+        extent = ax1.get_window_extent().transformed(fig.dpi_scale_trans.inverted())
+        jpeg_filename = f'/home/user/BachelorThesis/Bachelor-thesis/ionModel/python/plotsTIPTOE/3plot_stark-comparison_{self.excitedStates}_BP_5_ax1_only.jpeg'
+
+        extent = ax1.get_window_extent().transformed(fig.dpi_scale_trans.inverted())
+        from matplotlib.transforms import Bbox
+        padded_extent = Bbox.from_extents(
+            extent.x0 - 0.9, extent.y0 - 0.5, 
+            extent.x1 + 0.1, extent.y1 + 0.5
+        )
+        fig.savefig(jpeg_filename, format='jpeg', dpi=600, bbox_inches=padded_extent)
+
+        # with PdfPages(pdf_filename) as pdf:
+        #     pdf.savefig(fig, dpi=600, bbox_inches='tight')
 
 
 
